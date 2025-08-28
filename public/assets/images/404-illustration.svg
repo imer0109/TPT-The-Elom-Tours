@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <!-- Background -->
+  <rect width="400" height="300" fill="#f3f4f6" rx="10" ry="10" />
+  
+  <!-- Map Background -->
+  <path d="M50,50 L350,50 L350,250 L50,250 Z" fill="#e5e7eb" />
+  
+  <!-- Map Grid Lines -->
+  <g stroke="#d1d5db" stroke-width="1">
+    <line x1="50" y1="100" x2="350" y2="100" />
+    <line x1="50" y1="150" x2="350" y2="150" />
+    <line x1="50" y1="200" x2="350" y2="200" />
+    <line x1="100" y1="50" x2="100" y2="250" />
+    <line x1="150" y1="50" x2="150" y2="250" />
+    <line x1="200" y1="50" x2="200" y2="250" />
+    <line x1="250" y1="50" x2="250" y2="250" />
+    <line x1="300" y1="50" x2="300" y2="250" />
+  </g>
+  
+  <!-- Map Features -->
+  <circle cx="120" cy="180" r="10" fill="#16a34a" opacity="0.3" />
+  <circle cx="280" cy="120" r="15" fill="#16a34a" opacity="0.3" />
+  <path d="M180,80 C200,70 220,90 240,80" stroke="#60a5fa" stroke-width="3" fill="none" />
+  <path d="M70,220 C90,200 110,210 130,190 C150,170 170,180 190,160" stroke="#60a5fa" stroke-width="3" fill="none" />
+  
+  <!-- Lost Pin -->
+  <g transform="translate(200, 150)">
+    <!-- Pin Body -->
+    <path d="M0,-30 C-20,-30 -30,-10 -30,0 C-30,20 0,50 0,50 C0,50 30,20 30,0 C30,-10 20,-30 0,-30 Z" fill="#ef4444" />
+    
+    <!-- Pin Center -->
+    <circle cx="0" cy="0" r="10" fill="#ffffff" />
+    
+    <!-- Question Mark -->
+    <text x="0" y="5" font-family="Arial" font-size="16" font-weight="bold" fill="#ef4444" text-anchor="middle">?</text>
+    
+    <!-- Confused Lines -->
+    <g stroke="#111827" stroke-width="2" stroke-linecap="round">
+      <path d="M-40,-40 L-30,-30" />
+      <path d="M40,-40 L30,-30" />
+      <path d="M-40,40 L-30,30" />
+      <path d="M40,40 L30,30" />
+    </g>
+  </g>
+  
+  <!-- 404 Text -->
+  <text x="200" y="270" font-family="Arial" font-size="24" font-weight="bold" fill="#111827" text-anchor="middle">404</text>
+  
+  <!-- Compass Rose -->
+  <g transform="translate(320, 220)">
+    <circle cx="0" cy="0" r="15" fill="#ffffff" stroke="#111827" stroke-width="1" />
+    <path d="M0,-12 L3,-3 L0,-6 L-3,-3 Z" fill="#ef4444" />
+    <path d="M0,12 L3,3 L0,6 L-3,3 Z" fill="#111827" />
+    <path d="M-12,0 L-3,3 L-6,0 L-3,-3 Z" fill="#111827" />
+    <path d="M12,0 L3,3 L6,0 L3,-3 Z" fill="#111827" />
+    <text x="0" y="-16" font-family="Arial" font-size="8" fill="#111827" text-anchor="middle">N</text>
+  </g>
+  
+  <!-- Decorative Elements -->
+  <circle cx="70" cy="70" r="10" fill="#16a34a" opacity="0.2" />
+  <circle cx="330" cy="80" r="8" fill="#16a34a" opacity="0.2" />
+</svg>

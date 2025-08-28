@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <!-- Background -->
+  <rect width="400" height="300" fill="#f3f4f6" rx="10" ry="10" />
+  
+  <!-- Cloud -->
+  <path d="M320,100 C320,77.90 302.09,60 280,60 C269.17,60 259.35,64.10 252.21,70.85 C247.62,54.77 232.80,43 215,43 C193.46,43 176,60.46 176,82 C176,83.34 176.07,84.67 176.20,85.98 C166.53,90.12 160,99.71 160,110.82 C160,126.29 172.71,139 188.18,139 L308.18,139 C323.65,139 336.36,126.29 336.36,110.82 C336.36,103.33 332.71,96.69 327.18,92.42 C328.20,88.43 329,84.29 329,80 C329,76.69 328.20,72.55 327.18,68.56 C322.71,64.29 320,100 320,100 Z" fill="#e5e7eb" />
+  
+  <!-- Wifi Symbol with X -->
+  <g transform="translate(200, 150)" fill="#4b5563">
+    <!-- Wifi Arcs -->
+    <path d="M-50,40 C-33,23 -17,15 0,15 C17,15 33,23 50,40" stroke="#4b5563" stroke-width="8" fill="none" opacity="0.3" />
+    <path d="M-30,55 C-20,45 -10,40 0,40 C10,40 20,45 30,55" stroke="#4b5563" stroke-width="8" fill="none" opacity="0.5" />
+    
+    <!-- Center Dot -->
+    <circle cx="0" cy="70" r="8" />
+    
+    <!-- X over the wifi symbol -->
+    <path d="M-40,20 L40,80" stroke="#ef4444" stroke-width="8" stroke-linecap="round" />
+    <path d="M40,20 L-40,80" stroke="#ef4444" stroke-width="8" stroke-linecap="round" />
+  </g>
+  
+  <!-- Device -->
+  <rect x="150" y="190" width="100" height="70" rx="5" ry="5" fill="#374151" />
+  <rect x="155" y="195" width="90" height="55" rx="2" ry="2" fill="#111827" />
+  <rect x="185" y="260" width="30" height="5" rx="2" ry="2" fill="#374151" />
+  
+  <!-- Text -->
+  <text x="200" y="225" font-family="Arial" font-size="10" fill="#ffffff" text-anchor="middle">HORS LIGNE</text>
+  
+  <!-- Decorative Elements -->
+  <circle cx="50" cy="50" r="20" fill="#16a34a" opacity="0.2" />
+  <circle cx="350" cy="250" r="30" fill="#16a34a" opacity="0.2" />
+  <circle cx="70" cy="230" r="15" fill="#16a34a" opacity="0.2" />
+  <circle cx="330" cy="70" r="10" fill="#16a34a" opacity="0.2" />
+</svg>

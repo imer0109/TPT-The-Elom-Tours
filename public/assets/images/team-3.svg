@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <!-- Background -->
+  <rect width="400" height="400" fill="#f0f9f0"/>
+  
+  <!-- Portrait background -->
+  <circle cx="200" cy="150" r="100" fill="#16a34a" opacity="0.1"/>
+  
+  <!-- Head -->
+  <circle cx="200" cy="120" r="60" fill="#7c2d12"/>
+  
+  <!-- Face -->
+  <circle cx="200" cy="120" r="55" fill="#a16207"/>
+  
+  <!-- Eyes -->
+  <ellipse cx="175" cy="110" rx="8" ry="5" fill="#1e293b"/>
+  <ellipse cx="225" cy="110" rx="8" ry="5" fill="#1e293b"/>
+  
+  <!-- Eyebrows -->
+  <path d="M165,100 Q175,95 185,100" stroke="#1e293b" stroke-width="2" fill="none"/>
+  <path d="M215,100 Q225,95 235,100" stroke="#1e293b" stroke-width="2" fill="none"/>
+  
+  <!-- Nose -->
+  <path d="M200,115 Q205,130 200,135 Q195,130 200,115" fill="#7c2d12"/>
+  
+  <!-- Mouth -->
+  <path d="M180,145 Q200,155 220,145" stroke="#1e293b" stroke-width="2" fill="none"/>
+  
+  <!-- Ears -->
+  <ellipse cx="140" cy="120" rx="10" ry="15" fill="#a16207"/>
+  <ellipse cx="260" cy="120" rx="10" ry="15" fill="#a16207"/>
+  
+  <!-- Hair (short with receding hairline) -->
+  <path d="M150,70 Q200,50 250,70 L250,90 Q200,80 150,90 Z" fill="#1e293b"/>
+  
+  <!-- Beard -->
+  <path d="M160,145 Q200,170 240,145 L230,180 Q200,190 170,180 Z" fill="#1e293b"/>
+  
+  <!-- Neck -->
+  <rect x="185" y="180" width="30" height="30" fill="#a16207"/>
+  
+  <!-- Shirt/Outfit -->
+  <path d="M150,210 L250,210 L270,300 L130,300 Z" fill="#1e40af"/>
+  
+  <!-- Collar -->
+  <path d="M185,210 L200,230 L215,210" stroke="#f0f9f0" stroke-width="3" fill="none"/>
+  
+  <!-- Glasses -->
+  <rect x="165" y="105" width="20" ry="5" height="10" stroke="#1e293b" stroke-width="2" fill="none"/>
+  <rect x="215" y="105" width="20" ry="5" height="10" stroke="#1e293b" stroke-width="2" fill="none"/>
+  <line x1="185" y1="110" x2="215" y2="110" stroke="#1e293b" stroke-width="2"/>
+  
+  <!-- Name -->
+  <text x="200" y="330" font-family="Arial" font-size="24" font-weight="bold" text-anchor="middle" fill="#166534">Kodjo Mensah</text>
+  <text x="200" y="360" font-family="Arial" font-size="18" text-anchor="middle" fill="#166534">Guide touristique senior</text>
+</svg>

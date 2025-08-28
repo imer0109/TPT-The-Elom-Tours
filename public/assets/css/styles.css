@@ -1,0 +1,23 @@
+/* Base Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Custom Styles */
+.hero-overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Animations */
+.transition-all {
+    transition: all 0.3s ease-in-out;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .hero-text h1 {
+        font-size: 2.5rem;
+    }
+}

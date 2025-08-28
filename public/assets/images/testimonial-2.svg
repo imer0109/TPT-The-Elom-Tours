@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Background -->
+  <circle cx="100" cy="100" r="100" fill="#f0f9f0"/>
+  
+  <!-- Portrait background -->
+  <circle cx="100" cy="100" r="80" fill="#16a34a" opacity="0.1"/>
+  
+  <!-- Head -->
+  <circle cx="100" cy="85" r="40" fill="#f1f5f9"/>
+  
+  <!-- Hair -->
+  <path d="M70,60 Q100,40 130,60 L130,85 Q100,75 70,85 Z" fill="#64748b"/>
+  
+  <!-- Eyes -->
+  <ellipse cx="85" cy="80" rx="5" ry="3" fill="#1e293b"/>
+  <ellipse cx="115" cy="80" rx="5" ry="3" fill="#1e293b"/>
+  
+  <!-- Eyebrows -->
+  <path d="M80,73 Q85,70 90,73" stroke="#1e293b" stroke-width="1.5" fill="none"/>
+  <path d="M110,73 Q115,70 120,73" stroke="#1e293b" stroke-width="1.5" fill="none"/>
+  
+  <!-- Nose -->
+  <path d="M100,85 Q103,95 100,98 Q97,95 100,85" fill="#e2e8f0"/>
+  
+  <!-- Mouth -->
+  <path d="M90,105 Q100,110 110,105" stroke="#1e293b" stroke-width="1.5" fill="none"/>
+  
+  <!-- Beard -->
+  <path d="M80,105 Q100,125 120,105 L115,125 Q100,135 85,125 Z" fill="#64748b"/>
+  
+  <!-- Neck -->
+  <rect x="90" y="125" width="20" height="15" fill="#f1f5f9"/>
+  
+  <!-- Clothes -->
+  <path d="M70,140 L130,140 L140,180 L60,180 Z" fill="#1e3a8a"/>
+  
+  <!-- Tie -->
+  <path d="M95,140 L105,140 L107,160 L100,165 L93,160 L95,140 Z" fill="#dc2626"/>
+  
+  <!-- Glasses -->
+  <rect x="75" y="75" width="20" ry="5" height="10" stroke="#1e293b" stroke-width="1.5" fill="none"/>
+  <rect x="105" y="75" width="20" ry="5" height="10" stroke="#1e293b" stroke-width="1.5" fill="none"/>
+  <line x1="95" y1="80" x2="105" y2="80" stroke="#1e293b" stroke-width="1.5"/>
+  
+  <!-- Name -->
+  <text x="100" y="195" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle" fill="#166534">John Smith</text>
+</svg>
