@@ -3,8 +3,9 @@
 @section('content')
     <!-- Hero Section -->
     <section class="relative">
-        <div class="hero-image h-64 md:h-96 bg-cover bg-center" 
-        style="background-image: url('{{ $circuit->image ? $circuit->image->url : asset('assets/images/circuit-detail-hero.jpg') }}')">
+        <div class="hero-image h-64 md:h-96 bg-cover bg-center bg-[#16a34a]" 
+        {{-- style="background-image: url('{{ $circuit->image ? $circuit->image->url : asset('assets/images/circuit-detail-hero.jpg') }}')" --}}
+        >
             <div class="absolute inset-0 bg-black opacity-50"></div>
             <div class="container mx-auto px-4 h-full flex items-center justify-center relative z-10">
                 <div class="text-center text-white">
@@ -73,7 +74,7 @@
                         <div class="flex items-center mb-6">
                             <div class="text-yellow-500 mr-2">
                                 @php
-                                    $rating = $circuit->reviews->avg('rating') ?? 0;
+                                    $rating = $circuit->reviews ? $circuit->reviews->avg('rating') : 0;
                                     $fullStars = floor($rating);
                                     $halfStar = $rating - $fullStars >= 0.5;
                                 @endphp
@@ -88,7 +89,7 @@
                                     @endif
                                 @endfor
                             </div>
-                            <span class="text-gray-600">{{ number_format($rating, 1) }}/5 ({{ $circuit->reviews->count() }} avis)</span>
+                            <span class="text-gray-600">{{ number_format($rating, 1) }}/5 ({{ $circuit->reviews ? $circuit->reviews->count() : 0 }} avis)</span>
                         </div>
                         
                         <div class="flex flex-wrap gap-2">
@@ -102,14 +103,14 @@
                     <div class="bg-white rounded-lg shadow-md p-6 mb-8">
                         <h2 class="text-2xl font-bold mb-6">Itinéraire</h2>
                         
-                        @forelse($circuit->steps as $step)
+                        @forelse($circuit->etapes as $step)
                             <div class="mb-6 border-l-4 border-green-600 pl-4">
-                                <h3 class="text-xl font-semibold mb-2">Jour {{ $step->day }}: {{ $step->title }}</h3>
+                                <h3 class="text-xl font-semibold mb-2">Jour {{ $step->jour }}: {{ $step->titre }}</h3>
                                 <p class="text-gray-700 mb-4">{{ $step->description }}</p>
-                                @if($step->accommodation)
+                                @if($step->lieu)
                                     <div class="flex items-center text-sm text-gray-600">
                                         <i class="fas fa-bed mr-2"></i>
-                                        <span>Hébergement: {{ $step->accommodation }}</span>
+                                        <span>Hébergement: {{ $step->lieu }}</span>
                                     </div>
                                 @endif
                             </div>
@@ -134,7 +135,7 @@
                             </div>
                         @endforelse
                         
-                        @if($circuit->steps->count() > 3)
+                        @if($circuit->etapes && $circuit->etapes->count() > 3)
                             <!-- Show More Button -->
                             <button id="showMoreBtn" class="text-green-600 hover:text-green-800 font-medium flex items-center">
                                 Voir l'itinéraire complet
@@ -151,7 +152,7 @@
                             <div>
                                 <h3 class="text-lg font-semibold mb-3">Inclus dans le prix</h3>
                                 <ul class="space-y-2">
-                                    @forelse(explode('\n', $circuit->included) as $included)
+                                    @forelse(explode('\n', $circuit->included ?? '') as $included)
                                         @if(trim($included))
                                             <li class="flex items-start">
                                                 <i class="fas fa-check text-green-600 mt-1 mr-2"></i>
@@ -178,7 +179,7 @@
                             <div>
                                 <h3 class="text-lg font-semibold mb-3">Non inclus dans le prix</h3>
                                 <ul class="space-y-2">
-                                    @forelse(explode('\n', $circuit->excluded) as $excluded)
+                                    @forelse(explode('\n', $circuit->excluded ?? '') as $excluded)
                                         @if(trim($excluded))
                                             <li class="flex items-start">
                                                 <i class="fas fa-times text-red-600 mt-1 mr-2"></i>
@@ -219,7 +220,7 @@
                         
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                             @forelse($circuit->images as $image)
-                                <img src="{{ $image->url }}" alt="{{ $circuit->title }}" class="rounded-lg hover:opacity-90 transition duration-300 cursor-pointer">
+                                <img src="{{ $image->url }}" alt="{{ $circuit->titre }}" class="rounded-lg hover:opacity-90 transition duration-300 cursor-pointer">
                             @empty
                                 <img src="{{ asset('assets/images/gallery-1.jpg') }}" alt="Photo du circuit" class="rounded-lg hover:opacity-90 transition duration-300 cursor-pointer">
                                 <img src="{{ asset('assets/images/gallery-2.jpg') }}" alt="Photo du circuit" class="rounded-lg hover:opacity-90 transition duration-300 cursor-pointer">
@@ -236,15 +237,17 @@
                             <div class="flex items-center mb-4">
                                 <div class="text-yellow-500 text-xl mr-2">
                                     @php
-                                        $rating = $circuit->avis->avg('rating') ?? 0;
+                                        $rating = $circuit->avis ? $circuit->avis->avg('rating') : 0;
                                         $fullStars = floor($rating);
                                         $halfStar = $rating - $fullStars >= 0.5;
-                                        $reviewCount = $circuit->avis->count();
+                                        $reviewCount = $circuit->avis ? $circuit->avis->count() : 0;
                                         
                                         // Calculate percentages for each star rating
                                         $starCounts = [0, 0, 0, 0, 0, 0]; // Index 0 is unused, 1-5 for star counts
-                                        foreach($circuit->avis as $review) {
-                                            $starCounts[round($review->rating)]++;
+                                        if($circuit->avis) {
+                                            foreach($circuit->avis as $review) {
+                                                $starCounts[round($review->rating)]++;
+                                            }
                                         }
                                         
                                         $starPercentages = [];
