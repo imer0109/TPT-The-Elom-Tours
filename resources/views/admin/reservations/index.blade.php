@@ -6,7 +6,7 @@
 <div class="container mx-auto">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold">Gestion des réservations</h1>
-        <a href="#" class="btn-primary flex items-center">
+        <a href="{{ route('admin.reservations.create') }}" class="btn-primary flex items-center">
             <i class="fas fa-plus mr-2"></i> Nouvelle réservation
         </a>
     </div>
@@ -20,9 +20,10 @@
                     <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Statut</label>
                     <select id="status" name="status" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5">
                         <option value="">Tous les statuts</option>
-                        <option value="pending">En attente</option>
-                        <option value="confirmed">Confirmé</option>
-                        <option value="cancelled">Annulé</option>
+                        <option value="en_attente" {{ request('status') == 'en_attente' ? 'selected' : '' }}>En attente</option>
+                        <option value="confirmee" {{ request('status') == 'confirmee' ? 'selected' : '' }}>Confirmée</option>
+                        <option value="annulee" {{ request('status') == 'annulee' ? 'selected' : '' }}>Annulée</option>
+                        <option value="terminee" {{ request('status') == 'terminee' ? 'selected' : '' }}>Terminée</option>
                     </select>
                 </div>
                 
@@ -31,9 +32,11 @@
                     <label for="circuit" class="block text-sm font-medium text-gray-700 mb-1">Circuit</label>
                     <select id="circuit" name="circuit" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5">
                         <option value="">Tous les circuits</option>
-                        <option value="1">Découverte de Kpalimé</option>
-                        <option value="2">Safari à Fazao</option>
-                        <option value="3">Lomé Culturelle</option>
+                        @foreach($circuits as $circuit)
+                            <option value="{{ $circuit->id }}" {{ request('circuit') == $circuit->id ? 'selected' : '' }}>
+                                {{ $circuit->titre }}
+                            </option>
+                        @endforeach
                     </select>
                 </div>
                 
@@ -87,117 +90,61 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                    <!-- Ligne 1 -->
+                    @forelse($reservations as $reservation)
                     <tr class="hover-effect">
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900">#12345</div>
+                            <div class="text-sm font-medium text-gray-900">#{{ $reservation->reference }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
                                 <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                                    <span class="text-gray-700 font-medium">JD</span>
+                                    <span class="text-gray-700 font-medium">{{ substr($reservation->client->nom, 0, 1) }}{{ substr($reservation->client->prenom, 0, 1) }}</span>
                                 </div>
                                 <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">Jean Dupont</div>
-                                    <div class="text-sm text-gray-500">jean.dupont@example.com</div>
+                                    <div class="text-sm font-medium text-gray-900">{{ $reservation->client->nom }} {{ $reservation->client->prenom }}</div>
+                                    <div class="text-sm text-gray-500">{{ $reservation->client->email }}</div>
                                 </div>
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">Découverte de Kpalimé</div>
+                            <div class="text-sm text-gray-900">{{ $reservation->circuit->titre }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">15/06/2023 - 18/06/2023</div>
+                            <div class="text-sm text-gray-900">{{ $reservation->date_debut->format('d/m/Y') }} - {{ $reservation->date_fin->format('d/m/Y') }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-center">
-                            <div class="text-sm text-gray-900">2</div>
+                            <div class="text-sm text-gray-900">{{ $reservation->nombre_personnes }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">1,250€</div>
+                            <div class="text-sm text-gray-900">{{ number_format($reservation->montant_total, 2, ',', ' ') }} €</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                Confirmé
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                @if($reservation->statut == 'en_attente') bg-yellow-100 text-yellow-800
+                                @elseif($reservation->statut == 'confirmee') bg-green-100 text-green-800
+                                @elseif($reservation->statut == 'annulee') bg-red-100 text-red-800
+                                @elseif($reservation->statut == 'terminee') bg-blue-100 text-blue-800
+                                @endif">
+                                {{ $reservation->statut_label }}
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <a href="#" class="text-primary hover:text-green-700 mr-3"><i class="fas fa-eye"></i></a>
-                            <a href="#" class="text-blue-600 hover:text-blue-800 mr-3"><i class="fas fa-edit"></i></a>
-                            <a href="#" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></a>
+                            <a href="{{ route('admin.reservations.show', $reservation) }}" class="text-primary hover:text-green-700 mr-3" title="Voir"><i class="fas fa-eye"></i></a>
+                            <a href="{{ route('admin.reservations.edit', $reservation) }}" class="text-blue-600 hover:text-blue-800 mr-3" title="Modifier"><i class="fas fa-edit"></i></a>
+                            <form action="{{ route('admin.reservations.destroy', $reservation) }}" method="POST" class="inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette réservation ?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-red-600 hover:text-red-800" title="Supprimer"><i class="fas fa-trash"></i></button>
+                            </form>
                         </td>
                     </tr>
-                    
-                    <!-- Ligne 2 -->
-                    <tr class="hover-effect">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900">#12346</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                                    <span class="text-gray-700 font-medium">ML</span>
-                                </div>
-                                <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">Marie Lefebvre</div>
-                                    <div class="text-sm text-gray-500">marie.lefebvre@example.com</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">Safari à Fazao</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">20/06/2023 - 25/06/2023</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-center">
-                            <div class="text-sm text-gray-900">4</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">2,100€</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                En attente
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <a href="#" class="text-primary hover:text-green-700 mr-3"><i class="fas fa-eye"></i></a>
-                            <a href="#" class="text-blue-600 hover:text-blue-800 mr-3"><i class="fas fa-edit"></i></a>
-                            <a href="#" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></a>
+                    @empty
+                    <tr>
+                        <td colspan="8" class="px-6 py-4 whitespace-nowrap text-center text-gray-500">
+                            Aucune réservation trouvée
                         </td>
                     </tr>
-                    
-                    <!-- Ligne 3 -->
-                    <tr class="hover-effect">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900">#12347</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                                    <span class="text-gray-700 font-medium">PT</span>
-                                </div>
-                                <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">Pierre Thomas</div>
-                                    <div class="text-sm text-gray-500">pierre.thomas@example.com</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">Lomé Culturelle</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">10/06/2023 - 12/06/2023</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-center">
-                            <div class="text-sm text-gray-900">1</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">950€</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                Annulé
+                    @endforelse
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">

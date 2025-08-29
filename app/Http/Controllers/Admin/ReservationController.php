@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Reservation;
 use App\Models\Circuit;
 use App\Models\Client;
+use App\Mail\ReservationStatusChanged;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class ReservationController extends Controller
 {
@@ -66,10 +68,11 @@ class ReservationController extends Controller
         // Statistiques des réservations
         $stats = [
             'total' => Reservation::count(),
-            'pending' => Reservation::where('statut', 'pending')->count(),
-            'confirmed' => Reservation::where('statut', 'confirmed')->count(),
-            'cancelled' => Reservation::where('statut', 'cancelled')->count(),
-            'montant_total' => Reservation::where('statut', '!=', 'cancelled')->sum('montant_total'),
+            'en_attente' => Reservation::where('statut', 'en_attente')->count(),
+            'confirmee' => Reservation::where('statut', 'confirmee')->count(),
+            'annulee' => Reservation::where('statut', 'annulee')->count(),
+            'terminee' => Reservation::where('statut', 'terminee')->count(),
+            'montant_total' => Reservation::where('statut', '!=', 'annulee')->sum('montant_total'),
         ];
         
         return view('admin.reservations.index', compact('reservations', 'circuits', 'stats', 'statut', 'circuit_id', 'date_debut', 'date_fin', 'search'));
@@ -104,7 +107,7 @@ class ReservationController extends Controller
             'date_fin' => 'required|date|after_or_equal:date_debut',
             'nombre_personnes' => 'required|integer|min:1',
             'montant_total' => 'required|numeric|min:0',
-            'statut' => 'required|in:pending,confirmed,cancelled',
+            'statut' => 'required|in:en_attente,confirmee,annulee,terminee',
             'commentaire' => 'nullable|string',
         ]);
         
@@ -159,7 +162,7 @@ class ReservationController extends Controller
             'date_fin' => 'required|date|after_or_equal:date_debut',
             'nombre_personnes' => 'required|integer|min:1',
             'montant_total' => 'required|numeric|min:0',
-            'statut' => 'required|in:pending,confirmed,cancelled',
+            'statut' => 'required|in:en_attente,confirmee,annulee,terminee',
             'commentaire' => 'nullable|string',
         ]);
         
@@ -194,12 +197,19 @@ class ReservationController extends Controller
     public function changeStatus(Request $request, Reservation $reservation)
     {
         $validated = $request->validate([
-            'statut' => 'required|in:pending,confirmed,cancelled',
+            'statut' => 'required|in:en_attente,confirmee,annulee,terminee',
         ]);
         
+        $oldStatus = $reservation->statut;
         $reservation->update([
             'statut' => $validated['statut']
         ]);
+        
+        // Envoyer une notification par email au client
+        if ($oldStatus !== $validated['statut']) {
+            $reservation->load('client');
+            Mail::to($reservation->client->email)->send(new ReservationStatusChanged($reservation));
+        }
         
         return redirect()->back()
             ->with('success', 'Le statut de la réservation a été mis à jour avec succès.');
@@ -215,10 +225,11 @@ class ReservationController extends Controller
         // Statistiques générales
         $stats = [
             'total' => Reservation::count(),
-            'pending' => Reservation::where('statut', 'pending')->count(),
-            'confirmed' => Reservation::where('statut', 'confirmed')->count(),
-            'cancelled' => Reservation::where('statut', 'cancelled')->count(),
-            'montant_total' => Reservation::where('statut', '!=', 'cancelled')->sum('montant_total'),
+            'en_attente' => Reservation::where('statut', 'en_attente')->count(),
+            'confirmee' => Reservation::where('statut', 'confirmee')->count(),
+            'annulee' => Reservation::where('statut', 'annulee')->count(),
+            'terminee' => Reservation::where('statut', 'terminee')->count(),
+            'montant_total' => Reservation::where('statut', '!=', 'annulee')->sum('montant_total'),
         ];
         
         // Réservations récentes
