@@ -19,7 +19,7 @@
                 @if($circuit->images->isNotEmpty())
                     <img src="{{ asset('storage/' . $circuit->images->first()->url) }}" alt="{{ $circuit->images->first()->alt }}" class="w-full h-96 object-cover">
                 @else
-                    <img src="{{ asset('assets/images/circuit-placeholder.jpg') }}" alt="{{ $circuit->titre }}" class="w-full h-96 object-cover">
+                    <img src="{{ asset('assets/images/circuit-placeholder.svg') }}" alt="{{ $circuit->titre }}" class="w-full h-96 object-cover bg-gray-100">
                 @endif
                 <div class="p-6">
                     <div class="flex items-center justify-between mb-4">

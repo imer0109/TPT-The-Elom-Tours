@@ -38,7 +38,7 @@ return new class extends Migration
         });
 
         // Copier les données
-        DB::statement('INSERT INTO reservations_new (id, circuit_id, date_debut, nombre_personnes, nom, email, telephone, message, status, reference, created_at, updated_at, deleted_at) SELECT id, circuit_id, date_debut, nombre_personnes, nom, email, telephone, message, status, reference, created_at, updated_at, deleted_at FROM reservations');
+        // DB::statement('INSERT INTO reservations_new (id, circuit_id, date_debut, nombre_personnes, nom, email, telephone, message, status, reference, created_at, updated_at, deleted_at) SELECT id, circuit_id, date_debut, nombre_personnes, nom, email, telephone, message, status, reference, created_at, updated_at, deleted_at FROM reservations');
 
         // Supprimer l'ancienne table reservations
         Schema::dropIfExists('reservations');

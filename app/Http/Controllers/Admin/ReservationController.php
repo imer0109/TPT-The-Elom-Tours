@@ -10,6 +10,7 @@ use App\Mail\ReservationStatusChanged;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class ReservationController extends Controller
 {
@@ -205,10 +206,33 @@ class ReservationController extends Controller
             'status' => $validated['status']
         ]);
         
-        // Envoyer une notification par email au client
+        // Envoyer une notification par email au client seulement si le client existe et a un email
         if ($oldStatus !== $validated['status']) {
             $reservation->load('client');
-            Mail::to($reservation->client->email)->send(new ReservationStatusChanged($reservation));
+            
+            // Vérifier que le client existe et a un email
+            if ($reservation->client && $reservation->client->email) {
+                try {
+                    Mail::to($reservation->client->email)->send(new ReservationStatusChanged($reservation));
+                } catch (\Exception $e) {
+                    // Log l'erreur mais ne pas bloquer le processus
+                    Log::error('Erreur lors de l\'envoi de l\'email de notification: ' . $e->getMessage());
+                    
+                    // Vous pouvez choisir de retourner un message d'avertissement
+                    return redirect()->back()
+                        ->with('success', 'Statut mis à jour mais échec de l\'envoi de l\'email de notification.')
+                        ->with('warning', 'L\'email de notification n\'a pas pu être envoyé.');
+                }
+            } else {
+                // Client sans email ou client inexistant
+                Log::warning('Tentative d\'envoi d\'email pour une réservation sans client ou sans email', [
+                    'reservation_id' => $reservation->id,
+                    'client_id' => $reservation->client_id
+                ]);
+                
+                return redirect()->back()
+                    ->with('success', 'Statut mis à jour mais impossible d\'envoyer l\'email (client sans email).');
+            }
         }
         
         return redirect()->back()

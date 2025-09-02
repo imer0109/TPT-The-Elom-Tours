@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('messages', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->timestamps();
+        Schema::table('messages', function (Blueprint $table) {
+            if (!Schema::hasColumn('messages', 'is_archived')) {
+                $table->boolean('is_archived')->default(false);
+            }
         });
     }
 
@@ -22,6 +23,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('messages');
+        Schema::table('messages', function (Blueprint $table) {
+            $table->dropColumn('is_archived');
+        });
     }
 };

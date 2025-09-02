@@ -120,9 +120,9 @@
                 <div class="col-span-2">
                     <div class="flex items-center">
                         <input id="create_account" name="create_account" type="checkbox" class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
-                        <label for="create_account" class="ml-2 block text-sm text-gray-900">Créer un compte utilisateur pour ce client</label>
+                        <label for="create_account" class="ml-2 block text-sm text-gray-900">Créer la reservation du circuit pour ce client</label>
                     </div>
-                    <p class="text-xs text-gray-500 mt-1">Un email sera envoyé au client avec ses identifiants de connexion.</p>
+                    <p class="text-xs text-gray-500 mt-1">Un email sera envoyé au client pour la reservation du circuit </p>
                 </div>
                 
                 <!-- Mot de passe -->

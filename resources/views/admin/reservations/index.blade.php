@@ -53,7 +53,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-sm text-gray-500">Montant total</p>
-                    <p class="text-lg font-semibold">{{ number_format($stats['montant_total'], 2, ',', ' ') }} €</p>
+                    <p class="text-lg font-semibold">{{ number_format($stats['montant_total'], 2, ',', ' ') }} FCFA</p>
                 </div>
             </div>
         </div>
@@ -111,9 +111,9 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        {{-- <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             ID
-                        </th>
+                        </th> --}}
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Client
                         </th>
@@ -140,9 +140,7 @@
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse($reservations as $reservation)
                     <tr class="hover-effect">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900">#{{ $reservation->reference }}</div>
-                        </td>
+                        
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
                                 <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
@@ -194,7 +192,7 @@
                             <div class="text-sm text-gray-900">{{ $reservation->nombre_personnes }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">{{ number_format($reservation->montant_total, 2, ',', ' ') }} €</div>
+                            <div class="text-sm text-gray-900">{{ number_format($reservation->montant_total, 2, ',', ' ') }} FCFA</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
@@ -225,11 +223,7 @@
                     @endforelse
                             </span>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <a href="#" class="text-primary hover:text-green-700 mr-3"><i class="fas fa-eye"></i></a>
-                            <a href="#" class="text-blue-600 hover:text-blue-800 mr-3"><i class="fas fa-edit"></i></a>
-                            <a href="#" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></a>
-                        </td>
+                        
                     </tr>
                 </tbody>
             </table>

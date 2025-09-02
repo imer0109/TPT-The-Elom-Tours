@@ -98,7 +98,8 @@
                 @if($circuit->images->isNotEmpty())
                     <img src="{{ asset('storage/' . $circuit->images->first()->url) }}" alt="{{ $circuit->images->first()->alt }}" class="w-full h-48 object-cover">
                 @else
-                    <img src="{{ asset('assets/images/circuit-placeholder.jpg') }}" alt="{{ $circuit->titre }}" class="w-full h-48 object-cover">
+                    <img src="{{ asset('assets/images/circuit-placeholder.svg') }}" alt="{{ $circuit->titre }}" class="w-full h-48 object-cover bg-gray-100">
+                    
                 @endif
                 <div class="absolute top-0 right-0 m-2">
                     <span class="px-2 py-1 text-xs font-semibold rounded-full {{ $circuit->est_actif ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">

@@ -81,7 +81,7 @@
                         <a href="{{ route('admin.blog.create') }}" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">- Ajouter un article</a>
                     </li>
                     <li>
-                        <a href="#" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">- Catégories</a>
+                        <a href="{{ route('admin.categories.index') }}" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">- Catégories</a>
                     </li>
                 </ul>
             </li>

@@ -87,7 +87,7 @@
                     Montant total
                 </p>
                 <p class="text-lg font-semibold text-gray-700">
-                    {{ number_format($stats['montant_total'], 2, ',', ' ') }} €
+                    {{ number_format($stats['montant_total'], 2, ',', ' ') }} FCFA
                 </p>
             </div>
         </div>
