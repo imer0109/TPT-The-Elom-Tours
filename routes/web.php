@@ -34,6 +34,8 @@ Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 // Routes pour la galerie
 Route::get('/galerie', [App\Http\Controllers\GalerieController::class, 'index'])->name('galerie.index');
 Route::get('/galerie/{gallery}', [App\Http\Controllers\GalerieController::class, 'show'])->name('galerie.show');
+Route::get('/gallery', [App\Http\Controllers\GalleryController::class, 'index'])->name('gallery.index');
+Route::get('/gallery/{gallery}', [App\Http\Controllers\GalleryController::class, 'show'])->name('gallery.show');
 
 // Routes pour les réservations
 Route::post('/circuits/{slug}/reserve', [App\Http\Controllers\ReservationController::class, 'store'])->name('circuits.reserve');

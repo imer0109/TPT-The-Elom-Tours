@@ -172,15 +172,15 @@
                 @forelse($featuredCircuits as $circuit)
                     <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300">
                         <div class="relative">
-                            @if($circuit->image)
-    <img src="{{ asset('storage/' . $circuit->image) }}" 
-         alt="{{ $circuit->titre }}" 
-         class="w-full h-64 object-cover">
-@else
-    <img src="{{ asset('assets/images/circuit-placeholder.jpg') }}" 
-         alt="{{ $circuit->titre }}" 
-         class="w-full h-64 object-cover">
-@endif
+                            @if($circuit->images->isNotEmpty())
+                                <img src="{{ asset('storage/' . $circuit->images->first()->url) }}" 
+                                     alt="{{ $circuit->images->first()->alt ?? $circuit->titre }}" 
+                                     class="w-full h-64 object-cover">
+                            @else
+                                <img src="{{ asset('assets/images/circuit-placeholder.jpg') }}" 
+                                     alt="{{ $circuit->titre }}" 
+                                     class="w-full h-64 object-cover">
+                            @endif
 
                             <div class="absolute top-4 right-4 bg-green-600 text-white px-3 py-1 rounded-full text-sm font-medium">
                                 {{ $circuit->duree }} jours
@@ -188,10 +188,30 @@
                         </div>
                         <div class="p-6">
                             <h3 class="text-xl font-semibold mb-2">{{ $circuit->titre }}</h3>
+                            <div class="flex items-center mb-4">
+                                <div class="text-yellow-500 mr-1">
+                                    @php
+                                        $rating = $circuit->avis ? $circuit->avis->avg('rating') : 0;
+                                        $fullStars = floor($rating);
+                                        $halfStar = $rating - $fullStars >= 0.5;
+                                    @endphp
+                                    
+                                    @for($i = 1; $i <= 5; $i++)
+                                        @if($i <= $fullStars)
+                                            <i class="fas fa-star"></i>
+                                        @elseif($i == $fullStars + 1 && $halfStar)
+                                            <i class="fas fa-star-half-alt"></i>
+                                        @else
+                                            <i class="far fa-star"></i>
+                                        @endif
+                                    @endfor
+                                </div>
+                                <span class="text-gray-600 text-sm">({{ $circuit->avis ? $circuit->avis->count() : 0 }} avis)</span>
+                            </div>
                             <p class="text-gray-600 mb-4">{{ Str::limit($circuit->description, 100) }}</p>
                             <div class="flex justify-between items-center">
                                 <span class="text-green-600 font-bold">{{ number_format($circuit->prix, 0, ',', ' ') }} FCFA</span>
-                                <a href="{{ route('circuits.show', $circuit->id) }}" class="text-green-600 hover:text-green-800 font-medium">Découvrir <i class="fas fa-arrow-right ml-1"></i></a>
+                                <a href="{{ route('circuits.show', $circuit->slug) }}" class="text-green-600 hover:text-green-800 font-medium">Découvrir <i class="fas fa-arrow-right ml-1"></i></a>
                             </div>
                         </div>
                     </div>
@@ -214,7 +234,7 @@
     <section class="py-16 bg-green-600 text-white">
         <div class="container mx-auto px-4 text-center">
             <h2 class="text-3xl font-bold mb-4">Prêt à vivre une aventure inoubliable ?</h2>
-            <p class="text-xl mb-8">Contactez-nous dès aujourd\'hui pour planifier votre prochain voyage en Afrique de l\'Ouest</p>
+            <p class="text-xl mb-8">Contactez-nous dès aujourd'hui pour planifier votre prochain voyage en Afrique de l'Ouest</p>
             <div class="flex justify-center space-x-4">
                 <a href="{{ route('contact.index') }}" class="bg-white text-green-600 hover:bg-gray-100 font-bold py-3 px-8 rounded-full transition duration-300 ease-in-out transform hover:scale-105">
                     Nous contacter

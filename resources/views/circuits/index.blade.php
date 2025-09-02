@@ -75,16 +75,16 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @forelse($circuits as $circuit)
                     <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300">
-                        <div class="relative">
-                            @if($circuit->images->isNotEmpty())
-                                <img src="{{ asset('storage/' . $circuit->images->first()->url) }}" alt="{{ $circuit->images->first()->alt }}" class="w-full h-64 object-cover">
-                            @else
-                                <img src="{{ asset('assets/images/circuit-placeholder.jpg') }}" alt="{{ $circuit->titre }}" class="w-full h-64 object-cover">
-                            @endif
-                            <div class="absolute top-4 right-4 bg-green-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-                                {{ $circuit->duree }} jours
-                            </div>
-                        </div>
+                        <div class="relative h-48 rounded-t-lg overflow-hidden">
+            @if($circuit->images->isNotEmpty())
+                <img src="{{ asset('storage/' . $circuit->images->first()->url) }}" alt="{{ $circuit->images->first()->alt }}" class="w-full h-full object-cover">
+            @else
+                <img src="{{ asset('assets/images/placeholder.jpg') }}" alt="Image placeholder" class="w-full h-full object-cover">
+            @endif
+            <div class="absolute top-0 left-0 bg-green-600 text-white px-3 py-1 m-2 rounded-md">
+                <i class="fas fa-clock mr-1"></i> {{ $circuit->duree }} jours
+            </div>
+        </div>
                         <div class="p-6">
                             <h3 class="text-xl font-semibold mb-2">{{ $circuit->titre }}</h3>
                             <div class="flex items-center mb-4">
@@ -109,7 +109,7 @@
                             </div>
                             <p class="text-gray-600 mb-4">{{ Str::limit($circuit->description, 120) }}</p>
                             <div class="flex justify-between items-center">
-                                <span class="text-green-600 font-bold text-xl">{{ $circuit->prix }}€ / personne</span>
+                                <span class="text-green-600 font-bold text-xl">{{ $circuit->prix }} FCFA / personne</span>
                                 <a href="{{ route('circuits.show', $circuit->slug) }}" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition duration-300">
                                     Détails
                                 </a>
@@ -138,7 +138,7 @@
         <div class="container mx-auto px-4 text-center">
             <h2 class="text-3xl font-bold mb-4">Vous ne trouvez pas le circuit idéal ?</h2>
             <p class="text-xl mb-8">Contactez-nous pour créer un circuit sur mesure adapté à vos envies et à votre budget</p>
-            <a href="#" class="bg-white text-green-600 hover:bg-gray-100 font-bold py-3 px-8 rounded-full transition duration-300 ease-in-out transform hover:scale-105">
+            <a href="{{ route('contact.index') }}" class="bg-white text-green-600 hover:bg-gray-100 font-bold py-3 px-8 rounded-full transition duration-300 ease-in-out transform hover:scale-105">
                 Demander un devis personnalisé
             </a>
         </div>

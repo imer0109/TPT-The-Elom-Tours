@@ -3,14 +3,14 @@
 @section('content')
     <!-- Hero Section -->
     <section class="relative">
-        <div class="hero-image h-64 md:h-96 bg-cover bg-center bg-[#16a34a]" 
-        {{-- style="background-image: url('{{ $circuit->image ? $circuit->image->url : asset('assets/images/circuit-detail-hero.jpg') }}')" --}}
+        <div class="hero-image h-64 md:h-96 bg-cover bg-center" 
+        style="background-image: url('{{ $circuit->images->isNotEmpty() ? asset('storage/' . $circuit->images->first()->url) : asset('assets/images/circuit-detail-hero.jpg') }}')"
         >
             <div class="absolute inset-0 bg-black opacity-50"></div>
             <div class="container mx-auto px-4 h-full flex items-center justify-center relative z-10">
                 <div class="text-center text-white">
-                    <h1 class="text-3xl md:text-5xl font-bold mb-2">{{ $circuit->title }}</h1>
-                    <p class="text-lg md:text-xl">{{ $circuit->subtitle }}</p>
+                    <h1 class="text-3xl md:text-5xl font-bold mb-2">{{ $circuit->titre }}</h1>
+                    <p class="text-lg md:text-xl">{{ $circuit->destination }}</p>
                 </div>
             </div>
         </div>
@@ -24,7 +24,7 @@
                 <span class="mx-2 text-gray-400">/</span>
                 <a href="{{ route('circuits.index') }}" class="text-gray-600 hover:text-green-600">Circuits</a>
                 <span class="mx-2 text-gray-400">/</span>
-                <span class="text-gray-800">{{ $circuit->title }}</span>
+                <span class="text-gray-800">{{ $circuit->titre }}</span>
             </div>
         </div>
     </div>
@@ -37,7 +37,7 @@
                 <div class="lg:col-span-2">
                     <!-- Overview -->
                     <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-                        <h2 class="text-2xl font-bold mb-4">Aperçu du circuit</h2>
+                        <h2 class="text-2xl font-bold mb-4">À propos de ce circuit</h2>
                         <p class="text-gray-700 mb-6">{{ $circuit->description }}</p>
                         
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
@@ -46,35 +46,35 @@
                                     <i class="fas fa-calendar-alt"></i>
                                 </div>
                                 <p class="text-sm text-gray-600">Durée</p>
-                                <p class="font-semibold">{{ $circuit->duration }} jours</p>
+                                <p class="font-semibold">{{ $circuit->duree }} jours</p>
                             </div>
                             <div class="text-center p-3 bg-gray-50 rounded-lg">
                                 <div class="text-green-600 text-2xl mb-1">
                                     <i class="fas fa-users"></i>
                                 </div>
                                 <p class="text-sm text-gray-600">Taille du groupe</p>
-                                <p class="font-semibold">{{ $circuit->group_size }}</p>
+                                <p class="font-semibold">{{ $circuit->taille_groupe }}</p>
                             </div>
                             <div class="text-center p-3 bg-gray-50 rounded-lg">
                                 <div class="text-green-600 text-2xl mb-1">
                                     <i class="fas fa-language"></i>
                                 </div>
                                 <p class="text-sm text-gray-600">Langues</p>
-                                <p class="font-semibold">{{ $circuit->languages }}</p>
+                                <p class="font-semibold">{{ implode(', ', $circuit->langues) }}</p>
                             </div>
                             <div class="text-center p-3 bg-gray-50 rounded-lg">
                                 <div class="text-green-600 text-2xl mb-1">
                                     <i class="fas fa-hiking"></i>
                                 </div>
                                 <p class="text-sm text-gray-600">Difficulté</p>
-                                <p class="font-semibold">{{ $circuit->difficulty }}</p>
+                                <p class="font-semibold">{{ $circuit->difficulte }}</p>
                             </div>
                         </div>
                         
                         <div class="flex items-center mb-6">
                             <div class="text-yellow-500 mr-2">
                                 @php
-                                    $rating = $circuit->reviews ? $circuit->reviews->avg('rating') : 0;
+                                    $rating = $circuit->avis ? $circuit->avis->avg('rating') : 0;
                                     $fullStars = floor($rating);
                                     $halfStar = $rating - $fullStars >= 0.5;
                                 @endphp
@@ -89,18 +89,59 @@
                                     @endif
                                 @endfor
                             </div>
-                            <span class="text-gray-600">{{ number_format($rating, 1) }}/5 ({{ $circuit->reviews ? $circuit->reviews->count() : 0 }} avis)</span>
+                            <span class="text-gray-600">{{ number_format($rating, 1) }}/5 ({{ $circuit->avis ? $circuit->avis->count() : 0 }} avis)</span>
                         </div>
                         
                         <div class="flex flex-wrap gap-2">
-                            @foreach(explode(',', $circuit->tags) as $tag)
-                                <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">{{ trim($tag) }}</span>
+                            @foreach($circuit->categories as $categorie)
+                                <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">{{ $categorie->nom }}</span>
                             @endforeach
                         </div>
                     </div>
                     
                     <!-- Gallery -->
-                   
+                    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                        <h2 class="text-2xl font-bold mb-4">Galerie</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            @if($circuit->images->isNotEmpty())
+                                @foreach($circuit->images as $image)
+                                    <div class="relative overflow-hidden rounded-lg h-48">
+                                        <img src="{{ asset('storage/' . $image->url) }}" alt="{{ $image->alt }}" class="w-full h-full object-cover hover:scale-110 transition-transform duration-300">
+                                    </div>
+                                @endforeach
+                            @else
+                                <div class="col-span-3 text-center py-8">
+                                    <p class="text-gray-500">Aucune image disponible pour ce circuit.</p>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                    
+                    <!-- Itinéraire -->
+                    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                        <h2 class="text-2xl font-bold mb-4">Itinéraire</h2>
+                        
+                        @if($circuit->etapes->isNotEmpty())
+                            <div class="space-y-6">
+                                @foreach($circuit->etapes as $etape)
+                                    <div class="border-l-4 border-green-600 pl-4 py-2">
+                                        <div class="flex items-center mb-2">
+                                            <div class="bg-green-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3">
+                                                <span>{{ $etape->jour }}</span>
+                                            </div>
+                                            <h3 class="text-xl font-semibold">{{ $etape->titre }}</h3>
+                                        </div>
+                                        <p class="text-gray-600">{{ $etape->description }}</p>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <div class="text-center py-8">
+                                <p class="text-gray-500">Aucun itinéraire disponible pour ce circuit.</p>
+                            </div>
+                        @endif
+                    </div>
                     
                     <!-- Reviews -->
                     <div class="bg-white rounded-lg shadow-md p-6">
@@ -308,7 +349,11 @@
 
                 <div class="lg:col-span-1">
         <div class="bg-white rounded-lg shadow-md p-6 sticky top-6">
-            <h2 class="text-2xl font-bold mb-6">Réserver ce circuit</h2>
+            <h2 class="text-2xl font-bold mb-2">Réserver ce circuit</h2>
+            <div class="flex items-center justify-between mb-4 pb-4 border-b border-gray-200">
+                <span class="text-gray-700">Prix par personne:</span>
+                <span class="text-green-600 font-bold text-xl">{{ number_format($circuit->prix, 0, ',', ' ') }} FCFA</span>
+            </div>
             <form action="{{ route('reservations.store', $circuit->slug) }}" method="POST" class="space-y-4">
                 @csrf
                 <div>
@@ -318,8 +363,30 @@
                 
                 <div>
                     <label for="nombre_personnes" class="block text-sm font-medium text-gray-700 mb-1">Nombre de personnes</label>
-                    <input type="number" id="nombre_personnes" name="nombre_personnes" min="1" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
+                    <input type="number" id="nombre_personnes" name="nombre_personnes" min="1" value="1" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
                 </div>
+                
+                <div class="flex items-center justify-between pt-2 border-t border-gray-200">
+                    <span class="font-medium">Prix total:</span>
+                    <span class="text-green-600 font-bold text-xl" id="prix-total">{{ number_format($circuit->prix, 0, ',', ' ') }} FCFA</span>
+                </div>
+                
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const prixUnitaire = {{ $circuit->prix }};
+                        const inputNombrePersonnes = document.getElementById('nombre_personnes');
+                        const prixTotalElement = document.getElementById('prix-total');
+                        
+                        function updatePrixTotal() {
+                            const nombrePersonnes = parseInt(inputNombrePersonnes.value) || 1;
+                            const prixTotal = prixUnitaire * nombrePersonnes;
+                            prixTotalElement.textContent = new Intl.NumberFormat('fr-FR').format(prixTotal) + ' FCFA';
+                        }
+                        
+                        inputNombrePersonnes.addEventListener('input', updatePrixTotal);
+                        updatePrixTotal(); // Initial calculation
+                    });
+                </script>
                 
                 <div>
                     <label for="nom" class="block text-sm font-medium text-gray-700 mb-1">Nom</label>
@@ -362,4 +429,38 @@
     </section>
     
     <!-- Related Circuits -->
+    @if($relatedCircuits->isNotEmpty())
+    <section class="py-12 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-8 text-center">Circuits similaires</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                @foreach($relatedCircuits as $relatedCircuit)
+                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300">
+                    <div class="relative h-48 overflow-hidden">
+                        @if($relatedCircuit->images->isNotEmpty())
+                            <img src="{{ asset('storage/' . $relatedCircuit->images->first()->url) }}" alt="{{ $relatedCircuit->images->first()->alt }}" class="w-full h-full object-cover">
+                        @else
+                            <img src="{{ asset('assets/images/placeholder.jpg') }}" alt="Image placeholder" class="w-full h-full object-cover">
+                        @endif
+                        <div class="absolute top-0 left-0 bg-green-600 text-white px-3 py-1 m-2 rounded-md">
+                            <i class="fas fa-clock mr-1"></i> {{ $relatedCircuit->duree }} jours
+                        </div>
+                    </div>
+                    
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">{{ $relatedCircuit->titre }}</h3>
+                        <p class="text-gray-600 mb-4">{{ Str::limit($relatedCircuit->description, 100) }}</p>
+                        
+                        <div class="flex justify-between items-center">
+                            <span class="text-green-600 font-bold">{{ number_format($relatedCircuit->prix, 0, ',', ' ') }} FCFA</span>
+                            <a href="{{ route('circuits.show', $relatedCircuit->slug) }}" class="text-green-600 hover:text-green-800 font-medium">Découvrir <i class="fas fa-arrow-right ml-1"></i></a>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+    @endif
 </div>

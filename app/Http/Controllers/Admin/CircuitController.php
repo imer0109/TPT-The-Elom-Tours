@@ -91,7 +91,17 @@ class CircuitController extends Controller
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->storeAs('public/circuits', $imageName);
+            
+            // Utiliser une méthode alternative pour enregistrer l'image
+            $destinationPath = public_path('storage/circuits');
+            
+            // S'assurer que le répertoire existe
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0777, true);
+            }
+            
+            // Déplacer le fichier manuellement
+            $image->move($destinationPath, $imageName);
             $imagePath = 'circuits/' . $imageName;
         }
 
@@ -185,13 +195,27 @@ class CircuitController extends Controller
             // Supprimer l'ancienne image si elle existe
             if ($circuit->images()->exists()) {
                 $oldImage = $circuit->images()->first();
-                Storage::disk('public')->delete($oldImage->url);
+                // Supprimer le fichier physique
+                $oldImagePath = public_path('storage/' . $oldImage->url);
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath);
+                }
                 $oldImage->delete();
             }
             
             $image = $request->file('image');
             $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->storeAs('public/circuits', $imageName);
+            
+            // Utiliser une méthode alternative pour enregistrer l'image
+            $destinationPath = public_path('storage/circuits');
+            
+            // S'assurer que le répertoire existe
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0777, true);
+            }
+            
+            // Déplacer le fichier manuellement
+            $image->move($destinationPath, $imageName);
             $imagePath = 'circuits/' . $imageName;
             
             // Créer une nouvelle image de circuit
@@ -238,7 +262,11 @@ class CircuitController extends Controller
     {
         // Supprimer les images associées
         foreach ($circuit->images as $image) {
-            Storage::disk('public')->delete($image->url);
+            // Supprimer le fichier physique
+            $imagePath = public_path('storage/' . $image->url);
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
             $image->delete();
         }
 
