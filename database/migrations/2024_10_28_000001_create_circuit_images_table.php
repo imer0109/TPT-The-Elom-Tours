@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('circuit_images', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('circuit_id')->constrained()->onDelete('cascade');
+            $table->uuid('id')->primary();
+            $table->foreignUuid('circuit_id')->constrained()->onDelete('cascade');
             $table->string('url');
             $table->string('alt')->nullable();
             $table->integer('ordre')->default(0);

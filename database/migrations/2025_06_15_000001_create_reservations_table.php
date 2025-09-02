@@ -14,9 +14,9 @@ return new class extends Migration
     public function up()
     {
         Schema::create('reservations', function (Blueprint $table) {
-            $table->id();
-            // $table->foreignId('client_id')->constrained()->onDelete('cascade');
-            $table->foreignId('circuit_id')->constrained()->onDelete('cascade');
+            $table->uuid('id')->primary();
+            // $table->foreignUuid('client_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('circuit_id')->constrained()->onDelete('cascade');
             $table->dateTime('date_debut');
             $table->dateTime('date_fin');
             $table->integer('nombre_personnes')->default(1);

@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('circuits', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('titre');
             $table->string('slug')->unique();
             $table->text('description');

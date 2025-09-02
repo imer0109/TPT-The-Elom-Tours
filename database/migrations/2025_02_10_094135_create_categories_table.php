@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('categories', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('nom');
             $table->string('slug')->unique();
             $table->text('description')->nullable();
@@ -22,9 +22,9 @@ return new class extends Migration
 
         // Table pivot pour la relation many-to-many entre circuits et catégories
         Schema::create('circuit_categorie', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('circuit_id')->constrained()->onDelete('cascade');
-            $table->foreignId('categorie_id')->constrained()->onDelete('cascade');
+            $table->uuid('id')->primary();
+            $table->foreignUuid('circuit_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('categorie_id')->constrained()->onDelete('cascade');
             $table->timestamps();
 
             $table->unique(['circuit_id', 'categorie_id']);

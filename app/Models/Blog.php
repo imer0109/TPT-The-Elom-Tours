@@ -2,31 +2,85 @@
 
 namespace App\Models;
 
-use App\Traits\Routing\GenerateUniqueSlugTrait;
-use App\Traits\Routing\ModelsSlugKeyTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
-use App\Models\Comment;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Blog extends Model
 {
-    /** @use HasFactory<\Database\Factories\BlogFactory> */
     use HasFactory, HasApiTokens, HasUuids;
 
-    protected $guarded = ['id'];
+    protected $fillable = [
+        'title',
+        'slug',
+        'content',
+        'excerpt',
+        'user_id',
+        'category_id',
+        'published_at',
+        'is_featured',
+        'is_active',
+        'meta_title',
+        'meta_description',
+        'meta_keywords',
+    ];
 
-    // public $timestamps = false;
+    protected $casts = [
+        'published_at' => 'datetime',
+        'is_featured' => 'boolean',
+        'is_active' => 'boolean',
+    ];
 
-    public function comments()
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($post) {
+            if (empty($post->slug)) {
+                $post->slug = Str::slug($post->title);
+            }
+        });
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function comments(): HasMany
     {
         return $this->hasMany(Comment::class, 'blog_id');
     }
 
-    public function files(): MorphMany
+    public function image(): MorphOne
     {
-        return $this->morphMany(File::class, 'owner');
+        return $this->morphOne(File::class, 'owner');
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
+    public function scopePublished($query)
+    {
+        return $query->whereNotNull('published_at')
+                     ->where('published_at', '<=', now())
+                     ->where('is_active', true);
+    }
+
+    public function scopeFeatured($query)
+    {
+        return $query->where('is_featured', true);
     }
 }

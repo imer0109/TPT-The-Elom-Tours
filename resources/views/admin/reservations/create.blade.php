@@ -112,17 +112,17 @@
                     @enderror
                 </div>
 
-                <!-- Statut -->
+                <!-- Status -->
                 <div>
-                    <label for="statut" class="block text-sm font-medium text-gray-700 mb-2">
-                        Statut <span class="text-red-500">*</span>
+                    <label for="status" class="block text-sm font-medium text-gray-700 mb-2">
+                        Status <span class="text-red-500">*</span>
                     </label>
-                    <select id="statut" name="statut" class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-400 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('statut') border-red-500 @enderror" required>
-                        <option value="pending" {{ old('statut') == 'pending' ? 'selected' : '' }}>En attente</option>
-                        <option value="confirmed" {{ old('statut') == 'confirmed' ? 'selected' : '' }}>Confirmée</option>
-                        <option value="cancelled" {{ old('statut') == 'cancelled' ? 'selected' : '' }}>Annulée</option>
+                    <select id="status" name="status" class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-400 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('status') border-red-500 @enderror" required>
+                        <option value="pending" {{ old('status') == 'pending' ? 'selected' : '' }}>En attente</option>
+                        <option value="confirmed" {{ old('status') == 'confirmed' ? 'selected' : '' }}>Confirmée</option>
+                        <option value="cancelled" {{ old('status') == 'cancelled' ? 'selected' : '' }}>Annulée</option>
                     </select>
-                    @error('statut')
+                    @error('status')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
                 </div>

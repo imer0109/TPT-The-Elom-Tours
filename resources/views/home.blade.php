@@ -3,8 +3,8 @@
 @section('content')
     <!-- Hero Section -->
     <section class="relative">
-        <div class="hero-image h-screen bg-cover bg-center" style="background-image: url('https://images.pexels.com/photos/1660995/pexels-photo-1660995.jpeg?auto=compress&cs=tinysrgb&w=1600');">
-            <div class="absolute inset-0 bg-black opacity-50"></div>
+        <div class="hero-image h-screen bg-cover bg-center" style="background-image: url('{{ asset('assets/images/termite.jpg') }}');">
+            <div class="absolute inset-0 opacity-50"></div>
             <div class="container mx-auto px-4 h-full flex items-center justify-center relative z-10">
                 <div class="text-center text-white">
                     <h1 class="text-4xl md:text-6xl font-bold mb-4">DÉCOUVREZ LE TOGO AUTHENTIQUE</h1>
@@ -61,7 +61,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- Destinations statiques -->
                 <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300">
-                    <img src="{{ asset('assets/images/destination-1.jpg') }}" alt="Lomé" class="w-full h-64 object-cover">
+                    <img src="{{ asset('assets/images/lome.jpg') }}" alt="Lomé" class="w-full h-64 object-cover">
                     <div class="p-6">
                         <h3 class="text-xl font-semibold mb-2">Lomé, Togo</h3>
                         <p class="text-gray-600 mb-4">Découvrez la vibrante capitale du Togo avec ses marchés colorés et son riche patrimoine culturel.</p>
@@ -70,7 +70,7 @@
                 </div>
                 
                 <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300">
-                    <img src="{{ asset('assets/images/destination-2.jpg') }}" alt="Kpalimé" class="w-full h-64 object-cover">
+                    <img src="{{ asset('assets/images/kpalime.jpg') }}" alt="Kpalimé" class="w-full h-64 object-cover">
                     <div class="p-6">
                         <h3 class="text-xl font-semibold mb-2">Kpalimé, Togo</h3>
                         <p class="text-gray-600 mb-4">Explorez les magnifiques paysages montagneux et les cascades spectaculaires de cette région verdoyante.</p>
@@ -79,7 +79,7 @@
                 </div>
                 
                 <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300">
-                    <img src="{{ asset('assets/images/destination-3.jpg') }}" alt="Ouidah" class="w-full h-64 object-cover">
+                    <img src="{{ asset('assets/images/ouidah.jpg') }}" alt="Ouidah" class="w-full h-64 object-cover">
                     <div class="p-6">
                         <h3 class="text-xl font-semibold mb-2">Ouidah, Bénin</h3>
                         <p class="text-gray-600 mb-4">Visitez ce haut lieu historique du vaudou et découvrez la Route des Esclaves, site du patrimoine mondial.</p>

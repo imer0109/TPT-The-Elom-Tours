@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class Circuit extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
     
     /**
      * Les attributs qui sont assignables en masse.
@@ -20,7 +21,6 @@ class Circuit extends Model
         'description',
         'duree',
         'prix',
-        'image',
         'destination',
         'difficulte',
         'taille_groupe',

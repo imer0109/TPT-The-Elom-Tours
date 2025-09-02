@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CircuitController;
 use App\Http\Controllers\BlogController;
-use App\Http\Controllers\GalerieController;
+use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\UserController;
@@ -31,8 +31,12 @@ Route::post('/circuits/{slug}/reservation', [\App\Http\Controllers\ReservationCo
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
-// Route pour la galerie
-Route::get('/galerie', [GalerieController::class, 'index'])->name('galerie.index');
+// Routes pour la galerie
+Route::get('/galerie', [App\Http\Controllers\GalerieController::class, 'index'])->name('galerie.index');
+Route::get('/galerie/{gallery}', [App\Http\Controllers\GalerieController::class, 'show'])->name('galerie.show');
+
+// Routes pour les réservations
+Route::post('/circuits/{slug}/reserve', [App\Http\Controllers\ReservationController::class, 'store'])->name('circuits.reserve');
 
 // Route pour la page contact
 Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');

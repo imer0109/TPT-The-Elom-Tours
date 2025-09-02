@@ -22,7 +22,7 @@ class ReservationController extends Controller
     public function index(Request $request)
     {
         // Récupérer les filtres depuis la requête
-        $statut = $request->input('statut');
+        $status = $request->input('status');
         $circuit_id = $request->input('circuit_id');
         $date_debut = $request->input('date_debut');
         $date_fin = $request->input('date_fin');
@@ -33,8 +33,8 @@ class ReservationController extends Controller
             ->orderBy('created_at', 'desc');
         
         // Appliquer les filtres
-        if ($statut) {
-            $query->where('statut', $statut);
+        if ($status) {
+            $query->where('status', $status);
         }
         
         if ($circuit_id) {
@@ -68,14 +68,14 @@ class ReservationController extends Controller
         // Statistiques des réservations
         $stats = [
             'total' => Reservation::count(),
-            'en_attente' => Reservation::where('statut', 'en_attente')->count(),
-            'confirmee' => Reservation::where('statut', 'confirmee')->count(),
-            'annulee' => Reservation::where('statut', 'annulee')->count(),
-            'terminee' => Reservation::where('statut', 'terminee')->count(),
-            'montant_total' => Reservation::where('statut', '!=', 'annulee')->sum('montant_total'),
+            'pending' => Reservation::where('status', 'pending')->count(),
+            'confirmed' => Reservation::where('status', 'confirmed')->count(),
+            'cancelled' => Reservation::where('status', 'cancelled')->count(),
+            'completed' => Reservation::where('status', 'completed')->count(),
+            'montant_total' => Reservation::where('status', '!=', 'cancelled')->sum('montant_total'),
         ];
         
-        return view('admin.reservations.index', compact('reservations', 'circuits', 'stats', 'statut', 'circuit_id', 'date_debut', 'date_fin', 'search'));
+        return view('admin.reservations.index', compact('reservations', 'circuits', 'stats', 'status', 'circuit_id', 'date_debut', 'date_fin', 'search'));
     }
 
     /**
@@ -107,7 +107,7 @@ class ReservationController extends Controller
             'date_fin' => 'required|date|after_or_equal:date_debut',
             'nombre_personnes' => 'required|integer|min:1',
             'montant_total' => 'required|numeric|min:0',
-            'statut' => 'required|in:en_attente,confirmee,annulee,terminee',
+            'status' => 'required|in:pending,confirmed,cancelled,completed',
             'commentaire' => 'nullable|string',
         ]);
         
@@ -162,7 +162,7 @@ class ReservationController extends Controller
             'date_fin' => 'required|date|after_or_equal:date_debut',
             'nombre_personnes' => 'required|integer|min:1',
             'montant_total' => 'required|numeric|min:0',
-            'statut' => 'required|in:en_attente,confirmee,annulee,terminee',
+            'status' => 'required|in:pending,confirmed,cancelled,completed',
             'commentaire' => 'nullable|string',
         ]);
         
@@ -197,16 +197,16 @@ class ReservationController extends Controller
     public function changeStatus(Request $request, Reservation $reservation)
     {
         $validated = $request->validate([
-            'statut' => 'required|in:en_attente,confirmee,annulee,terminee',
+            'status' => 'required|in:pending,confirmed,cancelled,completed',
         ]);
         
-        $oldStatus = $reservation->statut;
+        $oldStatus = $reservation->status;
         $reservation->update([
-            'statut' => $validated['statut']
+            'status' => $validated['status']
         ]);
         
         // Envoyer une notification par email au client
-        if ($oldStatus !== $validated['statut']) {
+        if ($oldStatus !== $validated['status']) {
             $reservation->load('client');
             Mail::to($reservation->client->email)->send(new ReservationStatusChanged($reservation));
         }
@@ -225,11 +225,11 @@ class ReservationController extends Controller
         // Statistiques générales
         $stats = [
             'total' => Reservation::count(),
-            'en_attente' => Reservation::where('statut', 'en_attente')->count(),
-            'confirmee' => Reservation::where('statut', 'confirmee')->count(),
-            'annulee' => Reservation::where('statut', 'annulee')->count(),
-            'terminee' => Reservation::where('statut', 'terminee')->count(),
-            'montant_total' => Reservation::where('statut', '!=', 'annulee')->sum('montant_total'),
+            'pending' => Reservation::where('status', 'pending')->count(),
+            'confirmed' => Reservation::where('status', 'confirmed')->count(),
+            'cancelled' => Reservation::where('status', 'cancelled')->count(),
+            'completed' => Reservation::where('status', 'completed')->count(),
+            'montant_total' => Reservation::where('status', '!=', 'cancelled')->sum('montant_total'),
         ];
         
         // Réservations récentes

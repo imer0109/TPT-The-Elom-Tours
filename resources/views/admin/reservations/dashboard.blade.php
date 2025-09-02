@@ -179,15 +179,15 @@
                                     {{ number_format($reservation->montant_total, 2, ',', ' ') }} €
                                 </td>
                                 <td class="px-4 py-3 text-sm">
-                                    @if($reservation->statut == 'pending')
+                                    @if($reservation->status == 'pending')
                                         <span class="px-2 py-1 text-xs font-semibold leading-tight text-yellow-700 bg-yellow-100 rounded-full">
                                             En attente
                                         </span>
-                                    @elseif($reservation->statut == 'confirmed')
+                                    @elseif($reservation->status == 'confirmed')
                                         <span class="px-2 py-1 text-xs font-semibold leading-tight text-green-700 bg-green-100 rounded-full">
                                             Confirmée
                                         </span>
-                                    @elseif($reservation->statut == 'cancelled')
+                                    @elseif($reservation->status == 'cancelled')
                                         <span class="px-2 py-1 text-xs font-semibold leading-tight text-red-700 bg-red-100 rounded-full">
                                             Annulée
                                         </span>

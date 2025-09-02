@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class Destination extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     /**
      * The attributes that are mass assignable.
@@ -69,5 +70,16 @@ class Destination extends Model
     public function circuits(): HasMany
     {
         return $this->hasMany(Circuit::class);
+    }
+
+    /**
+     * Get the URL of the first media.
+     */
+    public function getFirstMediaUrl(string $collection = ''): ?string
+    {
+        if ($this->image) {
+            return $this->image->getFileUrl();
+        }
+        return null;
     }
 }

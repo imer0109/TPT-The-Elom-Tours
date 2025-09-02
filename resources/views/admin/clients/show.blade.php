@@ -244,23 +244,23 @@
                                         <div class="text-sm text-gray-900">{{ number_format($reservation->montant_total, 2, ',', ' ') }} €</div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        @switch($reservation->statut)
-                                            @case('en_attente')
+                                        @switch($reservation->status)
+                                            @case('pending')
                                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
                                                     En attente
                                                 </span>
                                                 @break
-                                            @case('confirmee')
+                                            @case('confirmed')
                                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                                     Confirmée
                                                 </span>
                                                 @break
-                                            @case('annulee')
+                                            @case('cancelled')
                                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
                                                     Annulée
                                                 </span>
                                                 @break
-                                            @case('terminee')
+                                            @case('completed')
                                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
                                                     Terminée
                                                 </span>

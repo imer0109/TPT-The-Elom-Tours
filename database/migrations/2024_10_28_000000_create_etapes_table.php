@@ -14,8 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('etapes', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('circuit_id')->constrained()->onDelete('cascade');
+            $table->uuid('id')->primary();
+            $table->foreignUuid('circuit_id')->constrained()->onDelete('cascade');
             $table->string('titre');
             $table->text('description')->nullable();
             $table->integer('jour');

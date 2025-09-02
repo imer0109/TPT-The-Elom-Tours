@@ -17,9 +17,35 @@ class CircuitController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $circuits = Circuit::with(['categories', 'avis'])->latest()->get();
+        $query = Circuit::with(['categories', 'avis']);
+
+        // Filtre par destination
+        if ($request->filled('destination')) {
+            $query->where('destination', $request->destination);
+        }
+
+        // Filtre par difficulté
+        if ($request->filled('difficulte')) {
+            $query->where('difficulte', $request->difficulte);
+        }
+
+        // Filtre par statut
+        if ($request->filled('statut')) {
+            $query->where('est_actif', $request->statut === 'actif');
+        }
+
+        // Recherche par titre ou destination
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('titre', 'like', "%{$search}%")
+                  ->orWhere('destination', 'like', "%{$search}%");
+            });
+        }
+
+        $circuits = $query->latest()->paginate(9);
         return view('admin.circuits.index', compact('circuits'));
     }
 
@@ -48,7 +74,7 @@ class CircuitController extends Controller
             'description' => 'required|string',
             'duree' => 'required|integer|min:1',
             'prix' => 'required|numeric|min:0',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Image principale du circuit
             'destination' => 'required|string|max:255',
             'difficulte' => 'required|string|in:facile,modere,difficile',
             'taille_groupe' => 'required|integer|min:1',
@@ -66,7 +92,7 @@ class CircuitController extends Controller
             $image = $request->file('image');
             $imageName = time() . '_' . $image->getClientOriginalName();
             $image->storeAs('public/circuits', $imageName);
-            $imagePath = 'storage/circuits/' . $imageName;
+            $imagePath = 'circuits/' . $imageName;
         }
 
         // Création du circuit
@@ -76,7 +102,7 @@ class CircuitController extends Controller
             'description' => $request->description,
             'duree' => $request->duree,
             'prix' => $request->prix,
-            'image' => $imagePath,
+
             'destination' => $request->destination,
             'difficulte' => $request->difficulte,
             'taille_groupe' => $request->taille_groupe,
@@ -87,6 +113,15 @@ class CircuitController extends Controller
         // Associer les catégories
         if ($request->has('categories')) {
             $circuit->categories()->attach($request->categories);
+        }
+
+        // Créer l'image du circuit si elle existe
+        if ($imagePath) {
+            $circuit->images()->create([
+                'url' => $imagePath,
+                'alt' => $request->titre,
+                'ordre' => 1
+            ]);
         }
 
         return redirect()->route('admin.circuits.index')
@@ -146,17 +181,25 @@ class CircuitController extends Controller
         $slug = $request->slug ?? Str::slug($request->titre);
 
         // Gestion de l'image
-        $imagePath = $circuit->image;
         if ($request->hasFile('image')) {
             // Supprimer l'ancienne image si elle existe
-            if ($circuit->image && File::exists(public_path($circuit->image))) {
-                File::delete(public_path($circuit->image));
+            if ($circuit->images()->exists()) {
+                $oldImage = $circuit->images()->first();
+                Storage::disk('public')->delete($oldImage->url);
+                $oldImage->delete();
             }
             
             $image = $request->file('image');
             $imageName = time() . '_' . $image->getClientOriginalName();
             $image->storeAs('public/circuits', $imageName);
-            $imagePath = 'storage/circuits/' . $imageName;
+            $imagePath = 'circuits/' . $imageName;
+            
+            // Créer une nouvelle image de circuit
+            $circuit->images()->create([
+                'url' => $imagePath,
+                'alt' => $request->titre,
+                'ordre' => 1
+            ]);
         }
 
         // Mise à jour du circuit
@@ -166,7 +209,7 @@ class CircuitController extends Controller
             'description' => $request->description,
             'duree' => $request->duree,
             'prix' => $request->prix,
-            'image' => $imagePath,
+
             'destination' => $request->destination,
             'difficulte' => $request->difficulte,
             'taille_groupe' => $request->taille_groupe,
@@ -193,9 +236,10 @@ class CircuitController extends Controller
      */
     public function destroy(Circuit $circuit)
     {
-        // Supprimer l'image si elle existe
-        if ($circuit->image && File::exists(public_path($circuit->image))) {
-            File::delete(public_path($circuit->image));
+        // Supprimer les images associées
+        foreach ($circuit->images as $image) {
+            Storage::disk('public')->delete($image->url);
+            $image->delete();
         }
 
         // Supprimer le circuit

@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('clients', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::table('reservations', function (Blueprint $table) {
+            $table->decimal('montant_total', 10, 2)->after('nombre_personnes');
         });
     }
 
@@ -22,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('clients');
+        Schema::table('reservations', function (Blueprint $table) {
+            $table->dropColumn('montant_total');
+        });
     }
 };

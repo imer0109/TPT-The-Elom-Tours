@@ -23,7 +23,7 @@ class Reservation extends Model
         'date_fin',
         'nombre_personnes',
         'montant_total',
-        'statut',
+        'status',
         'commentaire',
         'reference'
     ];
@@ -84,7 +84,7 @@ class Reservation extends Model
      */
     public function isConfirmed()
     {
-        return $this->statut === 'confirmee';
+        return $this->status === 'confirmed';
     }
     
     /**
@@ -94,7 +94,7 @@ class Reservation extends Model
      */
     public function isPending()
     {
-        return $this->statut === 'en_attente';
+        return $this->status === 'pending';
     }
     
     /**
@@ -104,7 +104,7 @@ class Reservation extends Model
      */
     public function isCancelled()
     {
-        return $this->statut === 'annulee';
+        return $this->status === 'cancelled';
     }
     
     /**
@@ -114,28 +114,28 @@ class Reservation extends Model
      */
     public function isCompleted()
     {
-        return $this->statut === 'terminee';
+        return $this->status === 'completed';
     }
     
     // Scopes
     public function scopePending($query)
     {
-        return $query->where('statut', 'en_attente');
+        return $query->where('status', 'pending');
     }
 
     public function scopeConfirmed($query)
     {
-        return $query->where('statut', 'confirmee');
+        return $query->where('status', 'confirmed');
     }
 
     public function scopeCancelled($query)
     {
-        return $query->where('statut', 'annulee');
+        return $query->where('status', 'cancelled');
     }
 
     public function scopeCompleted($query)
     {
-        return $query->where('statut', 'terminee');
+        return $query->where('status', 'completed');
     }
     
     /**
@@ -156,17 +156,17 @@ class Reservation extends Model
      *
      * @return string
      */
-    public function getStatutLabelAttribute()
+    public function getStatusLabelAttribute()
     {
         $labels = [
-            'en_attente' => 'En attente',
-            'confirmee' => 'Confirmée',
-            'annulee' => 'Annulée',
-            'terminee' => 'Terminée',
-            'remboursee' => 'Remboursée'
+            'pending' => 'En attente',
+            'confirmed' => 'Confirmée',
+            'cancelled' => 'Annulée',
+            'completed' => 'Terminée',
+            'refunded' => 'Remboursée'
         ];
 
-        return $labels[$this->statut] ?? $this->statut;
+        return $labels[$this->status] ?? $this->status;
     }
 
     /**
@@ -174,17 +174,17 @@ class Reservation extends Model
      *
      * @return string
      */
-    public function getStatutColorAttribute()
+    public function getStatusColorAttribute()
     {
         $colors = [
-            'en_attente' => 'yellow',
-            'confirmee' => 'green',
-            'annulee' => 'red',
-            'terminee' => 'blue',
-            'remboursee' => 'purple'
+            'pending' => 'yellow',
+            'confirmed' => 'green',
+            'cancelled' => 'red',
+            'completed' => 'blue',
+            'refunded' => 'purple'
         ];
 
-        return $colors[$this->statut] ?? 'gray';
+        return $colors[$this->status] ?? 'gray';
     }
     
     /**

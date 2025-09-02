@@ -72,32 +72,32 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                    <!-- Client 1 -->
+                    @forelse($clients as $client)
                     <tr class="hover-effect">
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
                                 <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                                    <span class="text-gray-700 font-medium">JD</span>
+                                    <span class="text-gray-700 font-medium">{{ substr($client->prenom, 0, 1) . substr($client->nom, 0, 1) }}</span>
                                 </div>
                                 <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">Jean Dupont</div>
-                                    <div class="text-xs text-gray-500">ID: #12345</div>
+                                    <div class="text-sm font-medium text-gray-900">{{ $client->nom }} {{ $client->prenom }}</div>
+                                    <div class="text-xs text-gray-500">ID: #{{ $client->id }}</div>
                                 </div>
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">jean.dupont@example.com</div>
-                            <div class="text-sm text-gray-500">+33 6 12 34 56 78</div>
+                            <div class="text-sm text-gray-900">{{ $client->email }}</div>
+                            <div class="text-sm text-gray-500">{{ $client->telephone ?? 'Non renseigné' }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">Paris</div>
-                            <div class="text-sm text-gray-500">France</div>
+                            <div class="text-sm text-gray-900">{{ $client->ville }}</div>
+                            <div class="text-sm text-gray-500">{{ $client->pays }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-center">
-                            <div class="text-sm text-gray-900">3</div>
+                            <div class="text-sm text-gray-900">{{ $client->reservations_count ?? 0 }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">15/01/2023</div>
+                            <div class="text-sm text-gray-900">{{ $client->created_at->format('d/m/Y') }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <a href="{{ route('admin.clients.show', $client) }}" class="text-primary hover:text-green-700 mr-3"><i class="fas fa-eye"></i></a>
@@ -109,154 +109,13 @@
                             </form>
                         </td>
                     </tr>
-                    
-                    <!-- Client 2 -->
-                    <tr class="hover-effect">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                                    <span class="text-gray-700 font-medium">ML</span>
-                                </div>
-                                <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">Marie Lefebvre</div>
-                                    <div class="text-xs text-gray-500">ID: #12346</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">marie.lefebvre@example.com</div>
-                            <div class="text-sm text-gray-500">+32 4 56 78 90 12</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">Bruxelles</div>
-                            <div class="text-sm text-gray-500">Belgique</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-center">
-                            <div class="text-sm text-gray-900">1</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">22/02/2023</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <a href="{{ route('admin.clients.show', $client) }}" class="text-primary hover:text-green-700 mr-3"><i class="fas fa-eye"></i></a>
-                            <a href="{{ route('admin.clients.edit', $client) }}" class="text-blue-600 hover:text-blue-800 mr-3"><i class="fas fa-edit"></i></a>
-                            <form action="{{ route('admin.clients.destroy', $client) }}" method="POST" class="inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce client ?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></button>
-                            </form>
+                    @empty
+                    <tr>
+                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                            Aucun client trouvé
                         </td>
                     </tr>
-                    
-                    <!-- Client 3 -->
-                    <tr class="hover-effect">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                                    <span class="text-gray-700 font-medium">PT</span>
-                                </div>
-                                <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">Pierre Thomas</div>
-                                    <div class="text-xs text-gray-500">ID: #12347</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">pierre.thomas@example.com</div>
-                            <div class="text-sm text-gray-500">+41 78 123 45 67</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">Genève</div>
-                            <div class="text-sm text-gray-500">Suisse</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-center">
-                            <div class="text-sm text-gray-900">2</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">05/03/2023</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <a href="{{ route('admin.clients.show', $client) }}" class="text-primary hover:text-green-700 mr-3"><i class="fas fa-eye"></i></a>
-                            <a href="{{ route('admin.clients.edit', $client) }}" class="text-blue-600 hover:text-blue-800 mr-3"><i class="fas fa-edit"></i></a>
-                            <form action="{{ route('admin.clients.destroy', $client) }}" method="POST" class="inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce client ?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></button>
-                            </form>
-                        </td>
-                    </tr>
-                    
-                    <!-- Client 4 -->
-                    <tr class="hover-effect">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                                    <span class="text-gray-700 font-medium">SK</span>
-                                </div>
-                                <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">Sophie Kodjovi</div>
-                                    <div class="text-xs text-gray-500">ID: #12348</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">sophie.kodjovi@example.com</div>
-                            <div class="text-sm text-gray-500">+228 90 12 34 56</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">Lomé</div>
-                            <div class="text-sm text-gray-500">Togo</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-center">
-                            <div class="text-sm text-gray-900">5</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">18/01/2023</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <a href="{{ route('admin.clients.show', $client) }}" class="text-primary hover:text-green-700 mr-3"><i class="fas fa-eye"></i></a>
-                            <a href="{{ route('admin.clients.edit', $client) }}" class="text-blue-600 hover:text-blue-800 mr-3"><i class="fas fa-edit"></i></a>
-                            <form action="{{ route('admin.clients.destroy', $client) }}" method="POST" class="inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce client ?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></button>
-                            </form>
-                        </td>
-                    </tr>
-                    
-                    <!-- Client 5 -->
-                    <tr class="hover-effect">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                                    <span class="text-gray-700 font-medium">RM</span>
-                                </div>
-                                <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">Robert Martin</div>
-                                    <div class="text-xs text-gray-500">ID: #12349</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">robert.martin@example.com</div>
-                            <div class="text-sm text-gray-500">+1 514 123 4567</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">Montréal</div>
-                            <div class="text-sm text-gray-500">Canada</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-center">
-                            <div class="text-sm text-gray-900">0</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">10/04/2023</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <a href="#" class="text-primary hover:text-green-700 mr-3"><i class="fas fa-eye"></i></a>
-                            <a href="#" class="text-blue-600 hover:text-blue-800 mr-3"><i class="fas fa-edit"></i></a>
-                            <a href="#" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></a>
-                        </td>
-                    </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

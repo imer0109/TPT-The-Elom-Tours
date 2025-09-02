@@ -65,18 +65,18 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                            @if($reservation->statut == 'en_attente') bg-yellow-100 text-yellow-800
-                                            @elseif($reservation->statut == 'confirmee') bg-green-100 text-green-800
-                                            @elseif($reservation->statut == 'annulee') bg-red-100 text-red-800
-                                            @elseif($reservation->statut == 'terminee') bg-blue-100 text-blue-800
+                                            @if($reservation->status == 'pending') bg-yellow-100 text-yellow-800
+                                            @elseif($reservation->status == 'confirmed') bg-green-100 text-green-800
+                                            @elseif($reservation->status == 'cancelled') bg-red-100 text-red-800
+                                            @elseif($reservation->status == 'completed') bg-blue-100 text-blue-800
                                             @else bg-gray-100 text-gray-800 @endif">
-                                            {{ $reservation->statut_label }}
+                                            {{ $reservation->status_label }}
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <a href="{{ route('reservations.show', $reservation->reference) }}" class="text-green-600 hover:text-green-900 mr-3">Détails</a>
                                         
-                                        @if($reservation->statut == 'en_attente' || $reservation->statut == 'confirmee')
+                                        @if($reservation->status == 'pending' || $reservation->status == 'confirmed')
                                             <form action="{{ route('reservations.cancel', $reservation->reference) }}" method="POST" class="inline-block">
                                                 @csrf
                                                 <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ?')">

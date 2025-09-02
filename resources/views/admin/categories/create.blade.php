@@ -1,64 +1,82 @@
-@extends('admin.layouts.app')
+@extends('layouts.admin')
 
-@section('title', 'Créer une catégorie')
+@section('title', 'Créer une catégorie - The Elom Tours')
 
 @section('content')
-<div class="container-fluid">
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Créer une catégorie</h1>
-        <a href="{{ route('admin.categories.index') }}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
-            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Retour à la liste
+<div class="container mx-auto py-6">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold">Créer une catégorie</h1>
+        <a href="{{ route('admin.categories.index') }}" class="btn-secondary flex items-center">
+            <i class="fas fa-arrow-left mr-2"></i> Retour à la liste
         </a>
     </div>
 
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Informations de la catégorie</h6>
-        </div>
-        <div class="card-body">
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="p-6">
             <form action="{{ route('admin.categories.store') }}" method="POST">
                 @csrf
 
-                <div class="form-group">
-                    <label for="nom">Nom <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control @error('nom') is-invalid @enderror" id="nom" name="nom" value="{{ old('nom') }}" required>
+                <div class="mb-6">
+                    <label for="nom" class="block text-sm font-medium text-gray-700 mb-2">
+                        Nom <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" 
+                           id="nom" 
+                           name="nom" 
+                           value="{{ old('nom') }}" 
+                           class="form-input w-full rounded-md shadow-sm @error('nom') border-red-500 @enderror" 
+                           required>
                     @error('nom')
-                    <div class="invalid-feedback">{{ $message }}</div>
+                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
 
-                <div class="form-group">
-                    <label for="slug">Slug</label>
-                    <input type="text" class="form-control @error('slug') is-invalid @enderror" id="slug" name="slug" value="{{ old('slug') }}">
-                    <small class="form-text text-muted">Laissez vide pour générer automatiquement à partir du nom.</small>
+                <div class="mb-6">
+                    <label for="slug" class="block text-sm font-medium text-gray-700 mb-2">Slug</label>
+                    <input type="text" 
+                           id="slug" 
+                           name="slug" 
+                           value="{{ old('slug') }}" 
+                           class="form-input w-full rounded-md shadow-sm @error('slug') border-red-500 @enderror">
+                    <p class="mt-1 text-sm text-gray-500">Laissez vide pour générer automatiquement à partir du nom.</p>
                     @error('slug')
-                    <div class="invalid-feedback">{{ $message }}</div>
+                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
 
-                <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description" rows="4">{{ old('description') }}</textarea>
+                <div class="mb-6">
+                    <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                    <textarea id="description" 
+                              name="description" 
+                              rows="4" 
+                              class="form-textarea w-full rounded-md shadow-sm @error('description') border-red-500 @enderror">{{ old('description') }}</textarea>
                     @error('description')
-                    <div class="invalid-feedback">{{ $message }}</div>
+                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
 
-                <div class="form-group">
-                    <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input" id="est_actif" name="est_actif" value="1" {{ old('est_actif', '1') == '1' ? 'checked' : '' }}>
-                        <label class="custom-control-label" for="est_actif">Actif</label>
-                    </div>
+                <div class="mb-6">
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" 
+                               class="form-checkbox rounded text-blue-600" 
+                               name="est_actif" 
+                               value="1" 
+                               {{ old('est_actif', '1') == '1' ? 'checked' : '' }}>
+                        <span class="ml-2">Actif</span>
+                    </label>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Enregistrer</button>
+                <div class="flex justify-end">
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-save mr-2"></i> Enregistrer
+                    </button>
+                </div>
             </form>
         </div>
     </div>
 </div>
-@endsection
 
-@section('scripts')
+@push('scripts')
 <script>
     // Auto-génération du slug à partir du nom
     document.getElementById('nom').addEventListener('input', function() {
@@ -69,4 +87,6 @@
         document.getElementById('slug').value = slug;
     });
 </script>
+@endpush
+
 @endsection

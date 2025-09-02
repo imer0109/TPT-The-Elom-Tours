@@ -3,12 +3,60 @@
 @section('title', 'Réservations - The Elom Tours')
 
 @section('content')
-<div class="container mx-auto">
+<div class="container mx-auto py-6">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold">Gestion des réservations</h1>
         <a href="{{ route('admin.reservations.create') }}" class="btn-primary flex items-center">
             <i class="fas fa-plus mr-2"></i> Nouvelle réservation
         </a>
+    </div>
+
+    <!-- Statistiques -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                    <i class="fas fa-calendar-check fa-2x"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-500">Total réservations</p>
+                    <p class="text-lg font-semibold">{{ $stats['total'] }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                    <i class="fas fa-clock fa-2x"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-500">En attente</p>
+                    <p class="text-lg font-semibold">{{ $stats['pending'] }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-green-100 text-green-600">
+                    <i class="fas fa-check-circle fa-2x"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-500">Confirmées</p>
+                    <p class="text-lg font-semibold">{{ $stats['confirmed'] }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-green-100 text-green-600">
+                    <i class="fas fa-euro-sign fa-2x"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-500">Montant total</p>
+                    <p class="text-lg font-semibold">{{ number_format($stats['montant_total'], 2, ',', ' ') }} €</p>
+                </div>
+            </div>
+        </div>
     </div>
     
     <!-- Filtres -->
@@ -20,10 +68,10 @@
                     <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Statut</label>
                     <select id="status" name="status" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5">
                         <option value="">Tous les statuts</option>
-                        <option value="en_attente" {{ request('status') == 'en_attente' ? 'selected' : '' }}>En attente</option>
-                        <option value="confirmee" {{ request('status') == 'confirmee' ? 'selected' : '' }}>Confirmée</option>
-                        <option value="annulee" {{ request('status') == 'annulee' ? 'selected' : '' }}>Annulée</option>
-                        <option value="terminee" {{ request('status') == 'terminee' ? 'selected' : '' }}>Terminée</option>
+                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>En attente</option>
+                        <option value="confirmed" {{ request('status') == 'confirmed' ? 'selected' : '' }}>Confirmée</option>
+                        <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Annulée</option>
+                        <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Terminée</option>
                     </select>
                 </div>
                 
@@ -98,19 +146,49 @@
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
                                 <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                                    <span class="text-gray-700 font-medium">{{ substr($reservation->client->nom, 0, 1) }}{{ substr($reservation->client->prenom, 0, 1) }}</span>
-                                </div>
-                                <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">{{ $reservation->client->nom }} {{ $reservation->client->prenom }}</div>
-                                    <div class="text-sm text-gray-500">{{ $reservation->client->email }}</div>
+                                     <span class="text-gray-700 font-medium">
+                                         @if($reservation->client)
+                                             {{ substr($reservation->client->nom, 0, 1) }}{{ substr($reservation->client->prenom, 0, 1) }}
+                                         @else
+                                             --
+                                         @endif
+                                     </span>
+                                 </div>
+                                 <div class="ml-4">
+                                     <div class="text-sm font-medium text-gray-900">
+                                         @if($reservation->client)
+                                             {{ $reservation->client->nom }} {{ $reservation->client->prenom }}
+                                         @else
+                                             Client non disponible
+                                         @endif
+                                     </div>
+                                     <div class="text-sm text-gray-500">
+                                         @if($reservation->client)
+                                             {{ $reservation->client->email }}
+                                         @else
+                                             Email non disponible
+                                         @endif
+                                     </div>
                                 </div>
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">{{ $reservation->circuit->titre }}</div>
+                            <div class="text-sm text-gray-900">
+                                @if($reservation->circuit)
+                                    {{ $reservation->circuit->titre }}
+                                @else
+                                    Circuit non disponible
+                                @endif
+                            </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">{{ $reservation->date_debut->format('d/m/Y') }} - {{ $reservation->date_fin->format('d/m/Y') }}</div>
+                            <div class="text-sm text-gray-900">
+                                @if($reservation->date_debut && $reservation->date_fin)
+                                    {{ $reservation->date_debut->format('d/m/Y') }} - {{ $reservation->date_fin->format('d/m/Y') }}
+                                @else
+                                    Dates non disponibles
+                                @endif
+                            </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-center">
                             <div class="text-sm text-gray-900">{{ $reservation->nombre_personnes }}</div>
@@ -120,12 +198,12 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                @if($reservation->statut == 'en_attente') bg-yellow-100 text-yellow-800
-                                @elseif($reservation->statut == 'confirmee') bg-green-100 text-green-800
-                                @elseif($reservation->statut == 'annulee') bg-red-100 text-red-800
-                                @elseif($reservation->statut == 'terminee') bg-blue-100 text-blue-800
+                                @if($reservation->status == 'pending') bg-yellow-100 text-yellow-800
+                                @elseif($reservation->status == 'confirmed') bg-green-100 text-green-800
+                                @elseif($reservation->status == 'cancelled') bg-red-100 text-red-800
+                                @elseif($reservation->status == 'completed') bg-blue-100 text-blue-800
                                 @endif">
-                                {{ $reservation->statut_label }}
+                                {{ $reservation->status_label }}
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -159,47 +237,7 @@
         
         <!-- Pagination -->
         <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
-            <div class="flex items-center justify-between">
-                <div class="flex-1 flex justify-between sm:hidden">
-                    <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                        Précédent
-                    </a>
-                    <a href="#" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                        Suivant
-                    </a>
-                </div>
-                <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-                    <div>
-                        <p class="text-sm text-gray-700">
-                            Affichage de <span class="font-medium">1</span> à <span class="font-medium">3</span> sur <span class="font-medium">12</span> résultats
-                        </p>
-                    </div>
-                    <div>
-                        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                            <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                                <span class="sr-only">Précédent</span>
-                                <i class="fas fa-chevron-left"></i>
-                            </a>
-                            <a href="#" aria-current="page" class="z-10 bg-primary border-primary text-white relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-                                1
-                            </a>
-                            <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-                                2
-                            </a>
-                            <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-                                3
-                            </a>
-                            <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-                                4
-                            </a>
-                            <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                                <span class="sr-only">Suivant</span>
-                                <i class="fas fa-chevron-right"></i>
-                            </a>
-                        </nav>
-                    </div>
-                </div>
-            </div>
+            {{ $reservations->appends(request()->query())->links() }}
         </div>
     </div>
 </div>

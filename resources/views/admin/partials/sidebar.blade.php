@@ -3,7 +3,7 @@
     <div class="flex items-center justify-center h-16 border-b border-gray-200">
         <a href="{{ route('admin.dashboard') }}" class="flex items-center">
             <img src="/images/LogoElomTour.jpg" alt="The Elom Tours" class="h-12">
-            <span class="ml-2 text-xl font-bold text-primary">Elom Tours</span>
+            <span class="ml-2 text-xl font-bold text-primary">THE ELOM TOURS</span>
         </a>
     </div>
     
@@ -27,13 +27,13 @@
                 </button>
                 <ul id="dropdown-reservations" class="hidden py-2 space-y-2 pl-11">
                     <li>
-                        <a href="{{ route('admin.reservations.dashboard') }}" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">Tableau de bord</a>
+                        <a href="{{ route('admin.reservations.dashboard') }}" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">- Tableau de bord</a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.reservations.index') }}" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">Toutes les réservations</a>
+                        <a href="{{ route('admin.reservations.index') }}" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">- Toutes les réservations</a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.reservations.create') }}" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">Ajouter une réservation</a>
+                        <a href="{{ route('admin.reservations.create') }}" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">- Ajouter une réservation</a>
                     </li>
                 </ul>
             </li>
@@ -47,13 +47,13 @@
                 </button>
                 <ul id="dropdown-circuits" class="hidden py-2 space-y-2 pl-11">
                     <li>
-                        <a href="{{ route('admin.circuits.index') }}" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">Tous les circuits</a>
+                        <a href="{{ route('admin.circuits.index') }}" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">- Tous les circuits</a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.circuits.create') }}" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">Ajouter un circuit</a>
+                        <a href="{{ route('admin.circuits.create') }}" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">- Ajouter un circuit</a>
                     </li>
                     <li>
-                        <a href="#" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">Catégories</a>
+                        <a href="#" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">- Catégories</a>
                     </li>
                 </ul>
             </li>
@@ -75,13 +75,13 @@
                 </button>
                 <ul id="dropdown-blog" class="hidden py-2 space-y-2 pl-11">
                     <li>
-                        <a href="{{ route('admin.blog.index') }}" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">Tous les articles</a>
+                        <a href="{{ route('admin.blog.index') }}" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">- Tous les articles</a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.blog.create') }}" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">Ajouter un article</a>
+                        <a href="{{ route('admin.blog.create') }}" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">- Ajouter un article</a>
                     </li>
                     <li>
-                        <a href="#" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">Catégories</a>
+                        <a href="#" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">- Catégories</a>
                     </li>
                 </ul>
             </li>

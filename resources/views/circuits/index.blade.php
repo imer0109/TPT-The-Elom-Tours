@@ -76,21 +76,21 @@
                 @forelse($circuits as $circuit)
                     <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300">
                         <div class="relative">
-                            @if($circuit->image)
-                                <img src="{{ asset('storage/' . $circuit->image) }}" alt="{{ $circuit->title }}" class="w-full h-64 object-cover">
+                            @if($circuit->images->isNotEmpty())
+                                <img src="{{ asset('storage/' . $circuit->images->first()->url) }}" alt="{{ $circuit->images->first()->alt }}" class="w-full h-64 object-cover">
                             @else
-                                <img src="{{ asset('assets/images/circuit-placeholder.jpg') }}" alt="{{ $circuit->title }}" class="w-full h-64 object-cover">
+                                <img src="{{ asset('assets/images/circuit-placeholder.jpg') }}" alt="{{ $circuit->titre }}" class="w-full h-64 object-cover">
                             @endif
                             <div class="absolute top-4 right-4 bg-green-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-                                {{ $circuit->duration }} jours
+                                {{ $circuit->duree }} jours
                             </div>
                         </div>
                         <div class="p-6">
-                            <h3 class="text-xl font-semibold mb-2">{{ $circuit->title }}</h3>
+                            <h3 class="text-xl font-semibold mb-2">{{ $circuit->titre }}</h3>
                             <div class="flex items-center mb-4">
                                 <div class="text-yellow-500 mr-1">
                                     @php
-                                        $rating = $circuit->reviews ? $circuit->reviews->avg('rating') : 0;
+                                        $rating = $circuit->avis ? $circuit->avis->avg('rating') : 0;
                                         $fullStars = floor($rating);
                                         $halfStar = $rating - $fullStars >= 0.5;
                                     @endphp
@@ -105,11 +105,11 @@
                                         @endif
                                     @endfor
                                 </div>
-                                <span class="text-gray-600 text-sm">({{ $circuit->reviews ? $circuit->reviews->count() : 0 }} avis)</span>
+                                <span class="text-gray-600 text-sm">({{ $circuit->avis ? $circuit->avis->count() : 0 }} avis)</span>
                             </div>
                             <p class="text-gray-600 mb-4">{{ Str::limit($circuit->description, 120) }}</p>
                             <div class="flex justify-between items-center">
-                                <span class="text-green-600 font-bold text-xl">{{ $circuit->price }}€ / personne</span>
+                                <span class="text-green-600 font-bold text-xl">{{ $circuit->prix }}€ / personne</span>
                                 <a href="{{ route('circuits.show', $circuit->slug) }}" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition duration-300">
                                     Détails
                                 </a>
@@ -118,79 +118,17 @@
                     </div>
                 @empty
                     <div class="col-span-3 text-center py-8">
-                        <p class="text-gray-500 text-lg">Aucun circuit ne correspond à vos critères de recherche.</p>
-                        <a href="{{ route('circuits.index') }}" class="inline-block mt-4 text-green-600 hover:text-green-800 font-medium">
+                        <p class="text-gray-500 text-lg">Aucun circuit disponible pour le moment.</p>
+                        {{-- <a href="{{ route('circuits.index') }}" class="inline-block mt-4 text-green-600 hover:text-green-800 font-medium">
                             Voir tous les circuits
-                        </a>
+                        </a> --}}
                     </div>
                 @endforelse
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold mb-2">Safari photo au Ghana</h3>
-                        <div class="flex items-center mb-4">
-                            <div class="text-yellow-500 mr-1">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </div>
-                            <span class="text-gray-600 text-sm">(15 avis)</span>
-                        </div>
-                        <p class="text-gray-600 mb-4">Partez à la découverte de la faune sauvage ghanéenne dans les parcs nationaux de Mole et Kakum.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-green-600 font-bold text-xl">950€ / personne</span>
-                            <a href="#" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition duration-300">
-                                Détails
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Circuit 6 -->
-                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300">
-                    <div class="relative">
-                        <img src="{{ asset('assets/images/circuit-6.jpg') }}" alt="Route des esclaves au Bénin" class="w-full h-64 object-cover">
-                        <div class="absolute top-4 right-4 bg-green-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-                            4 jours
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold mb-2">Route des esclaves au Bénin</h3>
-                        <div class="flex items-center mb-4">
-                            <div class="text-yellow-500 mr-1">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="far fa-star"></i>
-                            </div>
-                            <span class="text-gray-600 text-sm">(11 avis)</span>
-                        </div>
-                        <p class="text-gray-600 mb-4">Un circuit historique sur les traces de la traite négrière, de Ouidah à Porto-Novo en passant par Abomey.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-green-600 font-bold text-xl">550€ / personne</span>
-                            <a href="#" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition duration-300">
-                                Détails
-                            </a>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <!-- Pagination -->
-            <div class="mt-12 flex justify-center">
-                <nav class="inline-flex rounded-md shadow">
-                    <a href="#" class="py-2 px-4 bg-white border border-gray-300 text-gray-500 hover:bg-gray-50 rounded-l-md">
-                        <i class="fas fa-chevron-left"></i>
-                    </a>
-                    <a href="#" class="py-2 px-4 bg-green-600 border border-green-600 text-white hover:bg-green-700">1</a>
-                    <a href="#" class="py-2 px-4 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50">2</a>
-                    <a href="#" class="py-2 px-4 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50">3</a>
-                    <a href="#" class="py-2 px-4 bg-white border border-gray-300 text-gray-500 hover:bg-gray-50 rounded-r-md">
-                        <i class="fas fa-chevron-right"></i>
-                    </a>
-                </nav>
+            <div class="mt-8">
+                {{ $circuits->links() }}
             </div>
         </div>
     </section>

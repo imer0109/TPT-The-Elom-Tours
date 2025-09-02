@@ -47,7 +47,7 @@ class CircuitController extends Controller
             ->firstOrFail();
             
         // Récupérer les circuits similaires
-        $similarCircuits = Circuit::where('est_actif', true)
+        $relatedCircuits = Circuit::where('est_actif', true)
             ->where('id', '!=', $circuit->id)
             ->where(function($query) use ($circuit) {
                 $query->where('destination', $circuit->destination)
@@ -56,7 +56,7 @@ class CircuitController extends Controller
             ->take(3)
             ->get();
         
-        return view('circuits.show', compact('circuit', 'similarCircuits'));
+        return view('circuits.show', compact('circuit', 'relatedCircuits'));
     }
     
     /**
