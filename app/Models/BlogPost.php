@@ -80,7 +80,7 @@ class BlogPost extends Model
      */
     public function comments(): HasMany
     {
-        return $this->hasMany(Comment::class);
+        return $this->hasMany(Comment::class, 'blog_post_id');
     }
 
     /**
@@ -97,6 +97,22 @@ class BlogPost extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+    
+    /**
+     * Get the related tours for the blog post.
+     */
+    public function relatedTours()
+    {
+        return $this->belongsToMany(Circuit::class, 'blog_post_circuit', 'blog_post_id', 'circuit_id');
+    }
+    
+    /**
+     * Get the tags for the blog post.
+     */
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class, 'blog_post_tag', 'blog_post_id', 'tag_id');
     }
 
     /**

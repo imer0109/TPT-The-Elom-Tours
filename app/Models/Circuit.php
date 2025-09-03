@@ -49,6 +49,14 @@ class Circuit extends Model
     }
     
     /**
+     * Obtenir les articles de blog associés au circuit.
+     */
+    public function blogPosts()
+    {
+        return $this->belongsToMany(BlogPost::class, 'blog_post_circuit', 'circuit_id', 'blog_post_id');
+    }
+    
+    /**
      * Obtenir les catégories associées au circuit.
      */
     public function categories()

@@ -30,6 +30,9 @@ Route::post('/circuits/{slug}/reservation', [\App\Http\Controllers\ReservationCo
 // Routes pour le blog
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
+Route::post('/blog/{slug}/comment', [BlogController::class, 'submitComment'])->name('blog.comment');
+Route::get('/blog/tag/{slug}', [BlogController::class, 'tag'])->name('blog.tag');
+Route::get('/blog/category/{slug}', [BlogController::class, 'category'])->name('blog.category');
 
 // Routes pour la galerie
 Route::get('/galerie', [App\Http\Controllers\GalerieController::class, 'index'])->name('galerie.index');

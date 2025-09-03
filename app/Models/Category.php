@@ -35,6 +35,14 @@ class Category extends Model
     }
     
     /**
+     * Get the blog posts for the category.
+     */
+    public function blogPosts()
+    {
+        return $this->hasMany(BlogPost::class);
+    }
+    
+    /**
      * Scope a query to only include active categories.
      */
     public function scopeActive($query)

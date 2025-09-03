@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BlogPost;
 use App\Models\Category;
 use App\Models\Comment;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -58,8 +59,21 @@ class BlogController extends Controller
             ->where('category_id', $post->category_id)
             ->take(3)
             ->get();
+            
+        // Récupérer les catégories pour la sidebar
+        $categories = Category::active()->withCount('blogPosts')->get();
         
-        return view('blog.show', compact('post', 'relatedPosts'));
+        // Récupérer les articles récents pour la sidebar
+        $recentPosts = BlogPost::published()
+            ->where('id', '!=', $post->id)
+            ->orderBy('published_at', 'desc')
+            ->take(4)
+            ->get();
+            
+        // Récupérer les circuits associés pour la sidebar
+        $relatedTours = $post->relatedTours()->take(3)->get();
+        
+        return view('blog.show', compact('post', 'relatedPosts', 'categories', 'recentPosts', 'relatedTours'));
     }
     
     /**
@@ -92,5 +106,55 @@ class BlogController extends Controller
         $comment->save();
         
         return redirect()->back()->with('success', 'Merci pour votre commentaire ! Il sera publié après modération.');
+    }
+    
+    /**
+     * Affiche les articles associés à un tag spécifique
+     *
+     * @param string $slug Le slug du tag
+     * @return \Illuminate\View\View
+     */
+    public function tag(string $slug): View
+    {
+        $tag = Tag::where('slug', $slug)->firstOrFail();
+        
+        $posts = $tag->blogPosts()
+            ->published()
+            ->orderBy('published_at', 'desc')
+            ->paginate(9);
+            
+        $categories = Category::active()->withCount('blogPosts')->get();
+        
+        return view('blog.index', [
+            'posts' => $posts,
+            'categories' => $categories,
+            'currentTag' => $tag,
+            'title' => 'Articles avec le tag : ' . $tag->name
+        ]);
+    }
+    
+    /**
+     * Affiche les articles d'une catégorie spécifique
+     *
+     * @param string $slug Le slug de la catégorie
+     * @return \Illuminate\View\View
+     */
+    public function category(string $slug): View
+    {
+        $category = Category::where('slug', $slug)->firstOrFail();
+        
+        $posts = BlogPost::published()
+            ->where('category_id', $category->id)
+            ->orderBy('published_at', 'desc')
+            ->paginate(9);
+            
+        $categories = Category::active()->withCount('blogPosts')->get();
+        
+        return view('blog.index', [
+            'posts' => $posts,
+            'categories' => $categories,
+            'currentCategory' => $category,
+            'title' => 'Articles dans la catégorie : ' . $category->name
+        ]);
     }
 }
