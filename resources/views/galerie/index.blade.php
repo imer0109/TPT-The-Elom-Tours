@@ -1,11 +1,24 @@
 @extends('layouts.app')
 
 @section('content')
+<section class="relative">
+        <div class="hero-image h-64 md:h-96 bg-cover bg-center bg-[#16a34a]" 
+        {{-- style="background-image: url('{{ asset('assets/images/circuits-hero.jpg') }}')" --}}
+        >
+            <div class="absolute inset-0 bg-black opacity-50"></div>
+            <div class="container mx-auto px-4 h-full flex items-center justify-center relative z-10">
+                <div class="text-center text-white mt-20">
+                    <h1 class="text-3xl md:text-5xl font-bold mb-2">Notre Gallerie</h1>
+                    <p class="text-lg md:text-xl">Découvrez nos plus beaux moments en images</p>
+                </div>
+            </div>
+        </div>
+    </section>
 <div class="container mx-auto px-4 py-8">
-    <div class="text-center mb-12">
+    {{-- <div class="text-center mb-12">
         <h1 class="text-4xl font-bold text-gray-900 mb-4">Notre Galerie</h1>
         <p class="text-lg text-gray-600">Découvrez nos plus beaux moments en images</p>
-    </div>
+    </div> --}}
 
     @if($galleries->isEmpty())
         <div class="text-center py-12">

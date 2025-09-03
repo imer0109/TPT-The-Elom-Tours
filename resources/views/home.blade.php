@@ -6,10 +6,10 @@
         <div class="hero-image h-screen bg-cover bg-center" style="background-image: url('{{ asset('assets/images/termite.jpg') }}');">
             <div class="absolute inset-0 opacity-50"></div>
             <div class="container mx-auto px-4 h-full flex items-center justify-center relative z-10">
-                <div class="text-center text-white">
+                <div class="text-center text-white mt-20">
                     <h1 class="text-4xl md:text-6xl font-bold mb-4">DÉCOUVREZ LE TOGO AUTHENTIQUE</h1>
                     <p class="text-xl md:text-2xl mb-8">Explorez les merveilles naturelles et culturelles du Togo avec nos circuits écotouristiques uniques</p>
-                    <a href="{{ route('circuits.index') }}" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-full transition duration-300 ease-in-out transform hover:scale-105">
+                    <a href="{{ route('circuits.index') }}" class="bg-green-600 hover:bg-green-700 text-white font-bold mt-5 py-3 px-8 rounded-full transition duration-300 ease-in-out transform hover:scale-105">
                         Réserver maintenant
                     </a>
                 </div>

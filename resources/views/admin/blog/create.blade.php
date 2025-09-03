@@ -24,6 +24,7 @@
     <div class="bg-white rounded-lg shadow-md p-6">
         <form action="{{ route('admin.blog.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
+            <input type="hidden" name="user_id" value="{{ Auth::id() }}">
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Titre -->
@@ -38,7 +39,7 @@
                     <select id="category_id" name="category_id" required class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
                         <option value="">Sélectionner une catégorie</option>
                         @foreach($categories as $category)
-                            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->nom }}</option>
                         @endforeach
                     </select>
                 </div>

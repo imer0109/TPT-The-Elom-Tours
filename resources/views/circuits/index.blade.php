@@ -8,7 +8,7 @@
         >
             <div class="absolute inset-0 bg-black opacity-50"></div>
             <div class="container mx-auto px-4 h-full flex items-center justify-center relative z-10">
-                <div class="text-center text-white">
+                <div class="text-center text-white mt-20">
                     <h1 class="text-3xl md:text-5xl font-bold mb-2">Nos Circuits</h1>
                     <p class="text-lg md:text-xl">Découvrez nos itinéraires soigneusement conçus pour une expérience authentique</p>
                 </div>

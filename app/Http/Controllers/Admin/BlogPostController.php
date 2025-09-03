@@ -84,7 +84,28 @@ class BlogPostController extends Controller
         ]);
 
         $data = $request->except('image');
-        $data['user_id'] = Auth::id();
+        
+        // Vérifier si un utilisateur est authentifié
+        if (Auth::check()) {
+            $data['user_id'] = Auth::id();
+        } else {
+            // Rechercher un utilisateur admin par défaut
+            $adminUser = \App\Models\User::where('role', \App\Enums\RoleEnum::ADMIN->value)->first();
+            if ($adminUser) {
+                $data['user_id'] = $adminUser->id;
+            } else {
+                // Créer un utilisateur admin si aucun n'existe
+                $adminUser = \App\Models\User::create([
+                    'firstName' => 'Admin',
+                    'lastName' => 'System',
+                    'email' => 'admin@elomtours.com',
+                    'password' => \Illuminate\Support\Facades\Hash::make('admin123'),
+                    'role' => \App\Enums\RoleEnum::ADMIN,
+                ]);
+                $data['user_id'] = $adminUser->id;
+            }
+        }
+        
         $data['slug'] = Str::slug($request->title);
 
         // Vérifier si le slug existe déjà et le rendre unique si nécessaire
@@ -107,6 +128,7 @@ class BlogPostController extends Controller
                 'owner_id' => $blogPost->id,
                 'owner_type' => BlogPost::class,
                 'path' => $path,
+                'name' => $filename,
                 'filename' => $filename,
                 'mime_type' => $image->getClientMimeType(),
                 'size' => $image->getSize(),
@@ -187,6 +209,7 @@ class BlogPostController extends Controller
                 'owner_id' => $blogPost->id,
                 'owner_type' => BlogPost::class,
                 'path' => $path,
+                'name' => $filename,
                 'filename' => $filename,
                 'mime_type' => $image->getClientMimeType(),
                 'size' => $image->getSize(),

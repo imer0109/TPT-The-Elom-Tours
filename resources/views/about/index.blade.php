@@ -5,7 +5,7 @@
     <section class="relative">
         <div class="hero-image h-64 md:h-96 bg-cover bg-center bg-[#16a34a]">
             <div class="absolute inset-0 bg-black opacity-50"></div>
-            <div class="container mx-auto px-4 h-full flex items-center justify-center relative z-10">
+            <div class="container mx-auto px-4 h-full flex items-center justify-center relative z-10 mt-20">
                 <div class="text-center text-white">
                     <h1 class="text-3xl md:text-5xl font-bold mb-2">À propos de nous</h1>
                     <p class="text-lg md:text-xl">Découvrez l'histoire et les valeurs de The Elom Tours</p>

@@ -7,7 +7,7 @@
         style="background-image: url('{{ $circuit->images->isNotEmpty() ? asset('storage/' . $circuit->images->first()->url) : asset('assets/images/circuit-detail-hero.jpg') }}')"
         >
             <div class="absolute inset-0 bg-black opacity-50"></div>
-            <div class="container mx-auto px-4 h-full flex items-center justify-center relative z-10">
+            <div class="container mx-auto px-4 h-full flex items-center justify-center relative z-10 mt-20">
                 <div class="text-center text-white">
                     <h1 class="text-3xl md:text-5xl font-bold mb-2">{{ $circuit->titre }}</h1>
                     <p class="text-lg md:text-xl">{{ $circuit->destination }}</p>

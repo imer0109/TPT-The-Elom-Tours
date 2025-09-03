@@ -7,7 +7,7 @@
          {{-- style="background-image: url('{{ asset('assets/images/blog-hero.jpg') }}')" --}}
          >
             <div class="absolute inset-0 bg-black opacity-50"></div>
-            <div class="container mx-auto px-4 h-full flex items-center justify-center relative z-10">
+            <div class="container mx-auto px-4 h-full flex items-center justify-center relative z-10 mt-20">
                 <div class="text-center text-white">
                     <h1 class="text-3xl md:text-5xl font-bold mb-2">Notre Blog</h1>
                     <p class="text-lg md:text-xl">Découvrez nos récits de voyage et conseils</p>

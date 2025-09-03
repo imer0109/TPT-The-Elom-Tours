@@ -10,7 +10,7 @@ class GalleryController extends Controller
     public function index()
     {
         $galleries = Gallery::with('image')
-            ->where('status', 'active')
+            ->where('is_active', true)
             ->orderBy('created_at', 'desc')
             ->paginate(12);
 
@@ -19,12 +19,12 @@ class GalleryController extends Controller
 
     public function show(Gallery $gallery)
     {
-        if ($gallery->status !== 'active') {
+        if (!$gallery->is_active) {
             abort(404);
         }
 
         $relatedGalleries = Gallery::with('image')
-            ->where('status', 'active')
+            ->where('is_active', true)
             ->where('id', '!=', $gallery->id)
             ->inRandomOrder()
             ->limit(3)

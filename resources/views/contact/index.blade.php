@@ -7,7 +7,7 @@
         {{-- style="background-image: url('{{ asset('assets/images/contact-hero.jpg') }}')" --}}
         >
             <div class="absolute inset-0 bg-black opacity-50"></div>
-            <div class="container mx-auto px-4 h-full flex items-center justify-center relative z-10">
+            <div class="container mx-auto px-4 h-full flex items-center justify-center relative z-10 mt-20">
                 <div class="text-center text-white">
                     <h1 class="text-3xl md:text-5xl font-bold mb-2">Contactez-nous</h1>
                     <p class="text-lg md:text-xl">Nous sommes à votre écoute pour organiser votre voyage au Togo</p>
@@ -224,7 +224,7 @@
                             <i class="fas fa-chevron-down text-gray-500 transition-transform duration-300"></i>
                         </button>
                         <div class="faq-content bg-gray-50 px-4 py-3 hidden">
-                            <p class="text-gray-600">Vous pouvez réserver un circuit de plusieurs façons: directement sur notre site web en utilisant notre formulaire de réservation, par email à reservations@theelomtours.com, par téléphone au +228 22 22 22 22, ou en nous rendant visite dans nos bureaux à Lomé. Nous vous recommandons de réserver au moins 2 semaines à l'avance pour garantir la disponibilité.</p>
+                            <p class="text-gray-600">Vous pouvez réserver un circuit de plusieurs façons: directement sur notre site web en utilisant notre formulaire de réservation, par email à theelomtours@gmail.com, par téléphone au (+228) 91 92 93 83 , ou en nous rendant visite dans nos bureaux à Lomé. Nous vous recommandons de réserver au moins 2 semaines à l'avance pour garantir la disponibilité.</p>
                         </div>
                     </div>
                     

@@ -2,9 +2,10 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
+    
     <div class="max-w-4xl mx-auto">
         <!-- Image principale -->
-        <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-8 mt-40">
             @if($gallery->image)
                 <img src="{{ asset('storage/' . $gallery->image->path) }}" 
                      alt="{{ $gallery->title }}" 
