@@ -5,7 +5,7 @@
     <section class="relative">
         <div class="hero-image h-64 md:h-96 bg-cover bg-center bg-[#16a34a]" 
         @if($post->image)
-        style="background-image: url('{{ asset($post->image) }}')" 
+        style="background-image: url('{{ $post->image->getFileUrl() }}')" 
         @endif
         >
             <div class="absolute inset-0 bg-black opacity-50"></div>
@@ -39,6 +39,15 @@
             </div>
         </div>
     </div>
+    
+    @if(session('success'))
+    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4 container mx-auto mt-4" role="alert">
+        <span class="block sm:inline">{{ session('success') }}</span>
+        <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
+            <svg class="fill-current h-6 w-6 text-green-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Fermer</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
+        </span>
+    </div>
+    @endif
 
     <!-- Blog Content -->
     <section class="py-12">
@@ -111,7 +120,7 @@
                                                 <span class="text-gray-500 text-sm ml-2">• {{ $comment->created_at->diffForHumans() }}</span>
                                             </div>
                                             <p class="text-gray-700">{{ $comment->content }}</p>
-                                            <button class="text-green-600 text-sm font-medium mt-2 hover:text-green-800">Répondre</button>
+                                            <button type="button" class="reply-button text-green-600 text-sm font-medium mt-2 hover:text-green-800" data-comment-id="{{ $comment->id }}" data-comment-name="{{ $comment->name }}">Répondre</button>
                                         </div>
                                     </div>
                                     
@@ -145,6 +154,7 @@
                                 <h4 class="text-lg font-semibold mb-4">Laisser un commentaire</h4>
                                 <form action="{{ route('blog.comment', $post->slug) }}" method="post">
                                     @csrf
+                                    <input type="hidden" name="parent_id" id="parent_id" value="">
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                         <div>
                                             <label for="name" class="block text-gray-700 text-sm font-medium mb-2">Nom *</label>
@@ -204,11 +214,11 @@
                             <li>
                                 <a href="{{ route('blog.category', $category->slug) }}" class="flex items-center justify-between text-gray-700 hover:text-green-600">
                                     <span>{{ $category->name }}</span>
-                                    <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs">{{ $category->posts_count }}</span>
+                                    <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs">{{ $category->blog_posts_count }}</span>
                                 </a>
                             </li>
                             @empty
-                            <li>Aucune catégorie disponible</li>
+                            <li class="text-gray-500">Aucune catégorie disponible</li>
                             @endforelse
                         </ul>
                     </div>
@@ -219,12 +229,18 @@
                         <ul class="space-y-4">
                             @forelse($recentPosts as $recentPost)
                             <li class="flex items-start">
-                                <img src="{{ $recentPost->image ? asset($recentPost->image) : asset('assets/images/blog-placeholder.jpg') }}" alt="{{ $recentPost->title }}" class="w-16 h-16 object-cover rounded mr-3">
+                                @if($recentPost->image)
+                                    <img src="{{ $recentPost->image->getFileUrl() }}" alt="{{ $recentPost->title }}" class="w-16 h-16 object-cover rounded mr-3">
+                                @else
+                                    <div class="w-16 h-16 bg-gray-200 flex items-center justify-center rounded mr-3">
+                                        <span class="text-gray-500 text-xs">Aucune image</span>
+                                    </div>
+                                @endif
                                 <div>
                                     <h4 class="font-medium">
                                         <a href="{{ route('blog.show', $recentPost->slug) }}" class="text-gray-800 hover:text-green-600">{{ $recentPost->title }}</a>
                                     </h4>
-                                    <span class="text-sm text-gray-600">{{ $recentPost->created_at->format('d M Y') }}</span>
+                                    <span class="text-sm text-gray-600">{{ $recentPost->published_at ? $recentPost->published_at->format('d M Y') : $recentPost->created_at->format('d M Y') }}</span>
                                 </div>
                             </li>
                             @empty
@@ -254,22 +270,31 @@
                             @forelse($relatedTours as $tour)
                             <li class="{{ !$loop->last ? 'border-b border-gray-100 pb-4' : '' }}">
                                 <a href="{{ route('circuits.show', $tour->slug) }}" class="flex items-start hover:opacity-90 transition duration-300">
-                                    <img src="{{ $tour->image ? asset($tour->image) : asset('assets/images/tour-placeholder.jpg') }}" alt="{{ $tour->title }}" class="w-20 h-16 object-cover rounded mr-3">
+                                    @if($tour->image)
+                                        <img src="{{ $tour->image->getFileUrl() }}" alt="{{ $tour->titre }}" class="w-20 h-16 object-cover rounded mr-3">
+                                    @else
+                                        <div class="w-20 h-16 bg-gray-200 flex items-center justify-center rounded mr-3">
+                                            <span class="text-gray-500 text-xs">Aucune image</span>
+                                        </div>
+                                    @endif
                                     <div>
-                                        <h4 class="font-medium text-gray-800">{{ $tour->title }}</h4>
+                                        <h4 class="font-medium text-gray-800">{{ $tour->titre }}</h4>
                                         <div class="flex items-center mt-1">
                                             <div class="text-yellow-500 text-xs mr-1">
+                                                @php
+                                                    $rating = $tour->rating ?? 4;
+                                                @endphp
                                                 @for($i = 1; $i <= 5; $i++)
-                                                    @if($i <= $tour->rating)
+                                                    @if($i <= $rating)
                                                         <i class="fas fa-star"></i>
-                                                    @elseif($i - 0.5 <= $tour->rating)
+                                                    @elseif($i - 0.5 <= $rating)
                                                         <i class="fas fa-star-half-alt"></i>
                                                     @else
                                                         <i class="far fa-star"></i>
                                                     @endif
                                                 @endfor
                                             </div>
-                                            <span class="text-sm text-gray-600">{{ $tour->duration }} jours</span>
+                                            <span class="text-sm text-gray-600">{{ $tour->duree ?? '3-5' }} jours</span>
                                         </div>
                                     </div>
                                 </a>
@@ -288,4 +313,68 @@
             </div>
         </div>
     </section>
+
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sélectionner tous les boutons de réponse
+            const replyButtons = document.querySelectorAll('.reply-button');
+            const commentForm = document.querySelector('form[action*="comment"]');
+            const parentIdInput = document.getElementById('parent_id');
+            const formTitle = document.querySelector('form[action*="comment"] h4');
+            const originalTitle = formTitle.textContent;
+            const submitButton = commentForm.querySelector('button[type="submit"]');
+            const originalButtonText = submitButton.textContent.trim();
+            
+            // Ajouter un bouton pour annuler la réponse
+            const cancelButton = document.createElement('button');
+            cancelButton.type = 'button';
+            cancelButton.className = 'bg-gray-500 text-white font-medium py-2 px-6 rounded-md hover:bg-gray-600 transition duration-300 ml-2';
+            cancelButton.textContent = 'Annuler';
+            cancelButton.style.display = 'none';
+            submitButton.parentNode.insertBefore(cancelButton, submitButton.nextSibling);
+            
+            // Fonction pour réinitialiser le formulaire
+            function resetForm() {
+                parentIdInput.value = '';
+                formTitle.textContent = originalTitle;
+                submitButton.textContent = originalButtonText;
+                cancelButton.style.display = 'none';
+                // Faire défiler vers le formulaire
+                commentForm.scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            // Ajouter un gestionnaire d'événements pour chaque bouton de réponse
+            replyButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const commentId = this.getAttribute('data-comment-id');
+                    const commentName = this.getAttribute('data-comment-name');
+                    
+                    // Mettre à jour le champ parent_id
+                    parentIdInput.value = commentId;
+                    
+                    // Mettre à jour le titre du formulaire
+                    formTitle.textContent = `Répondre à ${commentName}`;
+                    
+                    // Mettre à jour le texte du bouton
+                    submitButton.textContent = 'Publier la réponse';
+                    
+                    // Afficher le bouton d'annulation
+                    cancelButton.style.display = 'inline-block';
+                    
+                    // Faire défiler vers le formulaire
+                    commentForm.scrollIntoView({ behavior: 'smooth' });
+                });
+            });
+            
+            // Ajouter un gestionnaire d'événements pour le bouton d'annulation
+            cancelButton.addEventListener('click', resetForm);
+            
+            // Réinitialiser le formulaire lors de la soumission
+            commentForm.addEventListener('submit', function() {
+                // Le formulaire sera réinitialisé après le rechargement de la page
+            });
+        });
+    </script>
+    @endpush
 @endsection

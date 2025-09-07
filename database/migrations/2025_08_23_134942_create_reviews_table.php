@@ -12,8 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('reviews', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary(); // UUID pour l'id
+            $table->uuid('circuit_id'); // Assurez-vous que circuit.id est aussi UUID
+            $table->string('name');
+            $table->string('email');
+            $table->tinyInteger('rating');
+            $table->text('comment');
+            $table->boolean('is_approved')->default(false);
             $table->timestamps();
+
+            // Optionnel : clé étrangère si circuit_id est UUID
+            $table->foreign('circuit_id')->references('id')->on('circuits')->onDelete('cascade');
         });
     }
 

@@ -16,11 +16,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Exécuter le seeder d'utilisateurs
+        // Exécuter les seeders
         $this->call([
             UserSeeder::class,
             TestimonialSeeder::class,
             SettingsSeeder::class,
+            ReviewSeeder::class,
         ]);
 
         TypeProduct::factory()->create([

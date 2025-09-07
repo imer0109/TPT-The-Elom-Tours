@@ -82,6 +82,16 @@ class BlogPost extends Model
     {
         return $this->hasMany(Comment::class, 'blog_post_id');
     }
+    
+    /**
+     * Get only approved parent comments for the blog post.
+     */
+    public function approvedComments()
+    {
+        return $this->comments()->approved()->parents()->with(['replies' => function($query) {
+            $query->approved();
+        }])->orderBy('created_at', 'desc');
+    }
 
     /**
      * Get the featured image for the blog post.

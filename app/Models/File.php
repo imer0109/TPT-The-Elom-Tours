@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Laravel\Sanctum\HasApiTokens;
 use App\Traits\File\FileManagementTrait;
+use Illuminate\Support\Facades\Storage;
 
 class File extends Model
 {
@@ -27,6 +28,7 @@ class File extends Model
      */
     public function getFileUrl(): string
     {
-        return parent::getFileUrl($this->path);
+        // Utiliser directement la méthode du trait avec le chemin du fichier
+        return Storage::disk('public')->url($this->path);
     }
 }

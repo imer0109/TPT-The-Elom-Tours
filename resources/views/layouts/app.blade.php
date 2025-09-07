@@ -69,5 +69,7 @@
         // Variable pour la clé VAPID publique (à remplacer par votre clé réelle)
         window.vapidPublicKey = '{{ config("services.webpush.public_key", "") }}';
     </script>
+    
+    @stack('scripts')
 </body>
 </html>

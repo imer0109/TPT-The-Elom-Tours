@@ -27,7 +27,7 @@
                 <div>
                     <p class="text-gray-600 mb-1">Statut</p>
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                        {{ $reservation->statut_label }}
+                        {{ $reservation->status_label }}
                     </span>
                 </div>
                 

@@ -49,7 +49,8 @@
         <div class="bg-white rounded-lg shadow-md p-6">
             <div class="flex items-center">
                 <div class="p-3 rounded-full bg-green-100 text-green-600">
-                    <i class="fas fa-euro-sign fa-2x"></i>
+             <i class="fas fa-coins fa-2x"></i>
+
                 </div>
                 <div class="ml-4">
                     <p class="text-sm text-gray-500">Montant total</p>

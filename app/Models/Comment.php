@@ -15,21 +15,53 @@ class Comment extends Model
 {
     use HasFactory, HasApiTokens, HasUuids;
 
-    protected $guarded = ['id'];
+    protected $fillable = [
+        'blog_post_id',
+        'name',
+        'email',
+        'content',
+        'parent_id',
+        'is_approved'
+    ];
 
-    public $timestamps = false;
+    protected $casts = [
+        'is_approved' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime'
+    ];
 
-    // protected $casts = [
-    //     'replies' => 'array',
-    // ];
-
-    public function blog() {
-        return $this->belongsTo(Blog::class);
-    }
-    
+    /**
+     * Relation avec le blog post
+     */
     public function blogPost() {
         return $this->belongsTo(BlogPost::class);
     }
     
-
+    /**
+     * Relation avec le commentaire parent
+     */
+    public function parent() {
+        return $this->belongsTo(Comment::class, 'parent_id');
+    }
+    
+    /**
+     * Relation avec les réponses (commentaires enfants)
+     */
+    public function replies() {
+        return $this->hasMany(Comment::class, 'parent_id');
+    }
+    
+    /**
+     * Scope pour les commentaires approuvés
+     */
+    public function scopeApproved($query) {
+        return $query->where('is_approved', true);
+    }
+    
+    /**
+     * Scope pour les commentaires parents (pas de parent_id)
+     */
+    public function scopeParents($query) {
+        return $query->whereNull('parent_id');
+    }
 }

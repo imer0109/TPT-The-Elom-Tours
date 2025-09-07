@@ -85,10 +85,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Close lightbox when clicking outside the image
-        lightbox.addEventListener('click', function(e) {
-            if (e.target === lightbox) {
-                lightbox.classList.add('hidden');
-            }
-        });
+        if (lightbox) {
+            lightbox.addEventListener('click', function(e) {
+                if (e.target === lightbox) {
+                    lightbox.classList.add('hidden');
+                }
+            });
+        }
     }
 });

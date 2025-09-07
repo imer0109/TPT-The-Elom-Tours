@@ -59,7 +59,7 @@ trait FileManagementTrait
 	 * @param string $file_name
 	 * @return string
 	 */
-	private function getFileUrl(string $file_name): string
+	public function getFileUrl(string $file_name): string
 	{
 		return Storage::disk(static::$disk)->url($file_name);
 	}
