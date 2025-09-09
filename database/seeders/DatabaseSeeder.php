@@ -16,25 +16,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Exécuter les seeders
+        // Exécuter le seeder d'utilisateurs
         $this->call([
             UserSeeder::class,
             TestimonialSeeder::class,
             SettingsSeeder::class,
-            ReviewSeeder::class,
         ]);
 
-        TypeProduct::factory()->create([
-            'name' => 'Logiciel',
-        ]);
+        
 
-        TypeProduct::factory()->create([
-            'name' => 'Equipement',
-        ]);
-
-        Category::factory()->create([
-            'type_product_id' => TypeProduct::query()->first()->id,
-            'name' => 'App Mobile',
-        ]);
+        
     }
 }

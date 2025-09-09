@@ -3,7 +3,7 @@
 @section('title', $destination->name . ' - The Elom Tours')
 
 @section('content')
-<div class="container mx-auto px-4 py-12">
+<div class="container mx-auto px-4 py-12 mt-52">
     <!-- Hero Section -->
     <div class="relative h-96 rounded-xl overflow-hidden mb-12">
         @if($destination->getFirstMediaUrl('images'))

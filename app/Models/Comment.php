@@ -10,16 +10,17 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Sanctum\HasApiTokens;
+use App\Traits\LogsActivity;
 
 class Comment extends Model
 {
-    use HasFactory, HasApiTokens, HasUuids;
+    use HasFactory, HasApiTokens, HasUuids, LogsActivity;
 
     protected $fillable = [
         'blog_post_id',
         'name',
         'email',
-        'content',
+        'comment',
         'parent_id',
         'is_approved'
     ];

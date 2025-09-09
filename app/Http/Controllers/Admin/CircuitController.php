@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
+use App\Services\ActivityLogService;
 
 class CircuitController extends Controller
 {
@@ -91,17 +92,8 @@ class CircuitController extends Controller
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = time() . '_' . $image->getClientOriginalName();
-            
-            // Utiliser une méthode alternative pour enregistrer l'image
-            $destinationPath = public_path('storage/circuits');
-            
-            // S'assurer que le répertoire existe
-            if (!file_exists($destinationPath)) {
-                mkdir($destinationPath, 0777, true);
-            }
-            
-            // Déplacer le fichier manuellement
-            $image->move($destinationPath, $imageName);
+            // Stocker via le disque public pour cohérence cross-plateforme
+            \Illuminate\Support\Facades\Storage::disk('public')->putFileAs('circuits', $image, $imageName);
             $imagePath = 'circuits/' . $imageName;
         }
 
@@ -195,27 +187,14 @@ class CircuitController extends Controller
             // Supprimer l'ancienne image si elle existe
             if ($circuit->images()->exists()) {
                 $oldImage = $circuit->images()->first();
-                // Supprimer le fichier physique
-                $oldImagePath = public_path('storage/' . $oldImage->url);
-                if (file_exists($oldImagePath)) {
-                    unlink($oldImagePath);
-                }
+                // Supprimer le fichier du disque public
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($oldImage->url);
                 $oldImage->delete();
             }
             
             $image = $request->file('image');
             $imageName = time() . '_' . $image->getClientOriginalName();
-            
-            // Utiliser une méthode alternative pour enregistrer l'image
-            $destinationPath = public_path('storage/circuits');
-            
-            // S'assurer que le répertoire existe
-            if (!file_exists($destinationPath)) {
-                mkdir($destinationPath, 0777, true);
-            }
-            
-            // Déplacer le fichier manuellement
-            $image->move($destinationPath, $imageName);
+            \Illuminate\Support\Facades\Storage::disk('public')->putFileAs('circuits', $image, $imageName);
             $imagePath = 'circuits/' . $imageName;
             
             // Créer une nouvelle image de circuit
@@ -258,7 +237,7 @@ class CircuitController extends Controller
      * @param  \App\Models\Circuit  $circuit
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Circuit $circuit)
+    public function destroy(Circuit $circuit, ActivityLogService $activityLogService)
     {
         // Supprimer les images associées
         foreach ($circuit->images as $image) {
@@ -270,8 +249,15 @@ class CircuitController extends Controller
             $image->delete();
         }
 
-        // Supprimer le circuit
-        $circuit->delete();
+        // Supprimer/Archiver le circuit selon le rôle
+        $user = auth()->user();
+        if ($user && $user->hasRole('Super Administrateur')) {
+            $activityLogService->logDeleted($circuit);
+            $circuit->forceDelete();
+        } else {
+            $circuit->delete();
+            $activityLogService->logArchived($circuit);
+        }
 
         return redirect()->route('admin.circuits.index')
             ->with('success', 'Circuit supprimé avec succès.');

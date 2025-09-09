@@ -35,7 +35,7 @@
                     <option value="">Toutes les catégories</option>
                     @foreach($categories as $category)
                         <option value="{{ $category->id }}" @selected(request('category') == $category->id)>
-                            {{ $category->name }}
+                            {{ $category->nom }}
                         </option>
                     @endforeach
                 </select>
@@ -78,7 +78,7 @@
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Titre</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Catégorie</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Auteur</th>
+                    <!-- <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Auteur</th> -->
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date de publication</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Statut</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Mis en avant</th>
@@ -91,7 +91,7 @@
                         <td class="px-6 py-4 flex items-center">
                             @if($post->image)
                                 <img class="h-10 w-10 rounded-md object-cover mr-3" 
-                                     src="{{ Storage::url($post->image->path) }}" 
+                                     src="{{ Storage::url($post->image->path) }}"  
                                      alt="{{ $post->title }}">
                             @endif
                             <div>
@@ -101,8 +101,8 @@
                                 </div>
                             </div>
                         </td>
-                        <td class="px-6 py-4">{{ $post->category->name ?? 'Non catégorisé' }}</td>
-                        <td class="px-6 py-4">{{ $post->user->name ?? 'Inconnu' }}</td>
+                        <td class="px-6 py-4">{{ $post->category->nom ?? 'Non catégorisé' }}</td>
+                        <!-- <td class="px-6 py-4">{{ $post->user->name ?? 'Inconnu' }}</td> -->
                         <td class="px-6 py-4">{{ $post->published_at ? $post->published_at->format('d/m/Y H:i') : 'Non publié' }}</td>
                         <td class="px-6 py-4">
                             <form action="{{ route('admin.blog.toggle-active', $post) }}" method="POST">
@@ -133,6 +133,23 @@
                             <a href="{{ route('admin.blog.edit', $post) }}" class="text-indigo-600 hover:text-indigo-900" aria-label="Modifier">
                                 <i class="fas fa-edit"></i>
                             </a>
+                            @if(!$post->published_at)
+                            <form action="{{ route('admin.blog.publish', $post) }}" method="POST">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" class="text-green-600 hover:text-green-900" aria-label="Publier">
+                                    <i class="fas fa-upload"></i>
+                                </button>
+                            </form>
+                            @else
+                            <form action="{{ route('admin.blog.unpublish', $post) }}" method="POST">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" class="text-yellow-600 hover:text-yellow-900" aria-label="Dépublier">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </form>
+                            @endif
                             <form action="{{ route('admin.blog.destroy', $post) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?')">
                                 @csrf
                                 @method('DELETE')

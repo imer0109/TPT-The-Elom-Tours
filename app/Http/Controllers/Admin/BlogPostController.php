@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Services\ActivityLogService;
 
 class BlogPostController extends Controller
 {
@@ -121,7 +122,10 @@ class BlogPostController extends Controller
         // Traitement de l'image
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $filename = time() . '_' . $image->getClientOriginalName();
+            $original = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+            $ext = $image->getClientOriginalExtension();
+            $safe = Str::slug($original);
+            $filename = time() . '_' . ($safe ?: 'image') . ($ext ? ('.' . $ext) : '');
             $path = $image->storeAs('blog', $filename, 'public');
 
             File::create([
@@ -202,7 +206,10 @@ class BlogPostController extends Controller
             }
 
             $image = $request->file('image');
-            $filename = time() . '_' . $image->getClientOriginalName();
+            $original = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+            $ext = $image->getClientOriginalExtension();
+            $safe = Str::slug($original);
+            $filename = time() . '_' . ($safe ?: 'image') . ($ext ? ('.' . $ext) : '');
             $path = $image->storeAs('blog', $filename, 'public');
 
             File::create([
@@ -223,7 +230,7 @@ class BlogPostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(BlogPost $blogPost)
+    public function destroy(BlogPost $blogPost, ActivityLogService $activityLogService)
     {
         // Supprimer l'image associée si elle existe
         if ($blogPost->image) {
@@ -234,8 +241,15 @@ class BlogPostController extends Controller
         // Supprimer les commentaires associés
         $blogPost->comments()->delete();
 
-        // Supprimer l'article de blog
-        $blogPost->delete();
+        // Supprimer/Archiver l'article de blog selon le rôle
+        $user = auth()->user();
+        if ($user && $user->hasRole('Super Administrateur')) {
+            $activityLogService->logDeleted($blogPost);
+            $blogPost->forceDelete();
+        } else {
+            $blogPost->delete();
+            $activityLogService->logArchived($blogPost);
+        }
 
         return redirect()->route('admin.blog.index')
             ->with('success', 'Article de blog supprimé avec succès.');
@@ -267,5 +281,59 @@ class BlogPostController extends Controller
 
         return redirect()->route('admin.blog.index')
             ->with('success', "L'article de blog a été {$status} avec succès.");
+    }
+
+    /**
+     * Publish the specified blog post now.
+     */
+    public function publish(BlogPost $blogPost)
+    {
+        $blogPost->published_at = now();
+        $blogPost->is_active = true;
+        $blogPost->save();
+
+        return redirect()->route('admin.blog.index')
+            ->with('success', "L'article a été publié.");
+    }
+
+    /**
+     * Unpublish the specified blog post.
+     */
+    public function unpublish(BlogPost $blogPost)
+    {
+        $blogPost->published_at = null;
+        $blogPost->save();
+
+        return redirect()->route('admin.blog.index')
+            ->with('success', "La publication de l'article a été retirée.");
+    }
+
+    // Ajouter cette méthode pour gérer l'upload d'image
+    public function uploadImage(Request $request, BlogPost $blogPost)
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+        
+        // Supprimer l'ancienne image si elle existe
+        if ($blogPost->image) {
+            Storage::disk('public')->delete($blogPost->image->path);
+            $blogPost->image->delete();
+        }
+        
+        // Enregistrer la nouvelle image
+        $path = $request->file('image')->store('blog', 'public');
+        
+        // Créer un nouvel enregistrement File
+        $file = new \App\Models\File([
+            'name' => $request->file('image')->getClientOriginalName(),
+            'path' => $path,
+            'mime_type' => $request->file('image')->getMimeType(),
+            'size' => $request->file('image')->getSize(),
+        ]);
+        
+        $blogPost->image()->save($file);
+        
+        return redirect()->back()->with('success', 'Image téléchargée avec succès.');
     }
 }

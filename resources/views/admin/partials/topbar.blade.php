@@ -21,11 +21,31 @@
         
         <!-- Right Side Icons -->
         <div class="flex items-center space-x-4">
+            @php
+                $notifItems = [];
+                try {
+                    $pendingReservations = \App\Models\Reservation::where('status', 'pending')->count();
+                    if ($pendingReservations > 0) {
+                        $notifItems[] = [
+                            'type' => 'warning',
+                            'icon' => 'exclamation-triangle',
+                            'title' => 'Réservations en attente',
+                            'message' => 'Il y a ' . $pendingReservations . ' réservation(s) en attente',
+                            'time' => 'Maintenant',
+                        ];
+                    }
+                } catch (\Throwable $e) {}
+
+                $recentMessages = collect();
+                try {
+                    $recentMessages = \App\Models\Message::orderByDesc('created_at')->limit(5)->get();
+                } catch (\Throwable $e) {}
+            @endphp
             <!-- Notifications -->
             <div class="relative" x-data="{ open: false }">
                 <button @click="open = !open" type="button" class="relative p-1 text-gray-500 hover:text-gray-600 focus:outline-none">
                     <i class="fas fa-bell text-xl"></i>
-                    <span class="absolute top-0 right-0 inline-flex items-center justify-center h-5 w-5 rounded-full text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-500">3</span>
+                    <span class="absolute top-0 right-0 inline-flex items-center justify-center h-5 w-5 rounded-full text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-500">{{ max(count($notifItems), 0) }}</span>
                 </button>
                 
                 <!-- Dropdown -->
@@ -35,47 +55,30 @@
                             <p class="text-sm font-medium text-gray-900">Notifications</p>
                         </div>
                         
-                        <!-- Notification 1 -->
-                        <a href="#" class="flex px-4 py-3 hover:bg-gray-50">
+                        @forelse($notifItems as $n)
+                        <div class="flex px-4 py-3 hover:bg-gray-50">
                             <div class="flex-shrink-0">
-                                <div class="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center">
-                                    <i class="fas fa-exclamation-triangle text-red-500"></i>
+                                <div class="h-10 w-10 rounded-full flex items-center justify-center
+                                     {{ ($n['type'] ?? 'info') === 'warning' ? 'bg-yellow-100' : '' }}
+                                     {{ ($n['type'] ?? 'info') === 'info' ? 'bg-blue-100' : '' }}
+                                     {{ ($n['type'] ?? 'info') === 'success' ? 'bg-green-100' : '' }}
+                                     {{ ($n['type'] ?? 'info') === 'error' ? 'bg-red-100' : '' }}">
+                                    <i class="fas fa-{{ $n['icon'] ?? 'info-circle' }}
+                                        {{ ($n['type'] ?? 'info') === 'warning' ? 'text-yellow-600' : '' }}
+                                        {{ ($n['type'] ?? 'info') === 'info' ? 'text-blue-600' : '' }}
+                                        {{ ($n['type'] ?? 'info') === 'success' ? 'text-green-600' : '' }}
+                                        {{ ($n['type'] ?? 'info') === 'error' ? 'text-red-600' : '' }}"></i>
                                 </div>
                             </div>
                             <div class="ml-3 w-0 flex-1">
-                                <p class="text-sm font-medium text-gray-900">Stock faible pour le circuit "Découverte de Kpalimé"</p>
-                                <p class="text-sm text-gray-500">Il ne reste que 2 places disponibles</p>
-                                <p class="text-xs text-gray-500 mt-1">Il y a 3 heures</p>
+                                <p class="text-sm font-medium text-gray-900">{{ $n['title'] ?? '' }}</p>
+                                <p class="text-sm text-gray-500">{{ $n['message'] ?? '' }}</p>
+                                <p class="text-xs text-gray-500 mt-1">{{ $n['time'] ?? '' }}</p>
                             </div>
-                        </a>
-                        
-                        <!-- Notification 2 -->
-                        <a href="#" class="flex px-4 py-3 hover:bg-gray-50">
-                            <div class="flex-shrink-0">
-                                <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                                    <i class="fas fa-envelope text-blue-500"></i>
-                                </div>
-                            </div>
-                            <div class="ml-3 w-0 flex-1">
-                                <p class="text-sm font-medium text-gray-900">Nouvelle demande de contact</p>
-                                <p class="text-sm text-gray-500">Sophie Martin a envoyé une demande d'information</p>
-                                <p class="text-xs text-gray-500 mt-1">Il y a 5 heures</p>
-                            </div>
-                        </a>
-                        
-                        <!-- Notification 3 -->
-                        <a href="#" class="flex px-4 py-3 hover:bg-gray-50">
-                            <div class="flex-shrink-0">
-                                <div class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
-                                    <i class="fas fa-check-circle text-green-500"></i>
-                                </div>
-                            </div>
-                            <div class="ml-3 w-0 flex-1">
-                                <p class="text-sm font-medium text-gray-900">Paiement reçu</p>
-                                <p class="text-sm text-gray-500">Le paiement de 1,250€ pour la réservation #12345 a été reçu</p>
-                                <p class="text-xs text-gray-500 mt-1">Il y a 1 jour</p>
-                            </div>
-                        </a>
+                        </div>
+                        @empty
+                        <div class="px-4 py-3 text-center text-gray-500">Aucune notification</div>
+                        @endforelse
                         
                         <div class="px-4 py-3 text-center">
                             <a href="#" class="text-sm font-medium text-primary hover:text-green-700">Voir toutes les notifications</a>
@@ -88,7 +91,7 @@
             <div class="relative" x-data="{ open: false }">
                 <button @click="open = !open" type="button" class="relative p-1 text-gray-500 hover:text-gray-600 focus:outline-none">
                     <i class="fas fa-envelope text-xl"></i>
-                    <span class="absolute top-0 right-0 inline-flex items-center justify-center h-5 w-5 rounded-full text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-500">2</span>
+                    <span class="absolute top-0 right-0 inline-flex items-center justify-center h-5 w-5 rounded-full text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-500">{{ max($recentMessages->count(), 0) }}</span>
                 </button>
                 
                 <!-- Dropdown -->
@@ -98,29 +101,24 @@
                             <p class="text-sm font-medium text-gray-900">Messages</p>
                         </div>
                         
-                        <!-- Message 1 -->
-                        <a href="#" class="flex px-4 py-3 hover:bg-gray-50">
+                        @forelse($recentMessages as $m)
+                        @php
+                            $sender = trim(($m->nom ?? '').' '.($m->prenom ?? '')) ?: ($m->name ?? 'Visiteur');
+                            $avatar = 'https://ui-avatars.com/api/?name='.urlencode($sender).'&background=16A34A&color=fff';
+                        @endphp
+                        <div class="flex px-4 py-3 hover:bg-gray-50">
                             <div class="flex-shrink-0">
-                                <img class="h-10 w-10 rounded-full" src="https://ui-avatars.com/api/?name=Jean+Dupont&background=16A34A&color=fff" alt="Jean Dupont">
+                                <img class="h-10 w-10 rounded-full" src="{{ $avatar }}" alt="{{ $sender }}">
                             </div>
                             <div class="ml-3 w-0 flex-1">
-                                <p class="text-sm font-medium text-gray-900">Jean Dupont</p>
-                                <p class="text-sm text-gray-500 truncate">Bonjour, je souhaiterais avoir plus d'informations...</p>
-                                <p class="text-xs text-gray-500 mt-1">Il y a 30 minutes</p>
+                                <p class="text-sm font-medium text-gray-900">{{ $sender }}</p>
+                                <p class="text-sm text-gray-500 truncate">{{ Str::limit($m->message ?? ($m->content ?? ''), 80) }}</p>
+                                <p class="text-xs text-gray-500 mt-1">{{ \Carbon\Carbon::parse($m->created_at)->diffForHumans() }}</p>
                             </div>
-                        </a>
-                        
-                        <!-- Message 2 -->
-                        <a href="#" class="flex px-4 py-3 hover:bg-gray-50">
-                            <div class="flex-shrink-0">
-                                <img class="h-10 w-10 rounded-full" src="https://ui-avatars.com/api/?name=Marie+Lefebvre&background=1E40AF&color=fff" alt="Marie Lefebvre">
-                            </div>
-                            <div class="ml-3 w-0 flex-1">
-                                <p class="text-sm font-medium text-gray-900">Marie Lefebvre</p>
-                                <p class="text-sm text-gray-500 truncate">Est-ce que le circuit Safari à Fazao est disponible...</p>
-                                <p class="text-xs text-gray-500 mt-1">Il y a 2 heures</p>
-                            </div>
-                        </a>
+                        </div>
+                        @empty
+                        <div class="px-4 py-3 text-center text-gray-500">Aucun message récent</div>
+                        @endforelse
                         
                         <div class="px-4 py-3 text-center">
                             <a href="#" class="text-sm font-medium text-primary hover:text-green-700">Voir tous les messages</a>
@@ -131,10 +129,15 @@
             
             <!-- User Menu -->
             <div class="relative" x-data="{ open: false }">
+                @php
+                    $user = auth()->user();
+                    $displayName = $user ? (trim(($user->firstName ?? '').' '.($user->lastName ?? '')) ?: ($user->name ?? 'Utilisateur')) : 'Utilisateur';
+                    $avatarUrl = 'https://ui-avatars.com/api/?name='.urlencode($displayName).'&background=16A34A&color=fff';
+                @endphp
                 <button @click="open = !open" type="button" class="flex items-center focus:outline-none" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
-                    <img class="h-8 w-8 rounded-full" src="https://ui-avatars.com/api/?name=Admin+User&background=16A34A&color=fff" alt="Admin User">
+                    <img class="h-8 w-8 rounded-full" src="{{ $avatarUrl }}" alt="{{ $displayName }}">
                     <span class="hidden md:flex md:items-center ml-2">
-                        <span class="text-sm font-medium text-gray-700">Admin User</span>
+                        <span class="text-sm font-medium text-gray-700">{{ $displayName }}</span>
                         <i class="fas fa-chevron-down ml-1 text-xs text-gray-400"></i>
                     </span>
                 </button>

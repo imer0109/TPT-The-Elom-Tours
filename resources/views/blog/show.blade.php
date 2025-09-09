@@ -3,7 +3,7 @@
 @section('content')
     <!-- Hero Section -->
     <section class="relative">
-        <div class="hero-image h-64 md:h-96 bg-cover bg-center bg-[#16a34a]" 
+        <div class="hero-image h-64 md:h-96 bg-cover bg-center bg-[#16a34a] mt-20" 
         @if($post->image)
         style="background-image: url('{{ $post->image->getFileUrl() }}')" 
         @endif
@@ -17,10 +17,10 @@
                             <i class="far fa-calendar-alt mr-1"></i>
                             {{ $post->published_at ? $post->published_at->format('d M Y') : $post->created_at->format('d M Y') }}
                         </span>
-                        <span>
+                        <!-- <span>
                             <i class="far fa-user mr-1"></i>
                             Par {{ $post->user ? $post->user->name : 'Admin' }}
-                        </span>
+                        </span> -->
                     </div>
                 </div>
             </div>
@@ -95,7 +95,7 @@
                         </div>
                         
                         <!-- Author Bio -->
-                        <div class="mt-8 pt-6 border-t border-gray-200">
+                        <!-- <div class="mt-8 pt-6 border-t border-gray-200">
                             <div class="flex items-center">
                                 <img src="{{ asset('assets/images/author.jpg') }}" alt="Elom Koudjo" class="w-16 h-16 rounded-full mr-4">
                                 <div>
@@ -103,7 +103,7 @@
                                     <p class="text-gray-600">Guide touristique et spécialiste du Togo avec plus de 15 ans d'expérience. Passionné par le partage de la culture et des traditions togolaises avec les voyageurs du monde entier.</p>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                         
                         <!-- Comments -->
                         <div class="mt-8 pt-6 border-t border-gray-200">
@@ -113,13 +113,17 @@
                                 @forelse($post->approvedComments as $comment)
                                 <div class="bg-gray-50 p-4 rounded-lg">
                                     <div class="flex items-start">
-                                        <img src="{{ asset('assets/images/user-avatar.jpg') }}" alt="Commentaire" class="w-12 h-12 rounded-full mr-4">
+                                    <div
+                                            class="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center mr-4">
+                                            <i class="fas fa-user text-gray-600 text-xl"></i>
+                                        </div>
+                                        
                                         <div>
                                             <div class="flex items-center mb-1">
                                                 <h4 class="font-semibold">{{ $comment->name }}</h4>
                                                 <span class="text-gray-500 text-sm ml-2">• {{ $comment->created_at->diffForHumans() }}</span>
                                             </div>
-                                            <p class="text-gray-700">{{ $comment->content }}</p>
+                                            <p class="text-gray-700">{{ $comment->comment }}</p>
                                             <button type="button" class="reply-button text-green-600 text-sm font-medium mt-2 hover:text-green-800" data-comment-id="{{ $comment->id }}" data-comment-name="{{ $comment->name }}">Répondre</button>
                                         </div>
                                     </div>
@@ -135,7 +139,7 @@
                                                     <h4 class="font-semibold">{{ $reply->name }}</h4>
                                                     <span class="text-gray-500 text-sm ml-2">• {{ $reply->created_at->diffForHumans() }}</span>
                                                 </div>
-                                                <p class="text-gray-700">{{ $reply->content }}</p>
+                                                <p class="text-gray-700">{{ $reply->comment }}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -172,9 +176,9 @@
                                         </div>
                                     </div>
                                     <div class="mb-4">
-                                        <label for="content" class="block text-gray-700 text-sm font-medium mb-2">Commentaire *</label>
-                                        <textarea id="content" name="content" rows="5" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 @error('content') border-red-500 @enderror" required>{{ old('content') }}</textarea>
-                                        @error('content')
+                                        <label for="comment" class="block text-gray-700 text-sm font-medium mb-2">Commentaire *</label>
+                                        <textarea id="comment" name="comment" rows="5" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 @error('comment') border-red-500 @enderror" required>{{ old('comment') }}</textarea>
+                                        @error('comment')
                                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                         @enderror
                                     </div>
@@ -213,7 +217,7 @@
                             @forelse($categories as $category)
                             <li>
                                 <a href="{{ route('blog.category', $category->slug) }}" class="flex items-center justify-between text-gray-700 hover:text-green-600">
-                                    <span>{{ $category->name }}</span>
+                                    <span>{{ $category->nom }}</span>
                                     <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs">{{ $category->blog_posts_count }}</span>
                                 </a>
                             </li>
@@ -250,7 +254,7 @@
                     </div>
 
                     <!-- Tags -->
-                    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                    <!-- <div class="bg-white rounded-lg shadow-md p-6 mb-8">
                         <h3 class="text-lg font-semibold mb-4">Tags</h3>
                         <div class="flex flex-wrap gap-2">
                             @if($post->tags && count($post->tags) > 0)
@@ -261,7 +265,7 @@
                                 <span class="text-gray-500">Aucun tag associé à cet article</span>
                             @endif
                         </div>
-                    </div>
+                    </div> -->
 
                     <!-- Related Tours -->
                     <div class="bg-white rounded-lg shadow-md p-6">

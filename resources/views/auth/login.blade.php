@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto px-4 py-16">
+<div class="container mx-auto px-4 py-16 mt-32">
     <div class="max-w-md mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
         <div class="px-6 py-8">
             <h2 class="text-2xl font-bold text-center text-gray-800 mb-8">Connexion</h2>

@@ -4,7 +4,12 @@
 
 @section('content')
 <div class="container mx-auto">
-    <h1 class="text-2xl font-bold mb-6">Tableau de bord</h1>
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold">Tableau de bord</h1>
+        @auth
+        <p class="text-sm text-gray-600 mt-1">Connecté en tant que <span class="font-medium">{{ auth()->user()->firstName ?? auth()->user()->name ?? 'Utilisateur' }}</span></p>
+        @endauth
+    </div>
     
     <!-- Statistiques -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -13,7 +18,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium">Total Réservations</p>
-                    <p class="text-3xl font-bold">124</p>
+                    <p class="text-3xl font-bold">{{ number_format($stats['reservations'] ?? 0, 0, ',', ' ') }}</p>
                 </div>
                 <div class="bg-[#16a34a] rounded-full p-3">
                     <i class="fas fa-calendar-check text-xl"></i>
@@ -29,7 +34,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium">Revenus</p>
-                    <p class="text-3xl font-bold">8,540€</p>
+                    <p class="text-3xl font-bold">{{ number_format($stats['revenue'] ?? 0, 0, ',', ' ') }} FCFA</p>
                 </div>
                 <div class="bg-[#16a34a] rounded-full p-3">
                     <i class="fas fa-money-bill-wave text-xl"></i>
@@ -45,7 +50,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium">Nouveaux Clients</p>
-                    <p class="text-3xl font-bold">45</p>
+                    <p class="text-3xl font-bold">{{ number_format($stats['newClients'] ?? 0, 0, ',', ' ') }}</p>
                 </div>
                 <div class="bg-[#16a34a] rounded-full p-3">
                     <i class="fas fa-users text-xl"></i>
@@ -61,7 +66,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium">Taux de Satisfaction</p>
-                    <p class="text-3xl font-bold">92%</p>
+                    <p class="text-3xl font-bold">{{ $stats['satisfaction'] ?? 0 }}%</p>
                 </div>
                 <div class="bg-[#16a34a] rounded-full p-3">
                     <i class="fas fa-smile text-xl"></i>
@@ -111,30 +116,38 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                    <!-- Ligne 1 -->
+                    @forelse($recentReservationsData ?? [] as $item)
                     <tr>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
                                 <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                                    <span class="text-gray-700 font-medium">JD</span>
+                                    <span class="text-gray-700 font-medium">{{ Str::of($item['client'])->explode(' ')->map(fn($p)=>Str::substr($p,0,1))->take(2)->implode('') }}</span>
                                 </div>
                                 <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">Jean Dupont</div>
-                                    <div class="text-sm text-gray-500">jean.dupont@example.com</div>
+                                    <div class="text-sm font-medium text-gray-900">{{ $item['client'] }}</div>
+                                    <div class="text-sm text-gray-500">{{ $item['email'] }}</div>
                                 </div>
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">Découverte de Kpalimé</div>
+                            <div class="text-sm text-gray-900">{{ $item['circuit'] }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">15/06/2023</div>
+                            <div class="text-sm text-gray-900">{{ $item['date'] }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">1,250€</div>
+                            <div class="text-sm text-gray-900">{{ number_format($item['amount'], 0, ',', ' ') }} FCFA</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Confirmé</span>
+                            @php $status = $item['status']; @endphp
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                {{ $status === 'confirmed' ? 'bg-green-100 text-green-800' : '' }}
+                                {{ $status === 'pending' ? 'bg-yellow-100 text-yellow-800' : '' }}
+                                {{ $status === 'cancelled' ? 'bg-red-100 text-red-800' : '' }}
+                                {{ $status === 'completed' ? 'bg-blue-100 text-blue-800' : '' }}
+                            ">
+                                {{ ucfirst($status) }}
+                            </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <a href="#" class="text-primary hover:text-green-700 mr-3"><i class="fas fa-eye"></i></a>
@@ -142,68 +155,11 @@
                             <a href="#" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></a>
                         </td>
                     </tr>
-                    <!-- Ligne 2 -->
+                    @empty
                     <tr>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                                    <span class="text-gray-700 font-medium">ML</span>
-                                </div>
-                                <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">Marie Lefebvre</div>
-                                    <div class="text-sm text-gray-500">marie.lefebvre@example.com</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">Safari à Fazao</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">12/06/2023</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">2,100€</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">En attente</span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <a href="#" class="text-primary hover:text-green-700 mr-3"><i class="fas fa-eye"></i></a>
-                            <a href="#" class="text-blue-600 hover:text-blue-800 mr-3"><i class="fas fa-edit"></i></a>
-                            <a href="#" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></a>
-                        </td>
+                        <td colspan="6" class="px-6 py-6 text-center text-gray-500">Aucune réservation récente</td>
                     </tr>
-                    <!-- Ligne 3 -->
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                                    <span class="text-gray-700 font-medium">PT</span>
-                                </div>
-                                <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">Pierre Thomas</div>
-                                    <div class="text-sm text-gray-500">pierre.thomas@example.com</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">Lomé Culturelle</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">10/06/2023</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">950€</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Confirmé</span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <a href="#" class="text-primary hover:text-green-700 mr-3"><i class="fas fa-eye"></i></a>
-                            <a href="#" class="text-blue-600 hover:text-blue-800 mr-3"><i class="fas fa-edit"></i></a>
-                            <a href="#" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></a>
-                        </td>
-                    </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
@@ -216,45 +172,27 @@
             <a href="#" class="text-primary hover:text-green-700 font-medium">Voir tout</a>
         </div>
         <div class="space-y-4">
-            <!-- Notification 1 -->
-            <div class="flex items-start p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-md">
+            @forelse(($notifications ?? []) as $n)
+            <div class="flex items-start p-4 rounded-md border-l-4
+                {{ ($n['type'] ?? 'info') === 'warning' ? 'bg-yellow-50 border-yellow-400' : '' }}
+                {{ ($n['type'] ?? 'info') === 'info' ? 'bg-blue-50 border-blue-400' : '' }}
+                {{ ($n['type'] ?? 'info') === 'success' ? 'bg-green-50 border-green-400' : '' }}
+                {{ ($n['type'] ?? 'info') === 'error' ? 'bg-red-50 border-red-400' : '' }}
+            ">
                 <div class="flex-shrink-0 mr-3">
-                    <i class="fas fa-exclamation-triangle text-yellow-500"></i>
+                    <i class="fas fa-{{ $n['icon'] ?? 'info-circle' }} {{ ($n['type'] ?? 'info') === 'warning' ? 'text-yellow-500' : '' }} {{ ($n['type'] ?? 'info') === 'info' ? 'text-blue-500' : '' }} {{ ($n['type'] ?? 'info') === 'success' ? 'text-green-500' : '' }} {{ ($n['type'] ?? 'info') === 'error' ? 'text-red-500' : '' }}"></i>
                 </div>
                 <div>
-                    <p class="text-sm font-medium text-gray-900">Stock faible pour le circuit "Découverte de Kpalimé"</p>
-                    <p class="text-sm text-gray-500 mt-1">Il ne reste que 2 places disponibles pour la date du 20/07/2023</p>
+                    <p class="text-sm font-medium text-gray-900">{{ $n['title'] ?? '' }}</p>
+                    <p class="text-sm text-gray-500 mt-1">{{ $n['message'] ?? '' }}</p>
                     <div class="mt-2">
-                        <span class="text-xs text-gray-500">Il y a 3 heures</span>
+                        <span class="text-xs text-gray-500">{{ $n['time'] ?? '' }}</span>
                     </div>
                 </div>
             </div>
-            <!-- Notification 2 -->
-            <div class="flex items-start p-4 bg-blue-50 border-l-4 border-blue-400 rounded-md">
-                <div class="flex-shrink-0 mr-3">
-                    <i class="fas fa-info-circle text-blue-500"></i>
-                </div>
-                <div>
-                    <p class="text-sm font-medium text-gray-900">Nouvelle demande de contact</p>
-                    <p class="text-sm text-gray-500 mt-1">Sophie Martin a envoyé une demande d'information concernant le circuit "Safari à Fazao"</p>
-                    <div class="mt-2">
-                        <span class="text-xs text-gray-500">Il y a 5 heures</span>
-                    </div>
-                </div>
-            </div>
-            <!-- Notification 3 -->
-            <div class="flex items-start p-4 bg-green-50 border-l-4 border-green-400 rounded-md">
-                <div class="flex-shrink-0 mr-3">
-                    <i class="fas fa-check-circle text-green-500"></i>
-                </div>
-                <div>
-                    <p class="text-sm font-medium text-gray-900">Paiement reçu</p>
-                    <p class="text-sm text-gray-500 mt-1">Le paiement de 1,250€ pour la réservation #12345 a été reçu</p>
-                    <div class="mt-2">
-                        <span class="text-xs text-gray-500">Il y a 1 jour</span>
-                    </div>
-                </div>
-            </div>
+            @empty
+            <div class="text-center text-gray-500 py-4">Aucune notification</div>
+            @endforelse
         </div>
         </div>
     </div>
@@ -265,47 +203,54 @@
             <h2 class="text-lg font-semibold">Avis clients récents</h2>
             <a href="{{ route('admin.reviews.index') }}" class="text-primary hover:text-green-700 font-medium">Voir tout</a>
         </div>
-        <div class="space-y-4">
-            @php
-                $recentReviews = \App\Models\Review::with('circuit')->latest()->take(3)->get();
-            @endphp
-            
-            @forelse($recentReviews as $review)
-                <div class="flex items-start p-4 {{ $review->is_approved ? 'bg-green-50 border-l-4 border-green-400' : 'bg-yellow-50 border-l-4 border-yellow-400' }} rounded-md">
-                    <div class="flex-shrink-0 mr-3">
-                        <i class="fas {{ $review->is_approved ? 'fa-check-circle text-green-500' : 'fa-clock text-yellow-500' }}"></i>
-                    </div>
-                    <div class="flex-1">
-                        <div class="flex justify-between">
-                            <p class="text-sm font-medium text-gray-900">{{ $review->name }} <span class="text-gray-500 text-xs">pour</span> {{ $review->circuit->titre ?? 'Circuit inconnu' }}</p>
-                            <div class="text-yellow-500">
-                                @for($i = 1; $i <= 5; $i++)
-                                    @if($i <= $review->rating)
-                                        <i class="fas fa-star text-xs"></i>
-                                    @else
-                                        <i class="far fa-star text-xs"></i>
-                                    @endif
-                                @endfor
-                            </div>
+        @php
+            $recentReviews = \App\Models\Review::with('circuit')->latest()->take(5)->get();
+        @endphp
+        @forelse($recentReviews as $review)
+            <div class="border border-gray-100 rounded-lg p-4 mb-3">
+                <div class="flex items-start justify-between">
+                    <div class="flex items-start">
+                        <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+                            <span class="text-gray-700 text-xs font-medium">{{ Str::of($review->name)->explode(' ')->map(fn($p) => Str::substr($p,0,1))->take(2)->implode('') }}</span>
                         </div>
-                        <p class="text-sm text-gray-500 mt-1">{{ Str::limit($review->comment, 100) }}</p>
-                        <div class="mt-2 flex justify-between">
-                            <span class="text-xs text-gray-500">{{ $review->created_at->diffForHumans() }}</span>
-                            <div>
-                                @if(!$review->is_approved)
-                                    <a href="{{ route('admin.reviews.approve', $review) }}" class="text-xs text-green-600 hover:text-green-800 mr-2">Approuver</a>
-                                @endif
-                                <a href="{{ route('admin.reviews.edit', $review) }}" class="text-xs text-blue-600 hover:text-blue-800">Modifier</a>
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <p class="text-sm font-semibold text-gray-900">{{ $review->name }}</p>
+                                <span class="text-xs text-gray-500">• {{ $review->created_at->diffForHumans() }}</span>
+                                <span class="px-2 py-0.5 text-[11px] rounded-full {{ $review->is_approved ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700' }}">
+                                    {{ $review->is_approved ? 'Approuvé' : 'En attente' }}
+                                </span>
                             </div>
+                            <div class="text-xs text-gray-500">Circuit: <span class="text-gray-700 font-medium">{{ $review->circuit->titre ?? 'Circuit inconnu' }}</span></div>
                         </div>
                     </div>
+                    <div class="text-yellow-500 ml-3">
+                        @for($i = 1; $i <= 5; $i++)
+                            @if($i <= $review->rating)
+                                <i class="fas fa-star text-xs"></i>
+                            @else
+                                <i class="far fa-star text-xs"></i>
+                            @endif
+                        @endfor
+                    </div>
                 </div>
-            @empty
-                <div class="text-center py-4 text-gray-500">
-                    <p>Aucun avis récent</p>
+                <p class="text-sm text-gray-700 mt-2">{{ Str::limit($review->comment, 180) }}</p>
+                <div class="mt-3 flex items-center justify-end space-x-3">
+                    @if(!$review->is_approved)
+                        <a href="{{ route('admin.reviews.approve', $review) }}" class="inline-flex items-center px-3 py-1.5 text-xs rounded-md bg-green-600 text-white hover:bg-green-700">
+                            <i class="fas fa-check mr-1"></i> Approuver
+                        </a>
+                    @endif
+                    <a href="{{ route('admin.reviews.edit', $review) }}" class="inline-flex items-center px-3 py-1.5 text-xs rounded-md bg-blue-600 text-white hover:bg-blue-700">
+                        <i class="fas fa-edit mr-1"></i> Modifier
+                    </a>
                 </div>
-            @endforelse
-        </div>
+            </div>
+        @empty
+            <div class="text-center py-4 text-gray-500">
+                <p>Aucun avis récent</p>
+            </div>
+        @endforelse
     </div>
 @endsection
 
@@ -313,13 +258,14 @@
 <script>
     // Graphique des réservations mensuelles
     const reservationsCtx = document.getElementById('reservationsChart').getContext('2d');
+    const monthlyReservations = @json($chartData['monthlyReservations'] ?? []);
     const reservationsChart = new Chart(reservationsCtx, {
         type: 'line',
         data: {
             labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'],
             datasets: [{
                 label: 'Réservations',
-                data: [15, 20, 25, 30, 35, 40, 45, 50, 45, 40, 35, 30],
+                data: monthlyReservations,
                 backgroundColor: 'rgba(30, 64, 175, 0.2)',
                 borderColor: 'rgba(30, 64, 175, 1)',
                 borderWidth: 2,
@@ -353,13 +299,15 @@
     
     // Graphique des circuits populaires
     const circuitsCtx = document.getElementById('circuitsChart').getContext('2d');
+    const popularLabels = @json($chartData['popularCircuits']['labels'] ?? []);
+    const popularData = @json($chartData['popularCircuits']['data'] ?? []);
     const circuitsChart = new Chart(circuitsCtx, {
         type: 'bar',
         data: {
-            labels: ['Découverte de Kpalimé', 'Safari à Fazao', 'Lomé Culturelle', 'Plages de Togoville', 'Montagnes de Kara'],
+            labels: popularLabels,
             datasets: [{
                 label: 'Réservations',
-                data: [45, 38, 32, 28, 22],
+                data: popularData,
                 backgroundColor: [
                     'rgba(22, 163, 74, 0.7)',
                     'rgba(30, 64, 175, 0.7)',

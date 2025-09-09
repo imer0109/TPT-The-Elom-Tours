@@ -10,10 +10,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Sanctum\HasApiTokens;
+use App\Traits\LogsActivity;
 
 class Client extends Model
 {
-    use HasFactory, HasApiTokens, HasUuids, SoftDeletes;
+    use HasFactory, HasApiTokens, HasUuids, SoftDeletes, LogsActivity;
 
     protected $guarded = ['id'];
 

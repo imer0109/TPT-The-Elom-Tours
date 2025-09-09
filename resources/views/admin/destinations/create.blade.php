@@ -22,7 +22,7 @@
     @endif
     
     <div class="bg-white rounded-lg shadow-md p-6">
-        <form action="{{ route('admin.destinations.store') }}" method="POST">
+        <form action="{{ route('admin.destinations.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -48,6 +48,13 @@
             <div class="mb-6">
                 <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description <span class="text-red-500">*</span></label>
                 <textarea id="description" name="description" rows="5" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>{{ old('description') }}</textarea>
+            </div>
+            
+            <!-- Ajouter ceci après la section description -->
+            <div class="mb-6">
+                <label for="image" class="block text-sm font-medium text-gray-700 mb-1">Image de la destination</label>
+                <input type="file" id="image" name="image" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <p class="text-xs text-gray-500 mt-1">Format recommandé : JPG, PNG. Taille max : 2MB</p>
             </div>
             
             <div class="mb-6">

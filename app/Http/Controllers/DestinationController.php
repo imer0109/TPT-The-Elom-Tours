@@ -40,7 +40,7 @@ class DestinationController extends Controller
             ->firstOrFail();
         
         $relatedCircuits = $destination->circuits()
-            ->where('is_active', true)
+            ->where('est_actif', true)
             ->take(4)
             ->get();
         

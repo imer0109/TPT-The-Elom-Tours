@@ -20,14 +20,16 @@ class BlogController extends Controller
     {
         // Récupérer les articles publiés et actifs
         $posts = BlogPost::published()
+            ->with(['user', 'image'])
             ->orderBy('published_at', 'desc')
             ->paginate(9);
             
-        // Récupérer les catégories pour le filtre
-        $categories = Category::active()->get();
+        // Récupérer les catégories pour le filtre avec le compteur d'articles
+        $categories = Category::active()->withCount('blogPosts')->get();
         
         // Récupérer les articles en vedette
         $featuredPosts = BlogPost::published()
+            ->with(['user', 'image'])
             ->where('is_featured', true)
             ->take(3)
             ->get();
@@ -46,7 +48,7 @@ class BlogController extends Controller
         // Récupérer l'article avec ses relations
         $post = BlogPost::where('slug', $slug)
             ->published()
-            ->with(['category', 'user', 'comments' => function($query) {
+            ->with(['category', 'user', 'image', 'comments' => function($query) {
                 $query->approved()->parents()->with('replies');
             }])
             ->firstOrFail();
@@ -90,7 +92,7 @@ class BlogController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
-            'content' => 'required|string|min:10',
+            'comment' => 'required|string|min:10',
             'parent_id' => 'nullable|exists:comments,id'
         ]);
         
@@ -98,7 +100,7 @@ class BlogController extends Controller
             'blog_post_id' => $post->id,
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'content' => $validated['content'],
+            'comment' => $validated['comment'],
             'parent_id' => $validated['parent_id'] ?? null,
             'is_approved' => false, // Nécessite une approbation par l'admin
         ]);

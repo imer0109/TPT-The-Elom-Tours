@@ -65,7 +65,7 @@
                     <div class="p-6">
                         <h3 class="text-xl font-semibold mb-2">Lomé, Togo</h3>
                         <p class="text-gray-600 mb-4">Découvrez la vibrante capitale du Togo avec ses marchés colorés et son riche patrimoine culturel.</p>
-                        <a href="#" class="text-green-600 hover:text-green-800 font-medium">Découvrir <i class="fas fa-arrow-right ml-1"></i></a>
+                        <a href="{{ route('destinations.index') }}" class="text-green-600 hover:text-green-800 font-medium">Découvrir <i class="fas fa-arrow-right ml-1"></i></a>
                     </div>
                 </div>
                 
@@ -74,7 +74,7 @@
                     <div class="p-6">
                         <h3 class="text-xl font-semibold mb-2">Kpalimé, Togo</h3>
                         <p class="text-gray-600 mb-4">Explorez les magnifiques paysages montagneux et les cascades spectaculaires de cette région verdoyante.</p>
-                        <a href="#" class="text-green-600 hover:text-green-800 font-medium">Découvrir <i class="fas fa-arrow-right ml-1"></i></a>
+                        <a href="{{ route('destinations.index') }}" class="text-green-600 hover:text-green-800 font-medium">Découvrir <i class="fas fa-arrow-right ml-1"></i></a>
                     </div>
                 </div>
                 
@@ -83,7 +83,7 @@
                     <div class="p-6">
                         <h3 class="text-xl font-semibold mb-2">Ouidah, Bénin</h3>
                         <p class="text-gray-600 mb-4">Visitez ce haut lieu historique du vaudou et découvrez la Route des Esclaves, site du patrimoine mondial.</p>
-                        <a href="#" class="text-green-600 hover:text-green-800 font-medium">Découvrir <i class="fas fa-arrow-right ml-1"></i></a>
+                        <a href="{{ route('destinations.index') }}" class="text-green-600 hover:text-green-800 font-medium">Découvrir <i class="fas fa-arrow-right ml-1"></i></a>
                     </div>
                 </div>
             </div>

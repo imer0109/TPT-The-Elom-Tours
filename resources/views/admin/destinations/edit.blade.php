@@ -22,7 +22,7 @@
     @endif
     
     <div class="bg-white rounded-lg shadow-md p-6">
-        <form action="{{ route('admin.destinations.update', $destination) }}" method="POST">
+        <form action="{{ route('admin.destinations.update', $destination) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             
@@ -123,3 +123,15 @@
 </script>
 @endsection
 @endsection
+
+<!-- Ajouter ceci après la section description -->
+<div class="mb-6">
+    <label for="image" class="block text-sm font-medium text-gray-700 mb-1">Image de la destination</label>
+    @if($destination->image)
+        <div class="mb-2">
+            <img src="{{ asset('storage/' . $destination->image->path) }}" alt="{{ $destination->name }}" class="w-32 h-32 object-cover rounded">
+        </div>
+    @endif
+    <input type="file" id="image" name="image" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+    <p class="text-xs text-gray-500 mt-1">Format recommandé : JPG, PNG. Taille max : 2MB</p>
+</div>

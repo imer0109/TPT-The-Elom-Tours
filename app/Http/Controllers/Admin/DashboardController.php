@@ -4,6 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Reservation;
+use App\Models\Circuit;
+use App\Models\Client;
+use App\Models\Message;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -14,82 +20,96 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        // Dans une application réelle, nous récupérerions ici les données
-        // nécessaires pour le tableau de bord à partir de la base de données
+        // Récupération des données réelles pour les statistiques
+        $totalReservations = Reservation::count();
+        $revenue = Reservation::sum('montant_total');
+        $newClients = Client::where('created_at', '>=', Carbon::now()->subMonth())->count();
         
-        // Exemple de données pour les statistiques
+        // Calcul de la satisfaction (exemple basé sur les avis)
+        $satisfaction = 0;
+        $reviewsCount = \App\Models\Review::count();
+        if ($reviewsCount > 0) {
+            $satisfaction = round((\App\Models\Review::sum('rating') / ($reviewsCount * 5)) * 100);
+        }
+        
         $stats = [
-            'reservations' => 124,
-            'revenue' => 8540,
-            'newClients' => 45,
-            'satisfaction' => 92,
+            'reservations' => $totalReservations,
+            'revenue' => $revenue,
+            'newClients' => $newClients,
+            'satisfaction' => $satisfaction,
         ];
         
-        // Exemple de données pour les graphiques
+        // Données pour les graphiques - réservations mensuelles
+        $monthlyReservations = [];
+        for ($i = 11; $i >= 0; $i--) {
+            $date = Carbon::now()->subMonths($i);
+            $monthlyReservations[] = Reservation::whereYear('created_at', $date->year)
+                ->whereMonth('created_at', $date->month)
+                ->count();
+        }
+        
+        // Circuits les plus populaires
+        $popularCircuits = Circuit::select('circuits.titre', DB::raw('count(reservations.id) as total'))
+            ->leftJoin('reservations', 'circuits.id', '=', 'reservations.circuit_id')
+            ->groupBy('circuits.id', 'circuits.titre')
+            ->orderByDesc('total')
+            ->limit(5)
+            ->get();
+        
         $chartData = [
-            'monthlyReservations' => [15, 20, 25, 30, 35, 40, 45, 50, 45, 40, 35, 30],
+            'monthlyReservations' => $monthlyReservations,
             'popularCircuits' => [
-                'labels' => ['Découverte de Kpalimé', 'Safari à Fazao', 'Lomé Culturelle', 'Plages de Togoville', 'Montagnes de Kara'],
-                'data' => [45, 38, 32, 28, 22],
+                'labels' => $popularCircuits->pluck('titre')->toArray(),
+                'data' => $popularCircuits->pluck('total')->toArray(),
             ],
         ];
         
-        // Exemple de données pour les réservations récentes
-        $recentReservations = [
-            [
-                'id' => 12345,
-                'client' => 'Jean Dupont',
-                'email' => 'jean.dupont@example.com',
-                'circuit' => 'Découverte de Kpalimé',
-                'date' => '15/06/2023',
-                'amount' => 1250,
-                'status' => 'confirmed',
-            ],
-            [
-                'id' => 12346,
-                'client' => 'Marie Lefebvre',
-                'email' => 'marie.lefebvre@example.com',
-                'circuit' => 'Safari à Fazao',
-                'date' => '12/06/2023',
-                'amount' => 2100,
-                'status' => 'pending',
-            ],
-            [
-                'id' => 12347,
-                'client' => 'Pierre Thomas',
-                'email' => 'pierre.thomas@example.com',
-                'circuit' => 'Lomé Culturelle',
-                'date' => '10/06/2023',
-                'amount' => 950,
-                'status' => 'confirmed',
-            ],
-        ];
+        // Réservations récentes
+        $recentReservationsData = Reservation::with(['client', 'circuit'])
+            ->orderByDesc('created_at')
+            ->limit(5)
+            ->get()
+            ->map(function ($reservation) {
+                $client = $reservation->client;
+                $circuit = $reservation->circuit;
+                return [
+                    'id' => $reservation->id,
+                    'client' => $client ? trim(($client->nom ?? '').' '.($client->prenom ?? '')) : '—',
+                    'email' => $client->email ?? '—',
+                    'circuit' => $circuit->titre ?? '—',
+                    'date' => optional($reservation->date_debut)->format('d/m/Y') ?? '—',
+                    'amount' => $reservation->montant_total,
+                    'status' => $reservation->status,
+                ];
+            })->toArray();
         
-        // Exemple de données pour les notifications
-        $notifications = [
-            [
-                'type' => 'warning',
-                'icon' => 'exclamation-triangle',
-                'title' => 'Stock faible pour le circuit "Découverte de Kpalimé"',
-                'message' => 'Il ne reste que 2 places disponibles pour la date du 20/07/2023',
-                'time' => '3 heures',
-            ],
-            [
+        // Notifications (messages récents, réservations en attente, etc.)
+        $notifications = [];
+        
+        // Messages récents
+        $recentMessages = Message::orderByDesc('created_at')->limit(2)->get();
+        foreach ($recentMessages as $message) {
+            $notifications[] = [
                 'type' => 'info',
                 'icon' => 'info-circle',
-                'title' => 'Nouvelle demande de contact',
-                'message' => 'Sophie Martin a envoyé une demande d\'information concernant le circuit "Safari à Fazao"',
-                'time' => '5 heures',
-            ],
-            [
-                'type' => 'success',
-                'icon' => 'check-circle',
-                'title' => 'Paiement reçu',
-                'message' => 'Le paiement de 1,250€ pour la réservation #12345 a été reçu',
-                'time' => '1 jour',
-            ],
-        ];
+                'title' => 'Nouveau message',
+                'message' => substr($message->nom . ' a envoyé un message: ' . $message->message, 0, 100) . '...',
+                'time' => Carbon::parse($message->created_at)->diffForHumans(),
+            ];
+        }
         
-        return view('admin.dashboard', compact('stats', 'chartData', 'recentReservations', 'notifications'));
+        // Réservations en attente
+        $pendingReservations = Reservation::where('status', 'pending')->count();
+        if ($pendingReservations > 0) {
+            $notifications[] = [
+                'type' => 'warning',
+                'icon' => 'exclamation-triangle',
+                'title' => 'Réservations en attente',
+                'message' => 'Il y a ' . $pendingReservations . ' réservation(s) en attente de traitement',
+                'time' => 'Maintenant',
+            ];
+        }
+        
+        return view('admin.dashboard', compact('stats', 'chartData', 'recentReservationsData', 'notifications'));
     }
 }

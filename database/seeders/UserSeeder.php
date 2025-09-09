@@ -3,7 +3,9 @@
 namespace Database\Seeders;
 
 use App\Enums\RoleEnum;
+use App\Models\Role;
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -14,37 +16,52 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Créer un utilisateur administrateur s'il n'existe pas déjà
-        if (!User::where('email', 'admin@elomtours.com')->exists()) {
-            User::create([
-                'firstName' => 'Admin',
-                'lastName' => 'System',
-                'email' => 'admin@elomtours.com',
-                'password' => Hash::make('admin123'),
-                'role' => RoleEnum::ADMIN,
-            ]);
-        }
-
-        // Créer un utilisateur standard s'il n'existe pas déjà
-        if (!User::where('email', 'user@elomtours.com')->exists()) {
-            User::create([
-                'firstName' => 'User',
-                'lastName' => 'Standard',
-                'email' => 'user@elomtours.com',
-                'password' => Hash::make('user123'),
-                'role' => RoleEnum::USER,
-            ]);
-        }
-
-        // Vous pouvez également créer des utilisateurs aléatoires
-        // Limiter à 5 utilisateurs au total pour éviter d'en créer trop
-        $userCount = User::where('role', RoleEnum::USER)->count();
-        $remainingUsers = max(0, 5 - $userCount);
+        // Création des rôles (ou récupération s'ils existent déjà)
+        $superAdminRole = Role::firstOrCreate(
+            ['slug' => 'super-admin'],
+            [
+                'name' => RoleEnum::SUPER_ADMIN->value,
+                'description' => 'Super Administrateur avec tous les privilèges',
+            ]
+        );
         
-        if ($remainingUsers > 0) {
-            User::factory($remainingUsers)->create([
-                'role' => RoleEnum::USER,
-            ]);
+        $adminRole = Role::firstOrCreate(
+            ['slug' => 'admin'],
+            [
+                'name' => RoleEnum::ADMIN->value,
+                'description' => 'Administrateur avec privilèges limités',
+            ]
+        );
+        
+        // Création du Super Administrateur (ou récupération s'il existe déjà)
+        $superAdmin = User::firstOrCreate(
+            ['email' => 'super.admin@elomtours.com'],
+            [
+                'firstName' => 'Super',
+                'lastName' => 'Admin',
+                'password' => Hash::make('password'),
+                'remember_token' => Str::random(10),
+            ]
+        );
+        
+        // Création de l'Administrateur simple (ou récupération s'il existe déjà)
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@elomtours.com'],
+            [
+                'firstName' => 'Admin',
+                'lastName' => 'Simple',
+                'password' => Hash::make('password'),
+                'remember_token' => Str::random(10),
+            ]
+        );
+        
+        // Attribution des rôles (sans créer de doublons)
+        if (!$superAdmin->hasRole(RoleEnum::SUPER_ADMIN->value)) {
+            $superAdmin->roles()->attach($superAdminRole);
+        }
+        
+        if (!$admin->hasRole(RoleEnum::ADMIN->value)) {
+            $admin->roles()->attach($adminRole);
         }
     }
 }

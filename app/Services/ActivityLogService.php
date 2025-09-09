@@ -71,6 +71,23 @@ class ActivityLogService
             null
         );
     }
+
+    /**
+     * Log an archive (soft delete) action.
+     */
+    public function logArchived(Model $model, string $description = null): ActivityLog
+    {
+        $modelName = class_basename($model);
+        $description = $description ?? "Archivage d'un élément {$modelName}";
+
+        return ActivityLog::log(
+            'archive',
+            $description,
+            $model,
+            $model->toArray(),
+            null
+        );
+    }
     
     /**
      * Log a login action.

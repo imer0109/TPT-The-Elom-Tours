@@ -3,12 +3,25 @@
 @section('title', 'Nos destinations - The Elom Tours')
 
 @section('content')
-<div class="container mx-auto px-4 py-12">
+<section class="relative">
+        <div class="hero-image h-64 md:h-96 bg-cover bg-center bg-[#16a34a]" 
+        {{-- style="background-image: url('{{ asset('assets/images/circuits-hero.jpg') }}')" --}}
+        >
+            <div class="absolute inset-0 bg-black opacity-50"></div>
+            <div class="container mx-auto px-4 h-full flex items-center justify-center relative z-10">
+                <div class="text-center text-white mt-20">
+                    <h1 class="text-3xl md:text-5xl font-bold mb-2">Nos destinations</h1>
+                    <p class="text-lg md:text-xl">Découvrez nos destinations de voyage soigneusement sélectionnées pour vous offrir des expériences inoubliables au Togo et en Afrique de l'Ouest.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+<div class="container mx-auto px-4 py-12 mt-20">
     <!-- Hero Section -->
-    <div class="text-center mb-12">
+    <!-- <div class="text-center mb-12">
         <h1 class="text-4xl font-bold text-gray-900 mb-4">Nos destinations</h1>
         <p class="text-lg text-gray-600 max-w-3xl mx-auto">Découvrez nos destinations de voyage soigneusement sélectionnées pour vous offrir des expériences inoubliables au Togo et en Afrique de l'Ouest.</p>
-    </div>
+    </div> -->
     
     <!-- Popular Destinations -->
     @if($popularDestinations->count() > 0)
@@ -20,7 +33,7 @@
                 <a href="{{ route('destinations.show', $destination->slug) }}">
                     <div class="h-48 bg-gray-300 relative">
                         @if($destination->getFirstMediaUrl('images'))
-                        <img src="{{ $destination->getFirstMediaUrl('images') }}" alt="{{ $destination->name }}" class="w-full h-full object-cover">
+                        <img src="{{ $destination->getFirstMediaUrl('images') }}" alt="{{ $destination->name }}" class="w-full h-full object-cover" loading="lazy">
                         @else
                         <img src="{{ asset('assets/images/placeholder.jpg') }}" alt="{{ $destination->name }}" class="w-full h-full object-cover">
                         @endif
@@ -45,10 +58,11 @@
             <div class="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:shadow-lg hover:-translate-y-1">
                 <a href="{{ route('destinations.show', $destination->slug) }}">
                     <div class="h-48 bg-gray-300 relative">
-                        @if($destination->getFirstMediaUrl('images'))
-                        <img src="{{ $destination->getFirstMediaUrl('images') }}" alt="{{ $destination->name }}" class="w-full h-full object-cover">
+                        <!-- Remplacer les blocs d'affichage d'image par ceci -->
+                        @if($destination->image)
+                            <img src="{{ $destination->image->getFileUrl() }}" alt="{{ $destination->name }}" class="w-full h-full object-cover" loading="lazy">
                         @else
-                        <img src="{{ asset('assets/images/placeholder.jpg') }}" alt="{{ $destination->name }}" class="w-full h-full object-cover">
+                            <img src="{{ asset('assets/images/placeholder.jpg') }}" alt="{{ $destination->name }}" class="w-full h-full object-cover">
                         @endif
                         <div class="absolute inset-0 bg-black bg-opacity-20"></div>
                         <div class="absolute bottom-0 left-0 p-4 text-white">

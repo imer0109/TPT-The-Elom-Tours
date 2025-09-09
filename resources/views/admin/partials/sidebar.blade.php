@@ -32,9 +32,9 @@
                     <li>
                         <a href="{{ route('admin.reservations.index') }}" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">- Toutes les réservations</a>
                     </li>
-                    <li>
+                    <!-- <li>
                         <a href="{{ route('admin.reservations.create') }}" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">- Ajouter une réservation</a>
-                    </li>
+                    </li> -->
                 </ul>
             </li>
             
@@ -52,19 +52,19 @@
                     <li>
                         <a href="{{ route('admin.circuits.create') }}" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">- Ajouter un circuit</a>
                     </li>
-                    <li>
+                    <!-- <li>
                         <a href="#" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">- Catégories</a>
-                    </li>
+                    </li> -->
                 </ul>
             </li>
             
             <!-- Clients -->
-            <li>
+            <!-- <li>
                 <a href="{{ route('admin.clients.index') }}" class="flex items-center p-2 text-base font-medium rounded-lg text-gray-700 hover:bg-gray-100">
                     <i class="fas fa-users w-6 h-6 text-center"></i>
                     <span class="ml-3">Clients</span>
                 </a>
-            </li>
+            </li> -->
             
             <!-- Blog -->
             <li>
@@ -99,7 +99,21 @@
                 <a href="{{ route('admin.messages.index') }}" class="flex items-center p-2 text-base font-medium rounded-lg text-gray-700 hover:bg-gray-100">
                     <i class="fas fa-envelope w-6 h-6 text-center"></i>
                     <span class="ml-3">Messages</span>
-                    <span class="inline-flex justify-center items-center p-1 ml-3 w-5 h-5 text-xs font-medium rounded-full text-white bg-red-500">3</span>
+                    <span class="inline-flex justify-center items-center p-1 ml-3 w-5 h-5 text-xs font-medium rounded-full text-white bg-red-500"></span>
+                </a>
+            </li>
+            
+            <!-- Commentaires -->
+            <li>
+                <a href="{{ route('admin.comments.index') }}" class="flex items-center p-2 text-base font-medium rounded-lg text-gray-700 hover:bg-gray-100">
+                    <i class="fas fa-comments w-6 h-6 text-center"></i>
+                    <span class="ml-3">Commentaires</span>
+                    @php
+                        $pendingCommentsCount = \App\Models\Comment::where('is_approved', false)->count();
+                    @endphp
+                    @if($pendingCommentsCount > 0)
+                        <span class="inline-flex justify-center items-center p-1 ml-3 w-5 h-5 text-xs font-medium rounded-full text-white bg-yellow-500">{{ $pendingCommentsCount }}</span>
+                    @endif
                 </a>
             </li>
             
@@ -132,28 +146,44 @@
                     <span class="ml-3">Paramètres</span>
                 </a>
             </li>
+            @if(auth()->user()->hasRole('Super Administrateur'))
+             <li>
+                <a href="{{ route('admin.activity-logs.index') }}" class="flex items-center p-2 text-base font-medium rounded-lg text-gray-700 hover:bg-gray-100">
+                    <i class="fas fa-history w-6 h-6 text-center"></i>
+                    <span class="ml-3">Journal d'activités</span>
+                </a>
+            </li>
+            @endif
         </ul>
     </div>
     
     <!-- User Info -->
     <div class="p-4 border-t border-gray-200">
+        @auth
+        @php
+            $user = auth()->user();
+            $displayName = trim(($user->firstName ?? '').' '.($user->lastName ?? '')) ?: ($user->name ?? 'Utilisateur');
+            $email = $user->email ?? '';
+            $avatarUrl = 'https://ui-avatars.com/api/?name='.urlencode($displayName).'&background=16A34A&color=fff';
+        @endphp
         <div class="flex items-center">
             <div class="flex-shrink-0">
-                <img class="h-10 w-10 rounded-full" src="https://ui-avatars.com/api/?name=Admin+User&background=16A34A&color=fff" alt="Admin User">
+                <img class="h-10 w-10 rounded-full" src="{{ $avatarUrl }}" alt="{{ $displayName }}">
             </div>
             <div class="ml-3">
-                <p class="text-sm font-medium text-gray-900">Admin User</p>
-                <p class="text-xs font-medium text-gray-500">admin@elomtours.com</p>
+                <p class="text-sm font-medium text-gray-900">{{ $displayName }}</p>
+                <p class="text-xs font-medium text-gray-500">{{ $email }}</p>
             </div>
             <div class="ml-auto">
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
-                    <button type="submit" class="text-gray-500 hover:text-red-500">
+                    <button type="submit" class="text-gray-500 hover:text-red-500" title="Se déconnecter">
                         <i class="fas fa-sign-out-alt"></i>
                     </button>
                 </form>
             </div>
         </div>
+        @endauth
     </div>
 </div>
 

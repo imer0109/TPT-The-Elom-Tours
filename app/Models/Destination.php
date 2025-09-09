@@ -9,10 +9,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\LogsActivity;
 
 class Destination extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory, HasUuids, SoftDeletes, LogsActivity;
 
     /**
      * The attributes that are mass assignable.
@@ -69,7 +71,9 @@ class Destination extends Model
      */
     public function circuits(): HasMany
     {
-        return $this->hasMany(Circuit::class);
+        // The circuits table uses a 'destination' string column instead of 'destination_id'
+        // so we link on Destination.name -> Circuit.destination
+        return $this->hasMany(Circuit::class, 'destination', 'name');
     }
 
     /**

@@ -28,7 +28,13 @@ class File extends Model
      */
     public function getFileUrl(): string
     {
-        // Utiliser directement la méthode du trait avec le chemin du fichier
-        return Storage::disk('public')->url($this->path);
+        // Encodage sûr du nom de fichier pour gérer espaces et accents
+        $path = $this->path;
+        $directory = trim(str_replace('\\', '/', dirname($path)), '/.');
+        $basename = basename($path);
+        $encodedBasename = rawurlencode($basename);
+        $publicPath = $directory ? ($directory . '/' . $encodedBasename) : $encodedBasename;
+
+        return asset('storage/' . $publicPath);
     }
 }

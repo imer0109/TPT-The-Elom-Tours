@@ -36,15 +36,22 @@ class RegisterController extends Controller
             'phone' => ['nullable', 'string', 'max:20'],
         ]);
 
+        // Dans la méthode register, après la création de l'utilisateur
         $user = User::create([
             'lastName' => $validated['lastName'],
             'firstName' => $validated['firstName'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'phone' => $validated['phone'] ?? null,
-            'role' => 'User',
+            'role' => 'Utilisateur', // Assurez-vous que c'est une valeur valide de RoleEnum
         ]);
-
+        
+        // Attribuer le rôle correspondant
+        $role = Role::where('name', $user->role)->first();
+        if ($role) {
+            $user->roles()->attach($role->id);
+        }
+        
         Auth::login($user);
 
         return redirect()->route('admin.dashboard');

@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+    @php
+        $featuredPosts = $featuredPosts ?? collect();
+    @endphp
     <!-- Hero Section -->
     <section class="relative">
         <div class="hero-image h-64 md:h-96 bg-cover bg-center bg-[#16a34a]">
@@ -42,7 +45,8 @@
                     @if($featuredPosts->isNotEmpty())
                         <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
                             @if($featuredPosts[0]->image)
-                                <img src="{{ $featuredPosts[0]->image->getFileUrl() }}" alt="{{ $featuredPosts[0]->title }}" class="w-full h-80 object-cover">
+                                <img src="{{ $featuredPosts[0]->image->getFileUrl() }}" 
+                                alt="{{ $featuredPosts[0]->title }}" class="w-full h-80 object-cover" loading="lazy">
                             @else
                                 <div class="w-full h-80 bg-gray-200 flex items-center justify-center">
                                     <span class="text-gray-500">Aucune image disponible</span>
@@ -75,8 +79,9 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         @forelse($posts as $post)
                             <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                                <!-- Remplacer les blocs d'affichage d'image par ceci -->
                                 @if($post->image)
-                                    <img src="{{ $post->image->getFileUrl() }}" alt="{{ $post->title }}" class="w-full h-48 object-cover">
+                                    <img src="{{ $post->image->getFileUrl() }}" alt="{{ $post->title }}" class="w-full h-48 object-cover" loading="lazy">
                                 @else
                                     <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
                                         <span class="text-gray-500">Aucune image disponible</span>
@@ -88,10 +93,10 @@
                                             <i class="far fa-calendar-alt mr-1"></i>
                                             {{ $post->published_at->format('d M Y') }}
                                         </span>
-                                        <span>
+                                        <!-- <span>
                                             <i class="far fa-user mr-1"></i>
                                             Par {{ $post->user->name ?? 'Admin' }}
-                                        </span>
+                                        </span> -->
                                     </div>
                                     <h3 class="text-xl font-bold mb-3">
                                         <a href="{{ route('blog.show', $post->slug) }}" class="text-gray-800 hover:text-green-600">{{ $post->title }}</a>
@@ -138,7 +143,7 @@
                             @forelse($categories as $category)
                                 <li>
                                     <a href="{{ route('blog.category', $category->slug) }}" class="flex items-center justify-between text-gray-700 hover:text-green-600 {{ isset($currentCategory) && $currentCategory->id === $category->id ? 'text-green-600 font-semibold' : '' }}">
-                                        <span>{{ $category->name }}</span>
+                                        <span>{{ $category->nom }}</span>
                                         <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs">{{ $category->blog_posts_count }}</span>
                                     </a>
                                 </li>
