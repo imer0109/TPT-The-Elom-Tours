@@ -55,13 +55,11 @@ class UserSeeder extends Seeder
             ]
         );
         
-        // Attribution des rôles (sans créer de doublons)
-        if (!$superAdmin->hasRole(RoleEnum::SUPER_ADMIN->value)) {
-            $superAdmin->roles()->attach($superAdminRole);
-        }
+        // Attribution stricte des rôles
+        // Super Administrateur ne doit avoir que le rôle SUPER_ADMIN
+        $superAdmin->roles()->sync([$superAdminRole->id]);
         
-        if (!$admin->hasRole(RoleEnum::ADMIN->value)) {
-            $admin->roles()->attach($adminRole);
-        }
+        // Administrateur simple ne doit avoir que le rôle ADMIN
+        $admin->roles()->sync([$adminRole->id]);
     }
 }

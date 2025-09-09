@@ -13,6 +13,9 @@ class ActivityLogController extends Controller
      */
     public function index()
     {
+        if (!auth()->check() || !auth()->user()->hasRole('Super Administrateur')) {
+            abort(403, 'Accès non autorisé');
+        }
         $logs = ActivityLog::with('user')->latest()->paginate(20);
         return view('admin.activity-logs.index', compact('logs'));
     }
@@ -22,6 +25,9 @@ class ActivityLogController extends Controller
      */
     public function show($id)
     {
+        if (!auth()->check() || !auth()->user()->hasRole('Super Administrateur')) {
+            abort(403, 'Accès non autorisé');
+        }
         $log = ActivityLog::with('user')->findOrFail($id);
         return view('admin.activity-logs.show', compact('log'));
     }
