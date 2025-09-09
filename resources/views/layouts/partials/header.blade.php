@@ -9,7 +9,7 @@
         </div>
     </div>
 
-    <div class="container mx-auto px-4 py-4">
+    <div x-data="{ open:false }" class="container mx-auto px-4 py-4">
         <div class="flex justify-between items-center">
             <!-- Logo -->
             <div class="flex items-center">
@@ -31,7 +31,7 @@
 
             <!-- Mobile Menu Button -->
             <div class="md:hidden">
-                <button type="button" class="text-gray-700 hover:text-green-600 focus:outline-none">
+                <button @click="open = !open" type="button" class="text-gray-700 hover:text-green-600 focus:outline-none" aria-label="Ouvrir le menu">
                     <i class="fas fa-bars text-xl"></i>
                 </button>
             </div>
@@ -39,8 +39,8 @@
     </div>
 
     <!-- Mobile Menu (Hidden by default) -->
-    <div class="hidden md:hidden">
-        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+    <div class="md:hidden" x-show="open" x-transition>
+        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-100">
             <a href="/" class="block px-3 py-2 {{ request()->is('/') ? 'text-green-600 font-bold' : 'text-gray-700 hover:text-green-600 font-medium' }}">Accueil</a>
             <a href="/circuits" class="block px-3 py-2 {{ request()->is('circuits') ? 'text-green-600 font-bold' : 'text-gray-700 hover:text-green-600 font-medium' }}">Circuits</a>
             <a href="/galerie" class="block px-3 py-2 {{ request()->is('galerie') ? 'text-green-600 font-bold' : 'text-gray-700 hover:text-green-600 font-medium' }}">Galerie</a>

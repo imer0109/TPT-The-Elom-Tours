@@ -75,22 +75,57 @@
 	<div class="bg-white border border-gray-200 rounded-lg p-6 mb-6">
 		<h2 class="text-lg font-semibold text-gray-900 mb-4">Modifications</h2>
 		@if($log->action == 'update' && $log->old_values && $log->new_values)
-			<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-				<div>
-					<p class="text-xs text-gray-500 mb-1">Anciennes valeurs</p>
-					<pre class="bg-gray-50 border border-gray-200 rounded p-3 text-xs overflow-auto">{{ json_encode($log->old_values, JSON_PRETTY_PRINT) }}</pre>
-				</div>
-				<div>
-					<p class="text-xs text-gray-500 mb-1">Nouvelles valeurs</p>
-					<pre class="bg-gray-50 border border-gray-200 rounded p-3 text-xs overflow-auto">{{ json_encode($log->new_values, JSON_PRETTY_PRINT) }}</pre>
-				</div>
+			@php
+				$old = (array) $log->old_values;
+				$new = (array) $log->new_values;
+				$allKeys = collect(array_keys($old))->merge(array_keys($new))->unique()->values();
+				$fmt = function($v){
+					if (is_null($v)) return '—';
+					if (is_bool($v)) return $v ? 'Oui' : 'Non';
+					if (is_array($v)) return implode(', ', array_map(fn($x)=>is_scalar($x)?(string)$x:'[..]', $v));
+					return (string)$v;
+				};
+			@endphp
+			<div class="overflow-auto border border-gray-200 rounded">
+				<table class="min-w-full text-sm">
+					<thead class="bg-gray-50">
+						<tr>
+							<th class="px-3 py-2 text-left text-gray-600 font-semibold">Champ</th>
+							<th class="px-3 py-2 text-left text-gray-600 font-semibold">Ancien</th>
+							<th class="px-3 py-2 text-left text-gray-600 font-semibold">Nouveau</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach($allKeys as $key)
+						<tr class="border-t">
+							<td class="px-3 py-2 align-top font-medium text-gray-900">{{ $key }}</td>
+							<td class="px-3 py-2 align-top text-gray-700">{{ $fmt($old[$key] ?? null) }}</td>
+							<td class="px-3 py-2 align-top text-gray-700">{{ $fmt($new[$key] ?? null) }}</td>
+						</tr>
+						@endforeach
+					</tbody>
+				</table>
 			</div>
 		@elseif($log->action == 'create' && $log->new_values)
-			<p class="text-xs text-gray-500 mb-1">Données créées</p>
-			<pre class="bg-gray-50 border border-gray-200 rounded p-3 text-xs overflow-auto">{{ json_encode($log->new_values, JSON_PRETTY_PRINT) }}</pre>
+			@php $data = (array) $log->new_values; @endphp
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+				@foreach($data as $key => $val)
+				<div class="bg-gray-50 border border-gray-200 rounded p-3">
+					<p class="text-[11px] uppercase tracking-wide text-gray-500">{{ $key }}</p>
+					<p class="text-sm text-gray-800">@if(is_bool($val)) {{ $val ? 'Oui' : 'Non' }} @elseif(is_array($val)) {{ implode(', ', array_map(fn($x)=>is_scalar($x)?(string)$x:'[..]', $val)) }} @else {{ (string)$val }} @endif</p>
+				</div>
+				@endforeach
+			</div>
 		@elseif($log->action == 'delete' && $log->old_values)
-			<p class="text-xs text-gray-500 mb-1">Données supprimées</p>
-			<pre class="bg-gray-50 border border-gray-200 rounded p-3 text-xs overflow-auto">{{ json_encode($log->old_values, JSON_PRETTY_PRINT) }}</pre>
+			@php $data = (array) $log->old_values; @endphp
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+				@foreach($data as $key => $val)
+				<div class="bg-gray-50 border border-gray-200 rounded p-3">
+					<p class="text-[11px] uppercase tracking-wide text-gray-500">{{ $key }}</p>
+					<p class="text-sm text-gray-800">@if(is_bool($val)) {{ $val ? 'Oui' : 'Non' }} @elseif(is_array($val)) {{ implode(', ', array_map(fn($x)=>is_scalar($x)?(string)$x:'[..]', $val)) }} @else {{ (string)$val }} @endif</p>
+				</div>
+				@endforeach
+			</div>
 		@endif
 	</div>
 	@endif
