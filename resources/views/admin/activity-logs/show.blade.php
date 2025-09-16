@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', "Détails du log d'activité")
+@section('title', "DÉTAILS DU LOG D'ACTIVITÉ - THE ELOM TOURS")
 
 @section('content')
 <div class="px-4">

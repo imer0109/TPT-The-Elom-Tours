@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Détails de la catégorie')
+@section('title', 'DÉTAILS DE LA CATÉGORIE - THE ELOM TOURS')
 
 @section('content')
 <div class="container-fluid">

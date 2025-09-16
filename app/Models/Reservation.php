@@ -54,13 +54,6 @@ class Reservation extends Model
             }
         });
     }
-    /**
-     * Obtenir le client associé à la réservation.
-     */
-    public function client()
-    {
-        return $this->belongsTo(Client::class);
-    }
     
     /**
      * Obtenir le circuit associé à la réservation.

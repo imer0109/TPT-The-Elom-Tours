@@ -203,10 +203,10 @@
             <h2 class="text-lg font-semibold">Avis clients récents</h2>
             <a href="{{ route('admin.reviews.index') }}" class="text-primary hover:text-green-700 font-medium">Voir tout</a>
         </div>
-        @php
+            @php
             $recentReviews = \App\Models\Review::with('circuit')->latest()->take(5)->get();
-        @endphp
-        @forelse($recentReviews as $review)
+            @endphp
+            @forelse($recentReviews as $review)
             <div class="border border-gray-100 rounded-lg p-4 mb-3">
                 <div class="flex items-start justify-between">
                     <div class="flex items-start">
@@ -225,32 +225,32 @@
                         </div>
                     </div>
                     <div class="text-yellow-500 ml-3">
-                        @for($i = 1; $i <= 5; $i++)
-                            @if($i <= $review->rating)
-                                <i class="fas fa-star text-xs"></i>
-                            @else
-                                <i class="far fa-star text-xs"></i>
-                            @endif
-                        @endfor
-                    </div>
-                </div>
+                                @for($i = 1; $i <= 5; $i++)
+                                    @if($i <= $review->rating)
+                                        <i class="fas fa-star text-xs"></i>
+                                    @else
+                                        <i class="far fa-star text-xs"></i>
+                                    @endif
+                                @endfor
+                            </div>
+                        </div>
                 <p class="text-sm text-gray-700 mt-2">{{ Str::limit($review->comment, 180) }}</p>
                 <div class="mt-3 flex items-center justify-end space-x-3">
-                    @if(!$review->is_approved)
+                                @if(!$review->is_approved)
                         <a href="{{ route('admin.reviews.approve', $review) }}" class="inline-flex items-center px-3 py-1.5 text-xs rounded-md bg-green-600 text-white hover:bg-green-700">
                             <i class="fas fa-check mr-1"></i> Approuver
                         </a>
-                    @endif
+                                @endif
                     <a href="{{ route('admin.reviews.edit', $review) }}" class="inline-flex items-center px-3 py-1.5 text-xs rounded-md bg-blue-600 text-white hover:bg-blue-700">
                         <i class="fas fa-edit mr-1"></i> Modifier
                     </a>
                 </div>
-            </div>
-        @empty
-            <div class="text-center py-4 text-gray-500">
-                <p>Aucun avis récent</p>
-            </div>
-        @endforelse
+                </div>
+            @empty
+                <div class="text-center py-4 text-gray-500">
+                    <p>Aucun avis récent</p>
+                </div>
+            @endforelse
     </div>
 @endsection
 

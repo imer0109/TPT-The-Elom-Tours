@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Réservations - The Elom Tours')
+@section('title', 'RÉSERVATIONS - THE ELOM TOURS')
 
 @section('content')
 <div class="container mx-auto py-6">
@@ -146,27 +146,15 @@
                             <div class="flex items-center">
                                 <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
                                      <span class="text-gray-700 font-medium">
-                                         @if($reservation->client)
-                                             {{ substr($reservation->client->nom, 0, 1) }}{{ substr($reservation->client->prenom, 0, 1) }}
-                                         @else
-                                             --
-                                         @endif
+                                         {{ substr($reservation->nom, 0, 1) }}{{ substr($reservation->email, 0, 1) }}
                                      </span>
                                  </div>
                                  <div class="ml-4">
                                      <div class="text-sm font-medium text-gray-900">
-                                         @if($reservation->client)
-                                             {{ $reservation->client->nom }} {{ $reservation->client->prenom }}
-                                         @else
-                                             Client non disponible
-                                         @endif
+                                         {{ $reservation->nom }}
                                      </div>
                                      <div class="text-sm text-gray-500">
-                                         @if($reservation->client)
-                                             {{ $reservation->client->email }}
-                                         @else
-                                             Email non disponible
-                                         @endif
+                                         {{ $reservation->email }}
                                      </div>
                                 </div>
                             </div>

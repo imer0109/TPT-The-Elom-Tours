@@ -6,9 +6,11 @@
                 <h3 class="text-xl font-semibold mb-4">The Elom Tours</h3>
                 <p class="text-gray-300 mb-4">Spécialiste des voyages authentiques en Afrique de l'Ouest. Découvrez le Togo et ses pays voisins avec nos guides locaux expérimentés.</p>
                 <div class="flex space-x-4">
-                    <a href="#" class="text-gray-300 hover:text-white"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="text-gray-300 hover:text-white"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="text-gray-300 hover:text-white"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.facebook.com/TheElomTour?mibextid=ZbWKwL" class="text-gray-300 hover:text-white" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://x.com/TheElomTours" class="text-gray-300 hover:text-white" target="_blank"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.instagram.com/theelomtours/?next=%2F" class="text-gray-300 hover:text-white" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.linkedin.com/company/the-elom-tour/" class="text-gray-300 hover:text-white" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    <a href="https://www.tiktok.com/@the.elom.tours?_r=1&_d=el7838ea2647db&sec_uid=MS4wLjABAAAAUznXkTlzlOSWU2DD8aJynYIbgBTA3w6UuajFprZkL67rbtwoNdY7h1i8NX82QhKm&share_author_id=7253058242740536326&sharer_language=fr&source=h5_m&u_code=e8m6c2ad0khhdc&timestamp=1757928672&user_id=7253058242740536326&sec_user_id=MS4wLjABAAAAUznXkTlzlOSWU2DD8aJynYIbgBTA3w6UuajFprZkL67rbtwoNdY7h1i8NX82QhKm&item_author_type=1&utm_source=copy&utm_campaign=client_share&utm_medium=android&share_iid=7549234641825679110&share_link_id=d3c1e50b-890e-4135-a2bc-dceaa80785aa&share_app_id=1233&ugbiz_name=ACCOUNT&ug_btm=b8727%2Cb7360&social_share_type=5&enable_checksum=1" class="text-gray-300 hover:text-white" target="_blank"><i class="fab fa-tiktok"></i></a>
                 </div>
             </div>
             
@@ -16,11 +18,11 @@
             <div>
                 <h3 class="text-xl font-semibold mb-4">Liens rapides</h3>
                 <ul class="space-y-2">
-                    <li><a href="#" class="text-gray-300 hover:text-white">Accueil</a></li>
-                    <li><a href="#" class="text-gray-300 hover:text-white">Destinations</a></li>
-                    <li><a href="#" class="text-gray-300 hover:text-white">Circuits</a></li>
-                    <li><a href="#" class="text-gray-300 hover:text-white">À propos</a></li>
-                    <li><a href="#" class="text-gray-300 hover:text-white">Contact</a></li>
+                    <li><a href="{{ route('home') }}" class="text-gray-300 hover:text-white">Accueil</a></li>
+                    <li><a href="{{ route('destinations.index') }}" class="text-gray-300 hover:text-white">Destinations</a></li>
+                    <li><a href="{{ route('circuits.index') }}" class="text-gray-300 hover:text-white">Circuits</a></li>
+                    <li><a href="{{ route('about.index') }}" class="text-gray-300 hover:text-white">À propos</a></li>
+                    <li><a href="{{ route('contact.index') }}" class="text-gray-300 hover:text-white">Contact</a></li>
                 </ul>
             </div>
             

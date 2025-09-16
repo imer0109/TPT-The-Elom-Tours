@@ -34,6 +34,7 @@ class BlogPost extends Model
         'meta_title',
         'meta_description',
         'meta_keywords',
+        'deleted_by',
     ];
 
     /**
@@ -143,5 +144,13 @@ class BlogPost extends Model
     public function scopeFeatured($query)
     {
         return $query->where('is_featured', true);
+    }
+
+    /**
+     * Get the user who deleted the blog post.
+     */
+    public function deletedBy()
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
     }
 }

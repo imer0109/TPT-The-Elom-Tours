@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Détails du circuit - The Elom Tours')
+@section('title', 'DÉTAILS DU CIRCUIT - THE ELOM TOURS')
 
 @section('content')
 <div class="container mx-auto">

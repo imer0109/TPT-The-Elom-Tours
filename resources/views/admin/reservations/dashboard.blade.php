@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Tableau de bord des réservations')
+@section('title', 'TABLEAU DE BORD DES RÉSERVATIONS - THE ELOM TOURS')
 
 @section('content')
 <div class="container px-6 mx-auto grid">
@@ -167,10 +167,14 @@
                                     #{{ $reservation->id }}
                                 </td>
                                 <td class="px-4 py-3 text-sm">
-                                    {{ $reservation->client->nom }} {{ $reservation->client->prenom }}
+                                    {{ $reservation->nom }}
                                 </td>
                                 <td class="px-4 py-3 text-sm">
-                                    {{ $reservation->circuit->titre }}
+                                    @if($reservation->circuit)
+                                        {{ $reservation->circuit->titre }}
+                                    @else
+                                        <span class="text-red-500 italic">Circuit supprimé</span>
+                                    @endif
                                 </td>
                                 <td class="px-4 py-3 text-sm">
                                     {{ \Carbon\Carbon::parse($reservation->date_debut)->format('d/m/Y') }}

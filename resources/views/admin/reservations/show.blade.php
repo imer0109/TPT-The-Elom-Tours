@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Détails de la réservation')
+@section('title', 'DÉTAILS DE LA RÉSERVATION - THE ELOM TOURS')
 
 @section('content')
 <div class="container px-6 mx-auto grid">
@@ -99,34 +99,26 @@
             <h3 class="text-lg font-semibold text-gray-700 mb-4 border-b pb-2">
                 Informations du client
             </h3>
-            @if($reservation->client)
-                <div class="mb-4">
-                    <p class="text-sm font-medium text-gray-600">Nom complet</p>
-                    <p class="text-sm font-semibold">
-                        {{ $reservation->client->nom }} {{ $reservation->client->prenom }}
-                    </p>
-                </div>
-                <div class="mb-4">
-                    <p class="text-sm font-medium text-gray-600">Email</p>
-                    <p class="text-sm">{{ $reservation->client->email }}</p>
-                </div>
-                <div class="mb-4">
-                    <p class="text-sm font-medium text-gray-600">Téléphone</p>
-                    <p class="text-sm">{{ $reservation->client->telephone ?? 'Non renseigné' }}</p>
-                </div>
-                <div>
-                    <p class="text-sm font-medium text-gray-600">Adresse</p>
-                    <p class="text-sm">
-                        {{ $reservation->client->adresse ?? 'Non renseignée' }}<br>
-                        @if($reservation->client->code_postal || $reservation->client->ville)
-                            {{ $reservation->client->code_postal ?? '' }} {{ $reservation->client->ville ?? '' }}<br>
-                        @endif
-                        {{ $reservation->client->pays ?? '' }}
-                    </p>
-                </div>
-            @else
-                <p class="text-sm text-gray-500">Aucune information client disponible</p>
-            @endif
+            <div class="mb-4">
+                <p class="text-sm font-medium text-gray-600">Nom complet</p>
+                <p class="text-sm font-semibold">
+                    {{ $reservation->nom }}
+                </p>
+            </div>
+            <div class="mb-4">
+                <p class="text-sm font-medium text-gray-600">Email</p>
+                <p class="text-sm">{{ $reservation->email }}</p>
+            </div>
+            <div class="mb-4">
+                <p class="text-sm font-medium text-gray-600">Téléphone</p>
+                <p class="text-sm">{{ $reservation->telephone ?? 'Non renseigné' }}</p>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-gray-600">Message</p>
+                <p class="text-sm">
+                    {{ $reservation->message ?? 'Aucun message' }}
+                </p>
+            </div>
         </div>
 
         <!-- Détails du circuit -->

@@ -28,6 +28,7 @@ class Circuit extends Model
         'taille_groupe',
         'langues',
         'est_actif',
+        'deleted_by',
     ];
     
     /**
@@ -118,5 +119,10 @@ class Circuit extends Model
     public function getNombreReservationsAttribute()
     {
         return $this->reservations()->where('statut', 'confirmed')->count();
+    }
+
+    public function deletedBy()
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
     }
 }

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -17,7 +18,7 @@ use App\Traits\LogsActivity;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasApiTokens, HasUuids, LogsActivity;
+    use HasFactory, Notifiable, HasApiTokens, HasUuids, SoftDeletes, LogsActivity;
 
     /**
      * The attributes that are mass assignable.
@@ -66,6 +67,14 @@ class User extends Authenticatable
     public function hasAnyRole(array $roles): bool
     {
         return $this->roles()->whereIn('name', $roles)->exists();
+    }
+    
+    /**
+     * L'utilisateur qui a supprimé cet utilisateur.
+     */
+    public function deletedBy()
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
     }
 
     /**

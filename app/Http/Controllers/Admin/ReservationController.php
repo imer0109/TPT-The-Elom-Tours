@@ -30,7 +30,7 @@ class ReservationController extends Controller
         $search = $request->input('search');
         
         // Construire la requête de base
-        $query = Reservation::with(['client', 'circuit'])
+        $query = Reservation::with(['circuit'])
             ->orderBy('created_at', 'desc');
         
         // Appliquer les filtres
@@ -87,9 +87,8 @@ class ReservationController extends Controller
     public function create()
     {
         $circuits = Circuit::where('est_actif', true)->orderBy('titre')->get();
-        $clients = Client::orderBy('nom')->get();
         
-        return view('admin.reservations.create', compact('circuits', 'clients'));
+        return view('admin.reservations.create', compact('circuits'));
     }
 
     /**
@@ -102,7 +101,10 @@ class ReservationController extends Controller
     {
         // Valider les données du formulaire
         $validated = $request->validate([
-            'client_id' => 'required|exists:clients,id',
+            'nom' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'telephone' => 'nullable|string|max:20',
+            'message' => 'nullable|string',
             'circuit_id' => 'required|exists:circuits,id',
             'date_debut' => 'required|date',
             'date_fin' => 'required|date|after_or_equal:date_debut',
@@ -127,7 +129,7 @@ class ReservationController extends Controller
      */
     public function show(Reservation $reservation)
     {
-        $reservation->load(['client', 'circuit']);
+        $reservation->load(['circuit']);
         
         return view('admin.reservations.show', compact('reservation'));
     }
@@ -141,9 +143,8 @@ class ReservationController extends Controller
     public function edit(Reservation $reservation)
     {
         $circuits = Circuit::orderBy('titre')->get();
-        $clients = Client::orderBy('nom')->get();
         
-        return view('admin.reservations.edit', compact('reservation', 'circuits', 'clients'));
+        return view('admin.reservations.edit', compact('reservation', 'circuits'));
     }
 
     /**
@@ -157,7 +158,10 @@ class ReservationController extends Controller
     {
         // Valider les données du formulaire
         $validated = $request->validate([
-            'client_id' => 'required|exists:clients,id',
+            'nom' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'telephone' => 'nullable|string|max:20',
+            'message' => 'nullable|string',
             'circuit_id' => 'required|exists:circuits,id',
             'date_debut' => 'required|date',
             'date_fin' => 'required|date|after_or_equal:date_debut',
@@ -208,12 +212,10 @@ class ReservationController extends Controller
         
         // Envoyer une notification par email au client seulement si le client existe et a un email
         if ($oldStatus !== $validated['status']) {
-            $reservation->load('client');
-            
-            // Vérifier que le client existe et a un email
-            if ($reservation->client && $reservation->client->email) {
+            // Vérifier que la réservation a un email
+            if ($reservation->email) {
                 try {
-                    Mail::to($reservation->client->email)->send(new ReservationStatusChanged($reservation));
+                    Mail::to($reservation->email)->send(new ReservationStatusChanged($reservation));
                 } catch (\Exception $e) {
                     // Log l'erreur mais ne pas bloquer le processus
                     Log::error('Erreur lors de l\'envoi de l\'email de notification: ' . $e->getMessage());
@@ -224,14 +226,14 @@ class ReservationController extends Controller
                         ->with('warning', 'L\'email de notification n\'a pas pu être envoyé.');
                 }
             } else {
-                // Client sans email ou client inexistant
-                Log::warning('Tentative d\'envoi d\'email pour une réservation sans client ou sans email', [
+                // Réservation sans email
+                Log::warning('Tentative d\'envoi d\'email pour une réservation sans email', [
                     'reservation_id' => $reservation->id,
-                    'client_id' => $reservation->client_id
+                    'reservation_email' => $reservation->email
                 ]);
                 
                 return redirect()->back()
-                    ->with('success', 'Statut mis à jour mais impossible d\'envoyer l\'email (client sans email).');
+                    ->with('success', 'Statut mis à jour mais impossible d\'envoyer l\'email (réservation sans email).');
             }
         }
         
@@ -257,7 +259,7 @@ class ReservationController extends Controller
         ];
         
         // Réservations récentes
-        $recent_reservations = Reservation::with(['client', 'circuit'])
+        $recent_reservations = Reservation::with(['circuit'])
             ->orderBy('created_at', 'desc')
             ->limit(5)
             ->get();

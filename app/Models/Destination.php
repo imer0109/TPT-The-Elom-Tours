@@ -32,6 +32,7 @@ class Destination extends Model
         'meta_title',
         'meta_description',
         'meta_keywords',
+        'deleted_by',
     ];
 
     /**
@@ -53,8 +54,8 @@ class Destination extends Model
 
         static::creating(function ($destination) {
             if (empty($destination->slug)) {
-                $destination->slug = Str::slug($destination->name);
-            }
+                 $destination->slug = Str::slug($destination->name);
+             }
         });
     }
 
@@ -85,5 +86,10 @@ class Destination extends Model
             return $this->image->getFileUrl();
         }
         return null;
+    }
+
+    public function deletedBy()
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
     }
 }

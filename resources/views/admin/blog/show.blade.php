@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', $blogPost->title . ' - The Elom Tours')
+@section('title', $blogPost->title . ' - THE ELOM TOURS')
 
 @section('content')
 <div class="container mx-auto">

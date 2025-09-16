@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Modifier une image de la galerie - The Elom Tours')
+@section('title', 'MODIFIER UNE IMAGE DE LA GALERIE - THE ELOM TOURS')
 
 @section('content')
 <div class="container mx-auto">

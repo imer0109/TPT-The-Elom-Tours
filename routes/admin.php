@@ -159,4 +159,16 @@ Route::prefix("admin")->middleware(["web", "auth"])->group(function () {
         Route::get("/", [\App\Http\Controllers\Admin\ActivityLogController::class, "index"])->name("index");
         Route::get("/{id}", [\App\Http\Controllers\Admin\ActivityLogController::class, "show"])->name("show");
     });
+
+    // Corbeille (réservé au Super Administrateur)
+    Route::prefix("trash")->name("admin.trash.")->middleware(["check.role:Super Administrateur"])->group(function () {
+        Route::get("/", [\App\Http\Controllers\Admin\TrashController::class, "index"])->name("index");
+        Route::get("/{model}", [\App\Http\Controllers\Admin\TrashController::class, "show"])->name("show");
+        Route::post("/{model}/{id}/restore", [\App\Http\Controllers\Admin\TrashController::class, "restore"])->name("restore");
+        Route::delete("/{model}/{id}/force-delete", [\App\Http\Controllers\Admin\TrashController::class, "forceDelete"])->name("force-delete");
+        Route::post("/{model}/empty", [\App\Http\Controllers\Admin\TrashController::class, "empty"])->name("empty-model");
+        Route::post("/{model}/restore-all", [\App\Http\Controllers\Admin\TrashController::class, "restoreAll"])->name("restore-all-model");
+        Route::post("/restore-all", [\App\Http\Controllers\Admin\TrashController::class, "restoreAllGlobal"])->name("restore-all");
+        Route::post("/empty-all", [\App\Http\Controllers\Admin\TrashController::class, "emptyAllGlobal"])->name("empty-all");
+    });
 });

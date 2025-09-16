@@ -1,7 +1,7 @@
 @component('mail::message')
 # Mise à jour de votre réservation
 
-Bonjour {{ $reservation->client->prenom }},
+Bonjour {{ $reservation->nom }},
 
 Nous vous informons que le statut de votre réservation (référence : #{{ $reservation->reference }}) a été mis à jour.
 

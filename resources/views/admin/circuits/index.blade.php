@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Circuits - The Elom Tours')
+@section('title', 'CIRCUITS - THE ELOM TOURS')
 
 @section('content')
 <div class="container mx-auto">
@@ -11,7 +11,7 @@
         </a>
     </div>
 
-    @push('scripts')
+    @section('scripts')
     <script>
         function deleteCircuit(circuitId) {
             if (confirm('Êtes-vous sûr de vouloir supprimer ce circuit ?')) {
@@ -35,7 +35,7 @@
             }, 500);
         });
     </script>
-    @endpush
+    @endsection
     
     <!-- Filtres -->
     <div class="bg-white rounded-lg shadow-md p-6 mb-6">

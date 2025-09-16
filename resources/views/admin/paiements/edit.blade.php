@@ -30,7 +30,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
                 <p class="text-sm font-medium text-gray-600">Client</p>
-                <p class="text-sm">{{ $reservation->client->nom }} {{ $reservation->client->prenom }}</p>
+                <p class="text-sm">{{ $reservation->nom }}</p>
             </div>
             <div>
                 <p class="text-sm font-medium text-gray-600">Circuit</p>

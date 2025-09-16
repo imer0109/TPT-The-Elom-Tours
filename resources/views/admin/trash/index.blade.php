@@ -1,0 +1,112 @@
+@extends('admin.layouts.app')
+
+@section('title')
+CORBEILLE - THE ELOM TOURS
+
+@endsection
+
+@section('content')
+<div class="px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-3">
+        <div>
+            <h1 class="text-2xl font-semibold text-gray-900 flex items-center gap-2">
+                <i class="fas fa-trash-alt text-red-500"></i>
+                Corbeille
+            </h1>
+            <p class="text-sm text-gray-500 mt-1">Gérez les éléments supprimés du système</p>
+        </div>
+        @if(array_sum($trashCounts) > 0)
+        <div class="flex items-center gap-2">
+            <form action="{{ route('admin.trash.restore-all') }}" method="POST" onsubmit="return confirm('Restaurer tous les éléments ?');">
+                @csrf
+                <button type="submit" class="inline-flex items-center gap-2 rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow hover:bg-green-700">
+                    <i class="fas fa-undo"></i> Restaurer tout
+                </button>
+            </form>
+            <form action="{{ route('admin.trash.empty-all') }}" method="POST" onsubmit="return confirm('Vider définitivement toute la corbeille ? Cette action est irréversible.');">
+                @csrf
+                <button type="submit" class="inline-flex items-center gap-2 rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow hover:bg-red-700">
+                    <i class="fas fa-trash"></i> Vider tout
+                </button>
+            </form>
+        </div>
+        @endif
+    </div>
+
+    <!-- Statistiques générales -->
+    <div class="bg-white rounded-lg shadow p-5 border-l-4 border-red-500 mb-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-xs font-semibold uppercase tracking-wide text-red-600">Total des éléments supprimés</p>
+                <p class="mt-1 text-xl font-bold text-gray-900">{{ array_sum($trashCounts) }} éléments</p>
+                <p class="mt-1 text-xs text-gray-500 flex items-center gap-1">
+                    <i class="fas fa-info-circle"></i>
+                    Seuls les Super Administrateurs peuvent gérer la corbeille
+                </p>
+            </div>
+            <div class="text-gray-300">
+                <i class="fas fa-trash-alt text-4xl"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grille des modèles -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        @foreach($trashCounts as $model => $count)
+            @if($count > 0)
+            <div class="bg-white rounded-lg shadow p-5 border-l-4 border-yellow-400 hover:shadow-lg transition">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wide text-yellow-600">{{ ucfirst(str_replace(['_', '-'], ' ', $model)) }}</p>
+                        <p class="mt-1 text-xl font-bold text-gray-900">{{ $count }} {{ $count > 1 ? 'éléments' : 'élément' }}</p>
+                        <p class="mt-1 text-xs text-gray-500 flex items-center gap-1">
+                            <i class="fas fa-clock"></i> Supprimé récemment
+                        </p>
+                    </div>
+                    <div class="text-gray-300">
+                        @php
+                            $icons = [
+                                'circuits' => 'route',
+                                'destinations' => 'map-marker-alt',
+                                'blog-posts' => 'blog',
+                                'reservations' => 'calendar-check',
+                                'clients' => 'users',
+                                'comments' => 'comments',
+                                'reviews' => 'star',
+                                'categories' => 'tags',
+                                'paiements' => 'credit-card',
+                                'settings' => 'cog',
+                                'users' => 'user',
+                            ];
+                            $icon = $icons[$model] ?? 'file';
+                        @endphp
+                        <i class="fas fa-{{ $icon }} text-3xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center justify-between">
+                    <a href="{{ route('admin.trash.show', str_replace('_','-',$model)) }}" class="inline-flex items-center gap-2 rounded-md bg-yellow-500 px-3 py-2 text-sm font-semibold text-white hover:bg-yellow-600">
+                        <i class="fas fa-eye"></i> Voir les éléments
+                    </a>
+                    <span class="inline-flex items-center justify-center text-xs font-semibold text-white bg-red-600 rounded-full h-6 px-2">{{ $count }}</span>
+                </div>
+            </div>
+            @endif
+        @endforeach
+    </div>
+
+    @if(array_sum($trashCounts) == 0)
+    <div class="mt-8 bg-white rounded-lg shadow p-10 text-center">
+        <div class="mb-4 text-gray-300">
+            <i class="fas fa-trash-alt text-5xl"></i>
+        </div>
+        <h3 class="text-gray-700 text-lg font-semibold mb-2">Corbeille vide</h3>
+        <p class="text-gray-500">Aucun élément supprimé pour le moment.</p>
+        <div class="mt-4 inline-flex items-center gap-2 text-sm text-blue-700 bg-blue-50 border border-blue-200 rounded px-3 py-2">
+            <i class="fas fa-info-circle"></i>
+            Les éléments supprimés apparaîtront ici pour restauration ou suppression définitive.
+        </div>
+    </div>
+    @endif
+</div>
+@endsection

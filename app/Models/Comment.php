@@ -9,12 +9,13 @@ use App\Traits\Routing\ModelsSlugKeyTrait;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Sanctum\HasApiTokens;
 use App\Traits\LogsActivity;
 
 class Comment extends Model
 {
-    use HasFactory, HasApiTokens, HasUuids, LogsActivity;
+    use HasFactory, HasApiTokens, HasUuids, SoftDeletes, LogsActivity;
 
     protected $fillable = [
         'blog_post_id',

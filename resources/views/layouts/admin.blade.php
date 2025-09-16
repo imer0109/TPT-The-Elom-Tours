@@ -7,7 +7,7 @@
     <title>@yield('title', 'ADMINISTRATION - THE ELOM\' TOURS ')</title>
     
     <!-- Favicon -->
-    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('LogoUrl.jpg') }}" type="image/x-icon">
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">

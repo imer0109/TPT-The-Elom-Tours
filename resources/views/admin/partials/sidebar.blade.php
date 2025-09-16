@@ -1,3 +1,38 @@
+@php
+    // Fonction helper pour vérifier si une route est active
+    function isActiveRoute($routeName, $exact = false) {
+        $currentRoute = request()->route()->getName();
+        
+        if ($exact) {
+            return $currentRoute === $routeName;
+        }
+        
+        // Pour les routes avec des patterns (ex: admin.reservations.*)
+        if (str_contains($routeName, '*')) {
+            $pattern = str_replace('*', '', $routeName);
+            return str_starts_with($currentRoute, $pattern);
+        }
+        
+        return $currentRoute === $routeName;
+    }
+    
+    // Fonction helper pour vérifier si un groupe de routes est actif
+    function isActiveGroup($routes) {
+        $currentRoute = request()->route()->getName();
+        foreach ($routes as $route) {
+            if (str_contains($route, '*')) {
+                $pattern = str_replace('*', '', $route);
+                if (str_starts_with($currentRoute, $pattern)) {
+                    return true;
+                }
+            } elseif ($currentRoute === $route) {
+                return true;
+            }
+        }
+        return false;
+    }
+@endphp
+
 <div x-show="sidebarOpen" class="flex flex-col fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 shadow-lg transition-all duration-300 ease-in-out transform sm:translate-x-0 sm:static sm:inset-0">
     <!-- Logo -->
     <div class="flex items-center justify-center h-16 border-b border-gray-200">
@@ -12,7 +47,7 @@
         <ul class="space-y-2">
             <!-- Dashboard -->
             <li>
-                <a href="{{ route('admin.dashboard') }}" class="flex items-center p-2 text-base font-medium rounded-lg text-white bg-primary hover:bg-green-700">
+                <a href="{{ route('admin.dashboard') }}" class="flex items-center p-2 text-base font-medium rounded-lg {{ isActiveRoute('admin.dashboard') ? 'text-white bg-primary' : 'text-gray-700 hover:bg-gray-100' }}">
                     <i class="fas fa-tachometer-alt w-6 h-6 text-center"></i>
                     <span class="ml-3">Tableau de bord</span>
                 </a>
@@ -20,40 +55,40 @@
             
             <!-- Réservations -->
             <li>
-                <button type="button" class="flex items-center w-full p-2 text-base font-medium rounded-lg text-gray-700 hover:bg-gray-100 transition duration-75 group" aria-controls="dropdown-reservations" data-collapse-toggle="dropdown-reservations">
+                <button type="button" class="flex items-center w-full p-2 text-base font-medium rounded-lg {{ isActiveGroup(['admin.reservations.*']) ? 'text-white bg-primary' : 'text-gray-700 hover:bg-gray-100' }} transition duration-75 group" aria-controls="dropdown-reservations" data-collapse-toggle="dropdown-reservations">
                     <i class="fas fa-calendar-check w-6 h-6 text-center"></i>
                     <span class="flex-1 ml-3 text-left whitespace-nowrap">Réservations</span>
-                    <i class="fas fa-chevron-down"></i>
+                    <i class="fas fa-chevron-down {{ isActiveGroup(['admin.reservations.*']) ? 'rotate-180' : '' }}"></i>
                 </button>
-                <ul id="dropdown-reservations" class="hidden py-2 space-y-2 pl-11">
+                <ul id="dropdown-reservations" class="{{ isActiveGroup(['admin.reservations.*']) ? '' : 'hidden' }} py-2 space-y-2 pl-11">
                     <li>
-                        <a href="{{ route('admin.reservations.dashboard') }}" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">- Tableau de bord</a>
+                        <a href="{{ route('admin.reservations.dashboard') }}" class="flex items-center p-2 text-sm font-medium rounded-lg {{ isActiveRoute('admin.reservations.dashboard') ? 'text-white bg-primary' : 'text-gray-700 hover:bg-gray-100' }}">- Tableau de bord</a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.reservations.index') }}" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">- Toutes les réservations</a>
+                        <a href="{{ route('admin.reservations.index') }}" class="flex items-center p-2 text-sm font-medium rounded-lg {{ isActiveRoute('admin.reservations.index') ? 'text-white bg-primary' : 'text-gray-700 hover:bg-gray-100' }}">- Toutes les réservations</a>
                     </li>
                     <!-- <li>
-                        <a href="{{ route('admin.reservations.create') }}" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">- Ajouter une réservation</a>
+                        <a href="{{ route('admin.reservations.create') }}" class="flex items-center p-2 text-sm font-medium rounded-lg {{ isActiveRoute('admin.reservations.create') ? 'text-white bg-primary' : 'text-gray-700 hover:bg-gray-100' }}">- Ajouter une réservation</a>
                     </li> -->
                 </ul>
             </li>
             
             <!-- Circuits -->
             <li>
-                <button type="button" class="flex items-center w-full p-2 text-base font-medium rounded-lg text-gray-700 hover:bg-gray-100 transition duration-75 group" aria-controls="dropdown-circuits" data-collapse-toggle="dropdown-circuits">
+                <button type="button" class="flex items-center w-full p-2 text-base font-medium rounded-lg {{ isActiveGroup(['admin.circuits.*']) ? 'text-white bg-primary' : 'text-gray-700 hover:bg-gray-100' }} transition duration-75 group" aria-controls="dropdown-circuits" data-collapse-toggle="dropdown-circuits">
                     <i class="fas fa-route w-6 h-6 text-center"></i>
                     <span class="flex-1 ml-3 text-left whitespace-nowrap">Circuits</span>
-                    <i class="fas fa-chevron-down"></i>
+                    <i class="fas fa-chevron-down {{ isActiveGroup(['admin.circuits.*']) ? 'rotate-180' : '' }}"></i>
                 </button>
-                <ul id="dropdown-circuits" class="hidden py-2 space-y-2 pl-11">
+                <ul id="dropdown-circuits" class="{{ isActiveGroup(['admin.circuits.*']) ? '' : 'hidden' }} py-2 space-y-2 pl-11">
                     <li>
-                        <a href="{{ route('admin.circuits.index') }}" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">- Tous les circuits</a>
+                        <a href="{{ route('admin.circuits.index') }}" class="flex items-center p-2 text-sm font-medium rounded-lg {{ isActiveRoute('admin.circuits.index') ? 'text-white bg-primary' : 'text-gray-700 hover:bg-gray-100' }}">- Tous les circuits</a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.circuits.create') }}" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">- Ajouter un circuit</a>
+                        <a href="{{ route('admin.circuits.create') }}" class="flex items-center p-2 text-sm font-medium rounded-lg {{ isActiveRoute('admin.circuits.create') ? 'text-white bg-primary' : 'text-gray-700 hover:bg-gray-100' }}">- Ajouter un circuit</a>
                     </li>
                     <!-- <li>
-                        <a href="#" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">- Catégories</a>
+                        <a href="#" class="flex items-center p-2 text-sm font-medium rounded-lg {{ isActiveRoute('admin.circuits.categories') ? 'text-white bg-primary' : 'text-gray-700 hover:bg-gray-100' }}">- Catégories</a>
                     </li> -->
                 </ul>
             </li>
@@ -68,27 +103,27 @@
             
             <!-- Blog -->
             <li>
-                <button type="button" class="flex items-center w-full p-2 text-base font-medium rounded-lg text-gray-700 hover:bg-gray-100 transition duration-75 group" aria-controls="dropdown-blog" data-collapse-toggle="dropdown-blog">
+                <button type="button" class="flex items-center w-full p-2 text-base font-medium rounded-lg {{ isActiveGroup(['admin.blog.*', 'admin.categories.*']) ? 'text-white bg-primary' : 'text-gray-700 hover:bg-gray-100' }} transition duration-75 group" aria-controls="dropdown-blog" data-collapse-toggle="dropdown-blog">
                     <i class="fas fa-blog w-6 h-6 text-center"></i>
                     <span class="flex-1 ml-3 text-left whitespace-nowrap">Blog</span>
-                    <i class="fas fa-chevron-down"></i>
+                    <i class="fas fa-chevron-down {{ isActiveGroup(['admin.blog.*', 'admin.categories.*']) ? 'rotate-180' : '' }}"></i>
                 </button>
-                <ul id="dropdown-blog" class="hidden py-2 space-y-2 pl-11">
+                <ul id="dropdown-blog" class="{{ isActiveGroup(['admin.blog.*', 'admin.categories.*']) ? '' : 'hidden' }} py-2 space-y-2 pl-11">
                     <li>
-                        <a href="{{ route('admin.blog.index') }}" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">- Tous les articles</a>
+                        <a href="{{ route('admin.blog.index') }}" class="flex items-center p-2 text-sm font-medium rounded-lg {{ isActiveRoute('admin.blog.index') ? 'text-white bg-primary' : 'text-gray-700 hover:bg-gray-100' }}">- Tous les articles</a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.blog.create') }}" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">- Ajouter un article</a>
+                        <a href="{{ route('admin.blog.create') }}" class="flex items-center p-2 text-sm font-medium rounded-lg {{ isActiveRoute('admin.blog.create') ? 'text-white bg-primary' : 'text-gray-700 hover:bg-gray-100' }}">- Ajouter un article</a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.categories.index') }}" class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">- Catégories</a>
+                        <a href="{{ route('admin.categories.index') }}" class="flex items-center p-2 text-sm font-medium rounded-lg {{ isActiveGroup(['admin.categories.*']) ? 'text-white bg-primary' : 'text-gray-700 hover:bg-gray-100' }}">- Catégories</a>
                     </li>
                 </ul>
             </li>
             
             <!-- Galerie -->
             <li>
-                <a href="{{ route('admin.gallery.index') }}" class="flex items-center p-2 text-base font-medium rounded-lg text-gray-700 hover:bg-gray-100">
+                <a href="{{ route('admin.gallery.index') }}" class="flex items-center p-2 text-base font-medium rounded-lg {{ isActiveGroup(['admin.gallery.*']) ? 'text-white bg-primary' : 'text-gray-700 hover:bg-gray-100' }}">
                     <i class="fas fa-images w-6 h-6 text-center"></i>
                     <span class="ml-3">Galerie</span>
                 </a>
@@ -96,7 +131,7 @@
             
             <!-- Messages -->
             <li>
-                <a href="{{ route('admin.messages.index') }}" class="flex items-center p-2 text-base font-medium rounded-lg text-gray-700 hover:bg-gray-100">
+                <a href="{{ route('admin.messages.index') }}" class="flex items-center p-2 text-base font-medium rounded-lg {{ isActiveGroup(['admin.messages.*']) ? 'text-white bg-primary' : 'text-gray-700 hover:bg-gray-100' }}">
                     <i class="fas fa-envelope w-6 h-6 text-center"></i>
                     <span class="ml-3">Messages</span>
                     <span class="inline-flex justify-center items-center p-1 ml-3 w-5 h-5 text-xs font-medium rounded-full text-white bg-red-500"></span>
@@ -105,7 +140,7 @@
             
             <!-- Commentaires -->
             <li>
-                <a href="{{ route('admin.comments.index') }}" class="flex items-center p-2 text-base font-medium rounded-lg text-gray-700 hover:bg-gray-100">
+                <a href="{{ route('admin.comments.index') }}" class="flex items-center p-2 text-base font-medium rounded-lg {{ isActiveGroup(['admin.comments.*']) ? 'text-white bg-primary' : 'text-gray-700 hover:bg-gray-100' }}">
                     <i class="fas fa-comments w-6 h-6 text-center"></i>
                     <span class="ml-3">Commentaires</span>
                     @php
@@ -119,7 +154,7 @@
             
             <!-- Avis -->
             <li>
-                <a href="{{ route('admin.reviews.index') }}" class="flex items-center p-2 text-base font-medium rounded-lg text-gray-700 hover:bg-gray-100">
+                <a href="{{ route('admin.reviews.index') }}" class="flex items-center p-2 text-base font-medium rounded-lg {{ isActiveGroup(['admin.reviews.*']) ? 'text-white bg-primary' : 'text-gray-700 hover:bg-gray-100' }}">
                     <i class="fas fa-star w-6 h-6 text-center"></i>
                     <span class="ml-3">Avis clients</span>
                     @php
@@ -133,7 +168,7 @@
             
             <!-- Destinations -->
             <li>
-                <a href="{{ route('admin.destinations.index') }}" class="flex items-center p-2 text-base font-medium rounded-lg text-gray-700 hover:bg-gray-100">
+                <a href="{{ route('admin.destinations.index') }}" class="flex items-center p-2 text-base font-medium rounded-lg {{ isActiveGroup(['admin.destinations.*']) ? 'text-white bg-primary' : 'text-gray-700 hover:bg-gray-100' }}">
                     <i class="fas fa-map-marker-alt w-6 h-6 text-center"></i>
                     <span class="ml-3">Destinations</span>
                 </a>
@@ -141,16 +176,38 @@
             
             <!-- Paramètres -->
             <li>
-                <a href="{{ route('admin.settings.index') }}" class="flex items-center p-2 text-base font-medium rounded-lg text-gray-700 hover:bg-gray-100">
+                <a href="{{ route('admin.settings.index') }}" class="flex items-center p-2 text-base font-medium rounded-lg {{ isActiveGroup(['admin.settings.*']) ? 'text-white bg-primary' : 'text-gray-700 hover:bg-gray-100' }}">
                     <i class="fas fa-cog w-6 h-6 text-center"></i>
                     <span class="ml-3">Paramètres</span>
                 </a>
             </li>
             @if(auth()->user()->hasRole('Super Administrateur'))
              <li>
-                <a href="{{ route('admin.activity-logs.index') }}" class="flex items-center p-2 text-base font-medium rounded-lg text-gray-700 hover:bg-gray-100">
+                <a href="{{ route('admin.activity-logs.index') }}" class="flex items-center p-2 text-base font-medium rounded-lg {{ isActiveGroup(['admin.activity-logs.*']) ? 'text-white bg-primary' : 'text-gray-700 hover:bg-gray-100' }}">
                     <i class="fas fa-history w-6 h-6 text-center"></i>
                     <span class="ml-3">Journal d'activités</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('admin.trash.index') }}" class="flex items-center p-2 text-base font-medium rounded-lg {{ isActiveGroup(['admin.trash.*']) ? 'text-white bg-primary' : 'text-gray-700 hover:bg-gray-100' }}">
+                    <i class="fas fa-trash-alt w-6 h-6 text-center"></i>
+                    <span class="ml-3">Corbeille</span>
+                    @php
+                        $trashCount = \App\Models\Circuit::onlyTrashed()->count() + 
+                                     \App\Models\Destination::onlyTrashed()->count() + 
+                                     \App\Models\BlogPost::onlyTrashed()->count() + 
+                                     \App\Models\Reservation::onlyTrashed()->count() + 
+                                     \App\Models\Client::onlyTrashed()->count() + 
+                                     \App\Models\Comment::onlyTrashed()->count() + 
+                                     \App\Models\Review::onlyTrashed()->count() + 
+                                     \App\Models\Categorie::onlyTrashed()->count() + 
+                                     \App\Models\Paiement::onlyTrashed()->count() + 
+                                     \App\Models\Setting::onlyTrashed()->count() + 
+                                     \App\Models\User::onlyTrashed()->count();
+                    @endphp
+                    @if($trashCount > 0)
+                        <span class="inline-flex justify-center items-center p-1 ml-3 w-5 h-5 text-xs font-medium rounded-full text-white bg-red-500">{{ $trashCount }}</span>
+                    @endif
                 </a>
             </li>
             @endif
@@ -203,7 +260,7 @@
         <ul class="space-y-2">
             <!-- Dashboard -->
             <li>
-                <a href="{{ route('admin.dashboard') }}" class="flex items-center p-2 text-base font-medium rounded-lg text-white bg-primary hover:bg-green-700 group">
+                <a href="{{ route('admin.dashboard') }}" class="flex items-center p-2 text-base font-medium rounded-lg {{ isActiveRoute('admin.dashboard') ? 'text-white bg-primary' : 'text-gray-700 hover:bg-gray-100' }} group">
                     <i class="fas fa-tachometer-alt w-6 h-6 text-center"></i>
                     <span class="ml-3 hidden group-hover:block">Tableau de bord</span>
                 </a>
@@ -211,7 +268,7 @@
             
             <!-- Réservations -->
             <li>
-                <a href="{{ route('admin.reservations.index') }}" class="flex items-center p-2 text-base font-medium rounded-lg text-gray-700 hover:bg-gray-100 group">
+                <a href="{{ route('admin.reservations.index') }}" class="flex items-center p-2 text-base font-medium rounded-lg {{ isActiveGroup(['admin.reservations.*']) ? 'text-white bg-primary' : 'text-gray-700 hover:bg-gray-100' }} group">
                     <i class="fas fa-calendar-check w-6 h-6 text-center"></i>
                     <span class="ml-3 hidden group-hover:block">Réservations</span>
                 </a>
@@ -219,7 +276,7 @@
             
             <!-- Circuits -->
             <li>
-                <a href="{{ route('admin.circuits.index') }}" class="flex items-center p-2 text-base font-medium rounded-lg text-gray-700 hover:bg-gray-100 group">
+                <a href="{{ route('admin.circuits.index') }}" class="flex items-center p-2 text-base font-medium rounded-lg {{ isActiveGroup(['admin.circuits.*']) ? 'text-white bg-primary' : 'text-gray-700 hover:bg-gray-100' }} group">
                     <i class="fas fa-route w-6 h-6 text-center"></i>
                     <span class="ml-3 hidden group-hover:block">Circuits</span>
                 </a>
@@ -227,7 +284,7 @@
             
             <!-- Clients -->
             <li>
-                <a href="{{ route('admin.clients.index') }}" class="flex items-center p-2 text-base font-medium rounded-lg text-gray-700 hover:bg-gray-100 group">
+                <a href="{{ route('admin.clients.index') }}" class="flex items-center p-2 text-base font-medium rounded-lg {{ isActiveGroup(['admin.clients.*']) ? 'text-white bg-primary' : 'text-gray-700 hover:bg-gray-100' }} group">
                     <i class="fas fa-users w-6 h-6 text-center"></i>
                     <span class="ml-3 hidden group-hover:block">Clients</span>
                 </a>
@@ -235,7 +292,7 @@
             
             <!-- Blog -->
             <li>
-                <a href="{{ route('admin.blog.index') }}" class="flex items-center p-2 text-base font-medium rounded-lg text-gray-700 hover:bg-gray-100 group">
+                <a href="{{ route('admin.blog.index') }}" class="flex items-center p-2 text-base font-medium rounded-lg {{ isActiveGroup(['admin.blog.*', 'admin.categories.*']) ? 'text-white bg-primary' : 'text-gray-700 hover:bg-gray-100' }} group">
                     <i class="fas fa-blog w-6 h-6 text-center"></i>
                     <span class="ml-3 hidden group-hover:block">Blog</span>
                 </a>
@@ -243,7 +300,7 @@
             
             <!-- Galerie -->
             <li>
-                <a href="{{ route('admin.gallery.index') }}" class="flex items-center p-2 text-base font-medium rounded-lg text-gray-700 hover:bg-gray-100 group">
+                <a href="{{ route('admin.gallery.index') }}" class="flex items-center p-2 text-base font-medium rounded-lg {{ isActiveGroup(['admin.gallery.*']) ? 'text-white bg-primary' : 'text-gray-700 hover:bg-gray-100' }} group">
                     <i class="fas fa-images w-6 h-6 text-center"></i>
                     <span class="ml-3 hidden group-hover:block">Galerie</span>
                 </a>
@@ -251,7 +308,7 @@
             
             <!-- Messages -->
             <li>
-                <a href="{{ route('admin.messages.index') }}" class="flex items-center p-2 text-base font-medium rounded-lg text-gray-700 hover:bg-gray-100 group">
+                <a href="{{ route('admin.messages.index') }}" class="flex items-center p-2 text-base font-medium rounded-lg {{ isActiveGroup(['admin.messages.*']) ? 'text-white bg-primary' : 'text-gray-700 hover:bg-gray-100' }} group">
                     <i class="fas fa-envelope w-6 h-6 text-center"></i>
                     <span class="ml-3 hidden group-hover:block">Messages</span>
                 </a>

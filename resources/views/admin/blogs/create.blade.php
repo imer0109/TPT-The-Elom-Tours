@@ -20,7 +20,7 @@
                     <div class="col-span-2">
                         <label for="title" class="block text-sm font-medium text-gray-700 mb-2">Titre</label>
                         <input type="text" name="title" id="title" value="{{ old('title') }}"
-                            class="form-input w-full rounded-md shadow-sm @error('title') border py-2 border-red-500 @enderror"
+                            class="form-input w-full rounded-md shadow-sm  @error('title') border py-2 border-red-500 @enderror"
                             required>
                         @error('title')
                         <p class="mt-1 text-sm text-red-500">{{ $message }}</p>

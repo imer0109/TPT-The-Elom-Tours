@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'THE ELOM\' TOURS')</title>
     
     <!-- SEO Meta Tags -->
@@ -48,6 +49,32 @@
     <meta name="theme-color" content="#16a34a">
     <link rel="apple-touch-icon" href="{{ asset('assets/icons/icon-192x192.png') }}">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    
+    <!-- CSRF Token for AJAX -->
+    <script>
+        window.Laravel = {!! json_encode([
+            'csrfToken' => csrf_token(),
+        ]) !!};
+        
+        // Configure Fetch API with CSRF token
+        document.addEventListener('DOMContentLoaded', function() {
+            // Pour les requêtes fetch
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            
+            // Intercepter les requêtes fetch pour ajouter le token CSRF
+            const originalFetch = window.fetch;
+            window.fetch = function(url, options = {}) {
+                if (!options.headers) {
+                    options.headers = {};
+                }
+                
+                // Ajouter le token CSRF à l'en-tête
+                options.headers['X-CSRF-TOKEN'] = csrfToken;
+                
+                return originalFetch(url, options);
+            };
+        });
+    </script>
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
 </head>
 <body class="font-sans antialiased bg-gray-100">

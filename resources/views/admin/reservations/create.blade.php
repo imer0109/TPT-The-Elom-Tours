@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Créer une réservation')
+@section('title', 'CRÉER UNE RÉSERVATION - THE ELOM TOURS')
 
 @section('content')
 <div class="container px-6 mx-auto grid">
@@ -27,20 +27,46 @@
             @csrf
 
             <div class="grid gap-6 mb-8 md:grid-cols-2">
-                <!-- Client -->
-                <div class="col-span-2 md:col-span-1">
-                    <label for="client_id" class="block text-sm font-medium text-gray-700 mb-2">
-                        Client <span class="text-red-500">*</span>
+                <!-- Nom du client -->
+                <div>
+                    <label for="nom" class="block text-sm font-medium text-gray-700 mb-2">
+                        Nom du client <span class="text-red-500">*</span>
                     </label>
-                    <select id="client_id" name="client_id" class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-400 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('client_id') border-red-500 @enderror" required>
-                        <option value="">Sélectionner un client</option>
-                        @foreach($clients as $client)
-                            <option value="{{ $client->id }}" {{ old('client_id') == $client->id ? 'selected' : '' }}>
-                                {{ $client->nom }} {{ $client->prenom }} ({{ $client->email }})
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('client_id')
+                    <input type="text" id="nom" name="nom" value="{{ old('nom') }}" class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-400 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('nom') border-red-500 @enderror" required>
+                    @error('nom')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Email du client -->
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                        Email du client <span class="text-red-500">*</span>
+                    </label>
+                    <input type="email" id="email" name="email" value="{{ old('email') }}" class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-400 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('email') border-red-500 @enderror" required>
+                    @error('email')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Téléphone du client -->
+                <div>
+                    <label for="telephone" class="block text-sm font-medium text-gray-700 mb-2">
+                        Téléphone du client
+                    </label>
+                    <input type="tel" id="telephone" name="telephone" value="{{ old('telephone') }}" class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-400 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('telephone') border-red-500 @enderror">
+                    @error('telephone')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Message du client -->
+                <div>
+                    <label for="message" class="block text-sm font-medium text-gray-700 mb-2">
+                        Message du client
+                    </label>
+                    <textarea id="message" name="message" rows="3" class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-400 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('message') border-red-500 @enderror">{{ old('message') }}</textarea>
+                    @error('message')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
                 </div>

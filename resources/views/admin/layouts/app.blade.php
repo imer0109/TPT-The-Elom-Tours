@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'ADMINISTRATION - THE ELOM\' TOURS')</title>
     
     <!-- Favicon -->
-    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('LogoUrl.jpg') }}" type="image/x-icon">
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -43,6 +44,32 @@
     
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- CSRF Token for AJAX -->
+    <script>
+        window.Laravel = {!! json_encode([
+            'csrfToken' => csrf_token(),
+        ]) !!};
+        
+        // Configure Fetch API with CSRF token
+        document.addEventListener('DOMContentLoaded', function() {
+            // Pour les requêtes fetch
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            
+            // Intercepter les requêtes fetch pour ajouter le token CSRF
+            const originalFetch = window.fetch;
+            window.fetch = function(url, options = {}) {
+                if (!options.headers) {
+                    options.headers = {};
+                }
+                
+                // Ajouter le token CSRF à l'en-tête
+                options.headers['X-CSRF-TOKEN'] = csrfToken;
+                
+                return originalFetch(url, options);
+            };
+        });
+    </script>
     
     @yield('styles')
 </head>

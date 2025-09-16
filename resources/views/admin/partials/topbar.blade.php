@@ -75,7 +75,7 @@
                                 <p class="text-sm text-gray-500">{{ $n['message'] ?? '' }}</p>
                                 <p class="text-xs text-gray-500 mt-1">{{ $n['time'] ?? '' }}</p>
                             </div>
-                        </div>
+                                </div>
                         @empty
                         <div class="px-4 py-3 text-center text-gray-500">Aucune notification</div>
                         @endforelse
@@ -115,7 +115,7 @@
                                 <p class="text-sm text-gray-500 truncate">{{ Str::limit($m->message ?? ($m->content ?? ''), 80) }}</p>
                                 <p class="text-xs text-gray-500 mt-1">{{ \Carbon\Carbon::parse($m->created_at)->diffForHumans() }}</p>
                             </div>
-                        </div>
+                            </div>
                         @empty
                         <div class="px-4 py-3 text-center text-gray-500">Aucun message récent</div>
                         @endforelse

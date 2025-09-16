@@ -3,7 +3,7 @@
 @section('content')
     <!-- Hero Section -->
     <section class="relative">
-        <div class="hero-image h-screen bg-cover bg-center" style="background-image: url('{{ asset('assets/images/termite.jpg') }}');">
+        <div class="hero-image h-screen bg-cover bg-center" style="background-image: url('{{ asset('assets/images/paysage.jpg') }}');">
             <div class="absolute inset-0 opacity-50"></div>
             <div class="container mx-auto px-4 h-full flex items-center justify-center relative z-10">
                 <div class="text-center text-white mt-20">
@@ -21,7 +21,6 @@
     <section class="py-16 bg-white">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold text-center mb-12">Pourquoi choisir The Elom Tours ?</h2>
-            
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <!-- Feature 1 -->
                 <div class="text-center p-6 border border-gray-200 rounded-lg hover:shadow-lg transition duration-300">
@@ -59,33 +58,25 @@
             <h2 class="text-3xl font-bold text-center mb-12">Nos destinations populaires</h2>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Destinations statiques -->
-                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300">
-                    <img src="{{ asset('assets/images/lome.jpg') }}" alt="Lomé" class="w-full h-64 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold mb-2">Lomé, Togo</h3>
-                        <p class="text-gray-600 mb-4">Découvrez la vibrante capitale du Togo avec ses marchés colorés et son riche patrimoine culturel.</p>
-                        <a href="{{ route('destinations.index') }}" class="text-green-600 hover:text-green-800 font-medium">Découvrir <i class="fas fa-arrow-right ml-1"></i></a>
+                @forelse($popularDestinations as $destination)
+                    <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300">
+                        @if($destination->image)
+                            <img src="{{ $destination->image->getFileUrl() }}" alt="{{ $destination->name }}" class="w-full h-64 object-cover">
+                        @else
+                            <img src="{{ asset('assets/images/placeholder.jpg') }}" alt="{{ $destination->name }}" class="w-full h-64 object-cover">
+                        @endif
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold mb-2">{{ $destination->name }}</h3>
+                            <p class="text-gray-600 mb-1">{{ $destination->city }}, {{ $destination->country }}</p>
+                            <p class="text-gray-600 mb-4">{{ Str::limit($destination->description, 110) }}</p>
+                            <a href="{{ route('destinations.show', $destination->slug) }}" class="text-green-600 hover:text-green-800 font-medium">Découvrir <i class="fas fa-arrow-right ml-1"></i></a>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300">
-                    <img src="{{ asset('assets/images/kpalime.jpg') }}" alt="Kpalimé" class="w-full h-64 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold mb-2">Kpalimé, Togo</h3>
-                        <p class="text-gray-600 mb-4">Explorez les magnifiques paysages montagneux et les cascades spectaculaires de cette région verdoyante.</p>
-                        <a href="{{ route('destinations.index') }}" class="text-green-600 hover:text-green-800 font-medium">Découvrir <i class="fas fa-arrow-right ml-1"></i></a>
+                @empty
+                    <div class="lg:col-span-3 text-center py-12">
+                        <p class="text-gray-600">Aucune destination populaire pour le moment.</p>
                     </div>
-                </div>
-                
-                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300">
-                    <img src="{{ asset('assets/images/ouidah.jpg') }}" alt="Ouidah" class="w-full h-64 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold mb-2">Ouidah, Bénin</h3>
-                        <p class="text-gray-600 mb-4">Visitez ce haut lieu historique du vaudou et découvrez la Route des Esclaves, site du patrimoine mondial.</p>
-                        <a href="{{ route('destinations.index') }}" class="text-green-600 hover:text-green-800 font-medium">Découvrir <i class="fas fa-arrow-right ml-1"></i></a>
-                    </div>
-                </div>
+                @endforelse
             </div>
             
             <div class="text-center mt-12">

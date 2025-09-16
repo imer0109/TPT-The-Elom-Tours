@@ -65,17 +65,16 @@ class DashboardController extends Controller
         ];
         
         // Réservations récentes
-        $recentReservationsData = Reservation::with(['client', 'circuit'])
+        $recentReservationsData = Reservation::with(['circuit'])
             ->orderByDesc('created_at')
             ->limit(5)
             ->get()
             ->map(function ($reservation) {
-                $client = $reservation->client;
                 $circuit = $reservation->circuit;
                 return [
                     'id' => $reservation->id,
-                    'client' => $client ? trim(($client->nom ?? '').' '.($client->prenom ?? '')) : '—',
-                    'email' => $client->email ?? '—',
+                    'client' => $reservation->nom ?? '—',
+                    'email' => $reservation->email ?? '—',
                     'circuit' => $circuit->titre ?? '—',
                     'date' => optional($reservation->date_debut)->format('d/m/Y') ?? '—',
                     'amount' => $reservation->montant_total,

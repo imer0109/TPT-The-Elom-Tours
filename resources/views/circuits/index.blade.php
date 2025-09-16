@@ -71,6 +71,33 @@
                 </form>
             </div>
 
+            <!-- Résultats de recherche -->
+            @if(request()->hasAny(['destination', 'duration', 'theme']))
+                <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <h4 class="text-lg font-semibold text-blue-800 mb-2">Filtres appliqués :</h4>
+                    <div class="flex flex-wrap gap-2">
+                        @if(request('destination'))
+                            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+                                Destination: {{ $destinations->find(request('destination'))->name ?? 'Inconnue' }}
+                            </span>
+                        @endif
+                        @if(request('duration'))
+                            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+                                Durée: {{ request('duration') }} jours
+                            </span>
+                        @endif
+                        @if(request('theme'))
+                            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+                                Thème: {{ ucfirst(request('theme')) }}
+                            </span>
+                        @endif
+                        <a href="{{ route('circuits.index') }}" class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm hover:bg-red-200">
+                            <i class="fas fa-times mr-1"></i> Effacer tous les filtres
+                        </a>
+                    </div>
+                </div>
+            @endif
+
             <!-- Circuits Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @forelse($circuits as $circuit)
@@ -117,19 +144,32 @@
                         </div>
                     </div>
                 @empty
-                    <div class="col-span-3 text-center py-8">
-                        <p class="text-gray-500 text-lg">Aucun circuit disponible pour le moment.</p>
-                        {{-- <a href="{{ route('circuits.index') }}" class="inline-block mt-4 text-green-600 hover:text-green-800 font-medium">
-                            Voir tous les circuits
-                        </a> --}}
+                    <div class="col-span-3 text-center py-12">
+                        @if(request()->hasAny(['destination', 'duration', 'theme']))
+                            <div class="mb-4">
+                                <i class="fas fa-search text-4xl text-gray-400 mb-4"></i>
+                                <p class="text-gray-500 text-lg">Aucun circuit trouvé avec ces critères.</p>
+                                <p class="text-gray-400 text-sm mt-2">Essayez de modifier vos filtres de recherche.</p>
+                            </div>
+                            <a href="{{ route('circuits.index') }}" class="inline-block bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-md transition duration-300">
+                                <i class="fas fa-refresh mr-2"></i> Voir tous les circuits
+                            </a>
+                        @else
+                            <div class="mb-4">
+                                <i class="fas fa-map-marked-alt text-4xl text-gray-400 mb-4"></i>
+                                <p class="text-gray-500 text-lg">Aucun circuit disponible pour le moment.</p>
+                            </div>
+                        @endif
                     </div>
                 @endforelse
             </div>
 
             <!-- Pagination -->
-            <div class="mt-8">
-                {{ $circuits->links() }}
-            </div>
+            @if($circuits->hasPages())
+                <div class="mt-8">
+                    {{ $circuits->appends(request()->query())->links() }}
+                </div>
+            @endif
         </div>
     </section>
 

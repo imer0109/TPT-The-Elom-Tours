@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', "Journal d'activités")
+@section('title', "JOURNAL D'ACTIVITÉS - THE ELOM TOURS")
 
 @section('content')
 <div class="px-4">

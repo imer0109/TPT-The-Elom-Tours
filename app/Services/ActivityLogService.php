@@ -126,6 +126,54 @@ class ActivityLogService
     }
     
     /**
+     * Log a restore action.
+     *
+     * @param Model $user
+     * @param string $modelClass
+     * @param string $modelId
+     * @param string $description
+     * @return ActivityLog
+     */
+    public function logRestored(Model $user, string $modelClass, ?string $modelId, string $description): ActivityLog
+    {
+        return ActivityLog::log(
+            'restore',
+            $description,
+            null,
+            null,
+            [
+                'model_class' => $modelClass,
+                'model_id' => $modelId,
+                'restored_by' => $user->id
+            ]
+        );
+    }
+
+    /**
+     * Log a force delete action.
+     *
+     * @param Model $user
+     * @param string $modelClass
+     * @param string|null $modelId
+     * @param string $description
+     * @return ActivityLog
+     */
+    public function logForceDeleted(Model $user, string $modelClass, ?string $modelId, string $description): ActivityLog
+    {
+        return ActivityLog::log(
+            'force_delete',
+            $description,
+            null,
+            null,
+            [
+                'model_class' => $modelClass,
+                'model_id' => $modelId,
+                'deleted_by' => $user->id
+            ]
+        );
+    }
+    
+    /**
      * Log a custom action.
      *
      * @param string $action

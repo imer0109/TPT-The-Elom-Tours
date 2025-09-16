@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Sanctum\HasApiTokens;
@@ -42,13 +41,8 @@ class Client extends Model
         return $this->morphOne(File::class, 'owner');
     }
     
-    /**
-     * Obtenir les réservations associées au client.
-     */
-    public function reservations(): HasMany
-    {
-        return $this->hasMany(Reservation::class);
-    }
+    // Note: Les réservations stockent maintenant directement les informations du client
+    // et n'ont plus de relation avec la table clients
     
     /**
      * Obtenir l'utilisateur associé au client.

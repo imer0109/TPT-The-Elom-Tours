@@ -13,15 +13,50 @@ class CircuitController extends Controller
     /**
      * Affiche la liste des circuits
      *
+     * @param Request $request
      * @return \Illuminate\View\View
      */
-    public function index(): View
+    public function index(Request $request): View
     {
-        // Récupérer tous les circuits actifs
-        $circuits = Circuit::where('est_actif', true)
-            ->orderBy('created_at', 'desc')
-            ->paginate(9);
-            
+        // Construire la requête de base
+        $query = Circuit::where('est_actif', true);
+        
+        // Filtrer par destination
+        if ($request->filled('destination')) {
+            $destination = Destination::find($request->destination);
+            if ($destination) {
+                $query->where('destination', $destination->name);
+            }
+        }
+        
+        // Filtrer par durée
+        if ($request->filled('duration')) {
+            $duration = $request->duration;
+            switch ($duration) {
+                case '1-3':
+                    $query->whereBetween('duree', [1, 3]);
+                    break;
+                case '4-7':
+                    $query->whereBetween('duree', [4, 7]);
+                    break;
+                case '8+':
+                    $query->where('duree', '>=', 8);
+                    break;
+            }
+        }
+        
+        // Filtrer par thème (basé sur la description ou les mots-clés)
+        if ($request->filled('theme')) {
+            $theme = $request->theme;
+            $query->where(function($q) use ($theme) {
+                $q->where('description', 'like', "%{$theme}%")
+                  ->orWhere('meta_keywords', 'like', "%{$theme}%");
+            });
+        }
+        
+        // Récupérer les circuits avec pagination
+        $circuits = $query->orderBy('created_at', 'desc')->paginate(9);
+        
         // Récupérer les destinations pour le filtre
         $destinations = Destination::where('is_active', true)
             ->orderBy('name')

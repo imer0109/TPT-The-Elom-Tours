@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Commentaires du blog')
+@section('title', 'COMMENTAIRES DU BLOG - THE ELOM TOURS')
 
 @section('content')
 <div class="px-4">
